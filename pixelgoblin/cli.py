@@ -263,7 +263,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = add("wfc", cmd_wfc, "Grow a seamless texture from a small sample (Wave Function Collapse).")
     p.add_argument("sample")
     p.add_argument("--size", default="32x32")
-    p.add_argument("--n", type=int, default=3, help="pattern size (2 or 3)")
+    p.add_argument("--n", type=int, default=2, help="pattern size: 2 is robust at any size; 3 keeps more structure but falls back above ~32px until backtracking lands (P2)")
     p.add_argument("--attempts", type=int, default=8)
     common(p)
     p = add("uikit", cmd_uikit, "Build a UI kit (9-slice panels, button states, icons) for games and apps.")

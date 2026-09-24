@@ -93,7 +93,7 @@ pixelgoblin wfc sample.png --size 48x48 --seed 3 --out floor.png
 
 - `sample`
 - `--size`
-- `--n` — pattern size (2 or 3)
+- `--n` — pattern size: 2 is robust at any size; 3 keeps more structure but falls back above ~32px until backtracking lands (P2)
 - `--attempts`
 - `--seed` — whole number; same seed = same sprite
 - `--out` — output file
