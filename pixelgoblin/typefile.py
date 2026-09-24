@@ -93,6 +93,11 @@ def find_by_id(type_id: str, extra: list[Path] | None = None) -> Path:
 
 
 def _read_toml(path: Path) -> dict:
+    if path.suffix == ".json":  # type files saved from the editor
+        try:
+            return json.loads(path.read_text())
+        except json.JSONDecodeError as e:
+            raise TypeFileError([f"this is not valid JSON — {e}"], str(path)) from None
     try:
         return tomllib.loads(path.read_text())
     except tomllib.TOMLDecodeError as e:

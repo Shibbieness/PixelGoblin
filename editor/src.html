@@ -123,7 +123,7 @@ footer{margin-top:12px;color:var(--mute);font-size:.8em;display:flex;flex-wrap:w
       <details>
         <summary>Edit this type file (JSON)</summary>
         <textarea id="g-json" spellcheck="false"></textarea>
-        <div class="btns"><button class="btn" id="g-apply">Apply edits</button></div>
+        <div class="btns"><button class="btn" id="g-apply">Apply edits</button><button class="btn" id="g-savetype">Save type file</button></div>
         <div class="hint" id="g-err"></div>
       </details>
     </aside>
@@ -186,7 +186,7 @@ footer{margin-top:12px;color:var(--mute);font-size:.8em;display:flex;flex-wrap:w
       <label>Colours <input type="range" id="c-cols" min="2" max="32" value="12"><span class="mono" id="c-colsv"></span></label>
       <label>Outline<select id="c-out"><option>selout</option><option>dark</option><option>none</option></select></label>
       <label>Dither<select id="c-dith"><option>none</option><option>bayer</option></select></label>
-      <div class="btns"><button class="btn" id="c-edit">Open in editor</button><button class="btn primary" id="c-like">Learn likeness</button></div>
+      <div class="btns"><button class="btn" id="c-save">Save PNG</button><button class="btn" id="c-edit">Open in editor</button><button class="btn primary" id="c-like">Learn likeness</button></div>
       <div class="hint">Learn likeness turns this one example into a type file, then rolls 16 relatives in Generate.</div>
     </aside>
     <div class="stage">
@@ -259,6 +259,19 @@ const store = { get(k, d) { try { const v = localStorage.getItem("pg." + k); ret
 $("ver").textContent = PRESETS.version + " workbench";
 $("credit").textContent = PRESETS.credit;
 $("major").textContent = PG.ENGINE_MAJOR;
+// file saves: the viewer's downloads capability when published, a plain save when opened as a local file
+let dl = null;
+try { if (window.claude && window.claude.use) window.claude.use("downloads").then((d) => { dl = d; }, () => {}); } catch (e) {}
+async function saveFile(filename, data) {
+  if (dl) {
+    try { await dl.save({ filename, data }); toast("Saved " + filename); }
+    catch (e) { if (e && e.code !== "declined") toast("Could not save " + filename + (e.message ? ": " + e.message : "")); }
+    return;
+  }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(data instanceof Blob ? data : new Blob([data])); a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+const pngBlob = (spr, scale = 1) => new Promise((res) => { const c = document.createElement("canvas"); paint(c, spr, scale); c.toBlob(res, "image/png"); });
 function toast(msg) { const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 1800); }
 
 // ---------- chrome: tabs, readable, rail side, theme
@@ -372,6 +385,7 @@ function detail(seed) {
   $("g-edit").onclick = () => { loadDoc(frames, ms); showTab("edit"); };
 }
 $("g-roll").onclick = roll;
+$("g-savetype").onclick = () => saveFile((genType.id || "type") + ".json", JSON.stringify(genType, null, 1));
 $("g-next").onclick = () => { $("g-seed").value = parseInt($("g-seed").value || "0", 10) + 16; roll(); };
 $("g-apply").onclick = () => {
   try { const d = JSON.parse($("g-json").value); PG.frames(d, 0); genType = d; $("g-err").textContent = "Applied. The type hash changed, so every seed makes a new sprite."; roll(); }
@@ -493,9 +507,12 @@ $("e-export").onclick = () => {
   const meta = { frames, meta: { app: "PixelGoblin", version: PRESETS.version, image: "sheet.png", size: { w: sheet.w, h: sheet.h }, frameTags: [{ name: "idle", from: 0, to: n - 1, direction: "forward" }], credit: PRESETS.credit } };
   const hz = flashCheck(doc.frames.map((_, i) => frameSprite(i)), ms);
   $("e-hazard").innerHTML = hazardBox(hz);
-  const url = toPngURL(sheet, 1), big = toPngURL(sheet, 4), json = JSON.stringify(meta, null, 1);
-  $("e-save").innerHTML = `<div class="save"><figure style="margin:0"><img src="${big}" alt="Exported sprite sheet at 4x"><figcaption class="hint">Right-click or long-press the image to save it (4x). The 1x sheet is in the link.</figcaption></figure>
-    <div style="display:flex;flex-direction:column;gap:6px"><a class="btn" href="${url}" download="sheet.png">Download 1x sheet</a><button class="btn" id="e-copyjson">Copy sheet JSON</button><span class="hint">Aseprite-style JSON, readable by Godot, Phaser and Unity importers.</span></div></div>`;
+  const big = toPngURL(sheet, 4), json = JSON.stringify(meta, null, 1);
+  $("e-save").innerHTML = `<div class="save"><figure style="margin:0"><img src="${big}" alt="Exported sprite sheet at 4x"><figcaption class="hint">The sheet at 4x. Save it at 1x for engines, or 4x for sharing.</figcaption></figure>
+    <div style="display:flex;flex-direction:column;gap:6px"><button class="btn primary" id="e-save1">Save sheet.png (1x)</button><button class="btn" id="e-save4">Save sheet@4x.png</button><button class="btn" id="e-savejson">Save sheet.json</button><button class="btn" id="e-copyjson">Copy sheet JSON</button><span class="hint">Aseprite-style JSON, readable by Godot, Phaser and Unity importers.</span></div></div>`;
+  $("e-save1").onclick = async () => saveFile("sheet.png", await pngBlob(sheet, 1));
+  $("e-save4").onclick = async () => saveFile("sheet@4x.png", await pngBlob(sheet, 4));
+  $("e-savejson").onclick = () => saveFile("sheet.json", json);
   $("e-copyjson").onclick = () => navigator.clipboard.writeText(json).then(() => toast("Copied sheet JSON"), () => toast("Copy blocked here; select the text instead"));
 };
 
@@ -559,6 +576,7 @@ function convert() {
   converted = spr; const z = Math.max(2, Math.floor(256 / size)); paint($("c-dst"), spr, z);
   $("c-info").textContent = `${size}x${size} · ${spr.usedColors()} colours · tag ${$("c-tag").value}`;
 }
+$("c-save").onclick = async () => { if (converted) saveFile("pixelgoblin.png", await pngBlob(converted, 1)); };
 $("c-edit").onclick = () => { if (converted) { loadDoc([converted], 200); showTab("edit"); } };
 $("c-like").onclick = () => {
   if (!converted) return; const s = converted, W = s.w, H = s.h, solid = (x, y) => x >= 0 && y >= 0 && x < W && y < H && s.px[y * W + x] !== 0;
