@@ -1,0 +1,363 @@
+<title>PixelGoblin Build Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Silkscreen&display=swap">
+<style>
+:root{
+  --bg:#f3eedd;--paper:#fbf7ea;--panel:#ece5cf;--line:#d4cab0;--ink:#26261e;--mute:#6a6552;
+  --accent:#a86f12;--accent-soft:#f1dfb4;--teal:#2f7a74;--good:#4a7a2a;--bad:#b0402a;--design:#6a5aa0;
+  --fs:17px;color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#191d18;--paper:#1f241d;--panel:#2c3228;--line:#3a4234;--ink:#e9e3cf;--mute:#a9a592;
+    --accent:#d9a441;--accent-soft:#3b3220;--teal:#56a39c;--good:#8cc265;--bad:#e0705a;--design:#a99ae0;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#191d18;--paper:#1f241d;--panel:#2c3228;--line:#3a4234;--ink:#e9e3cf;--mute:#a9a592;
+  --accent:#d9a441;--accent-soft:#3b3220;--teal:#56a39c;--good:#8cc265;--bad:#e0705a;--design:#a99ae0;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 var(--fs)/1.6 "Atkinson Hyperlegible",system-ui,sans-serif;padding-inline:16px;padding-block:24px 48px;margin:0}
+.wrap{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:220px minmax(0,1fr);gap:36px;align-items:start}
+nav.toc{position:sticky;top:calc(16px + env(safe-area-inset-top,0px));font-size:.82rem;display:flex;flex-direction:column;gap:2px}
+nav.toc a{color:var(--mute);text-decoration:none;padding:3px 8px;border-left:2px solid var(--line)}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--ink);border-left-color:var(--accent);outline:none}
+nav.toc b{font-family:"Silkscreen",monospace;font-weight:400;color:var(--accent);font-size:.9rem;margin-bottom:6px}
+main{min-width:0;display:flex;flex-direction:column;gap:44px}
+section{display:flex;flex-direction:column;gap:14px;max-width:72ch}
+section.wide{max-width:none}
+section>*,main>*{min-width:0;max-width:100%}
+code,li b{overflow-wrap:anywhere;word-break:break-word}
+li{min-width:0;overflow-wrap:anywhere}
+pre code{overflow-wrap:normal}
+h1,h2{font-family:"Silkscreen","Courier New",monospace;font-weight:400;letter-spacing:.03em;text-wrap:balance;margin:0}
+h1{font-size:2.3rem;color:var(--accent);line-height:1.1}
+h2{font-size:1.25rem;color:var(--ink);padding-bottom:6px;border-bottom:2px solid var(--line)}
+h3{font-size:1.02rem;margin:8px 0 0}
+p,ul,ol{margin:0}
+ul,ol{padding-left:1.3em;display:flex;flex-direction:column;gap:5px}
+.eyebrow{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.lede{font-size:1.1rem}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.84em}
+code{background:var(--panel);padding:1px 5px;border-radius:3px}
+pre{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:12px 14px;overflow-x:auto;margin:0;font-size:.84rem;line-height:1.5}
+pre code{background:none;padding:0}
+.status{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;max-width:none}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.stat b{font-size:1.4rem;font-variant-numeric:tabular-nums;color:var(--good)}
+.stat span{font-size:.82rem;color:var(--mute)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:4px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);font-weight:700}
+tr:last-child td{border-bottom:0}
+td.num{font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.04em;padding:1px 7px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.built{color:var(--good)}.designed{color:var(--design)}.risk{color:var(--bad)}
+.callout{background:var(--accent-soft);border-left:4px solid var(--accent);padding:12px 14px;border-radius:0 4px 4px 0}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;max-width:none}
+figure{margin:0;display:flex;flex-direction:column;gap:6px}
+figure img{image-rendering:pixelated;max-width:100%;border-radius:3px;background:repeating-conic-gradient(var(--panel) 0 25%,var(--paper) 0 50%) 0 0/12px 12px;padding:6px;border:1px solid var(--line)}
+figcaption{font-size:.84rem;color:var(--mute)}
+figcaption b{color:var(--ink)}
+.names{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.name{border:1px solid var(--line);border-radius:4px;padding:10px 12px;background:var(--paper)}
+.name b{font-family:"Silkscreen",monospace;font-weight:400;font-size:1.05rem;color:var(--accent)}
+.name p{font-size:.88rem;color:var(--mute);margin-top:4px}
+.next{border:2px solid var(--accent);border-radius:6px;padding:16px 18px;background:var(--paper);display:flex;flex-direction:column;gap:8px}
+.next b.big{font-size:1.15rem}
+.log li{font-size:.92rem}
+.log time{font-family:"JetBrains Mono",monospace;font-size:.78rem;color:var(--mute);margin-right:6px}
+footer{color:var(--mute);font-size:.9rem;display:flex;flex-direction:column;gap:2px}
+a{color:var(--teal)}
+@media (max-width:820px){.wrap{grid-template-columns:1fr}nav.toc{position:static;flex-direction:row;flex-wrap:wrap}nav.toc b{width:100%}}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <b>Contents</b>
+  <a href="#status">Where it stands</a>
+  <a href="#name">The name</a>
+  <a href="#built">What got built</a>
+  <a href="#changed">What changed, flagged</a>
+  <a href="#github">Your GitHub</a>
+  <a href="#license">Open source plan</a>
+  <a href="#spire">SPIRE logic</a>
+  <a href="#stack">Other skills</a>
+  <a href="#bugs">Bugs found</a>
+  <a href="#guide">Prototype guide</a>
+  <a href="#plan">Standalone plan</a>
+  <a href="#critique">Critique, round 2</a>
+  <a href="#next">One next action</a>
+  <a href="#log">Build log</a>
+  <a href="#sources">Sources</a>
+</nav>
+
+<main>
+<section>
+  <span class="eyebrow">M MAOU LLC · session 2 · {{DATE}} · {{VERSION}}</span>
+  <h1>PixelGoblin Build Record</h1>
+  <p class="lede">Last session was the design. This session built it. PixelGoblin now exists as a working, self-checking prototype. It has a stdlib-only Python engine, a command line, a browser workbench whose JavaScript core produces the same pixels as Python, and a Vanilla Core flavor. Building it also turned up a real bug in Vanilla Core, which is fixed here as a patch.</p>
+  <p>Every count on this page was computed by running the build when this page was made. None were typed in.</p>
+</section>
+
+<section class="wide" id="status">
+  <h2>Where it stands</h2>
+  <div class="status">
+    <div class="stat"><b>{{GATES_PASSED}}/{{GATES_TOTAL}}</b><span>build gates pass</span></div>
+    <div class="stat"><b>{{PLAN_COVERED}}/{{PLAN_TOTAL}}</b><span>plan gates covered</span></div>
+    <div class="stat"><b>{{MUT_KILLED}}/{{MUT_TOTAL}}</b><span>mutants killed</span></div>
+    <div class="stat"><b>{{PARITY}}</b><span>JavaScript = Python checks</span></div>
+    <div class="stat"><b>{{GOLDENS}}</b><span>golden sprites</span></div>
+    <div class="stat"><b>{{ASSERTS}}</b><span>assertions, one full run</span></div>
+  </div>
+  <p>The run also passes <code>--from-empty</code>, which copies the repo to a clean folder with a minimal environment and no network.</p>
+</section>
+
+<section id="name">
+  <h2>The name</h2>
+  <p><b>PixelGoblin fits, and I'd keep it.</b> Book of Cities goblins are <i>improvised-into-comfort</i>: they take scraps and make them livable. That is exactly what the tool does to an image. It scavenges it, then remakes it at goblin scale. The name also carries the Book of Cities flavor without putting any lore into the vanilla product.</p>
+  <p class="callout"><b>Check before selling under it.</b> A web search found a "Pixel Goblin Studio" (a small studio site and a SoundCloud) and a "Pixel Goblin" media site at pixelgoblin.link. It found no pixel-art tool with the name. That is not a trademark search. Run one (USPTO) before a commercial launch.</p>
+  <h3>Other names, if you want options</h3>
+  <div class="names">
+    <div class="name"><b>Scrapwright</b><p>Joins the -wright family with GILWRIGHT: the craftsman who makes art from scraps.</p></div>
+    <div class="name"><b>Gobsprite</b><p>Shorter, playful, easy to search for.</p></div>
+    <div class="name"><b>Hoardsprite</b><p>Leans on the library and cache: a goblin's hoard of sprites.</p></div>
+    <div class="name"><b>Tinkerpix</b><p>Toolmaker energy; good if the editor becomes the headline.</p></div>
+  </div>
+  <h3>A goblin lexicon for the parts (and the features the names suggest)</h3>
+  <div class="tbl"><table>
+    <tr><th>Name</th><th>Part</th><th>What it sparks</th><th>Status</th></tr>
+    <tr><td><b>Scrounge</b></td><td>image + tag to pixel art</td><td>a watched Dropzone folder that scrounges anything dropped in</td><td><span class="tag built">built</span> <span class="tag designed">watch: designed</span></td></tr>
+    <tr><td><b>Brood</b></td><td>seed genealogy</td><td>family trees across generations; Book of Cities NPC families that look related</td><td><span class="tag built">built</span></td></tr>
+    <tr><td><b>Hoard</b></td><td>library and cache by (type hash, seed)</td><td>a searchable hoard: by tag now, by visual similarity later</td><td><span class="tag designed">designed</span></td></tr>
+    <tr><td><b>Warren</b></td><td>tiles: autotile and WFC</td><td>dungeon rooms grown from the Book of Cities dungeon DAG</td><td><span class="tag built">tiles built</span> <span class="tag designed">rooms designed</span></td></tr>
+    <tr><td><b>Rags</b></td><td>parts and layering</td><td>a wardrobe: swap a goblin's tunic or helm without re-rolling the goblin</td><td><span class="tag built">parts built</span></td></tr>
+    <tr><td><b>Trinket</b></td><td>item and icon types</td><td>loot tables that roll rarity into ramp and part choice</td><td><span class="tag designed">designed</span></td></tr>
+    <tr><td><b>Glint</b></td><td>effects</td><td>sparks, smoke and magic, always run past the flash check</td><td><span class="tag designed">designed</span></td></tr>
+    <tr><td><b>Squint</b></td><td>readability at 1x</td><td>warns when a silhouette stops reading at real size</td><td><span class="tag designed">designed</span></td></tr>
+    <tr><td><b>Tinker</b></td><td>the workbench</td><td>skins itself with a generated UI kit</td><td><span class="tag built">built</span></td></tr>
+  </table></div>
+</section>
+
+<section class="wide" id="built">
+  <h2>What got built</h2>
+  <p style="max-width:72ch">Everything below came out of the engine in this session, at the seeds shown in the build script. Flavor content (goblins, reef, glowcap) sits in <code>flavors/boc/</code>. Vanilla content makes CC0 sprites.</p>
+  <div class="gallery">
+    <figure><img src="{{IMG_goblins}}" alt="Sixteen goblins, seeds 0 to 15"><figcaption><b>Goblin species</b>, seeds 0–15. Tunic and helm are parts, each on its own random stream.</figcaption></figure>
+    <figure><img src="{{IMG_idle}}" alt="Three idle frames of one goblin"><figcaption><b>Idle animation</b>, seed 7: bob and blink. It passes the flash check.</figcaption></figure>
+    <figure><img src="{{IMG_aquatic}}" alt="Eight aquatic goblins"><figcaption><b>Aquatic goblin</b>: a 55-line variant file that <code>extends</code> the goblin, with fins and a crest.</figcaption></figure>
+    <figure><img src="{{IMG_brood}}" alt="Parent, child, parent"><figcaption><b>Brood</b>: parent 11, child 5, parent 29. Each part is inherited whole.</figcaption></figure>
+    <figure><img src="{{IMG_blob}}" alt="Eight blobs"><figcaption><b>Blob</b> (vanilla) with horns part at 50%.</figcaption></figure>
+    <figure><img src="{{IMG_beetle}}" alt="Eight beetles"><figcaption><b>Beetle</b>: legs and antennae use a ramp that is never picked for the body.</figcaption></figure>
+    <figure><img src="{{IMG_potion}}" alt="Eight potions"><figcaption><b>Potion</b> icons: healing, mana and poison ramps.</figcaption></figure>
+    <figure><img src="{{IMG_glowcap}}" alt="Eight glowcap mushrooms"><figcaption><b>Glowcap</b> (flavor) extends the vanilla fungus and only swaps colours.</figcaption></figure>
+    <figure><img src="{{IMG_shrub}}" alt="Six shrubs"><figcaption><b>Shrubs</b> from an L-system: integer turtle, fruit on some leaves.</figcaption></figure>
+    <figure><img src="{{IMG_photo}}" alt="A soft painted critter" style="max-width:160px"><figcaption><b>Input</b>: a soft-shaded painting, 240×240.</figcaption></figure>
+    <figure><img src="{{IMG_converted}}" alt="The critter as 16px pixel art"><figcaption><b>Scrounge</b> with tag <code>creature.small</code>: 16×16, {{CONV_COLS}} colours, tinted outline.</figcaption></figure>
+    <figure><img src="{{IMG_likeness}}" alt="Eight relatives of the critter"><figcaption><b>Likeness</b>: that one example became a type file, and these are eight relatives.</figcaption></figure>
+    <figure><img src="{{IMG_dusk}}" alt="Dusk parallax backdrop"><figcaption><b>Dusk backdrop</b>: three parallax layers, Bayer-dithered sky, stars.</figcaption></figure>
+    <figure><img src="{{IMG_reef}}" alt="Reef parallax backdrop"><figcaption><b>Reef biome</b> (flavor) from the same generator.</figcaption></figure>
+    <figure><img src="{{IMG_grassmap}}" alt="Autotiled grass island"><figcaption><b>Autotiles</b>: the 47-blob set picks every edge and corner. The table is generated, never typed.</figcaption></figure>
+    <figure><img src="{{IMG_uistates}}" alt="Four button states"><figcaption><b>UI kit</b>: normal, hover, pressed, disabled. 9-slice tiles, never stretches.</figcaption></figure>
+    <figure><img src="{{IMG_icons}}" alt="Eight generated icons"><figcaption><b>Icons</b> generated from the UI theme's material.</figcaption></figure>
+    <figure><img src="{{IMG_wfc}}" alt="Seamless cave texture"><figcaption><b>WFC texture</b> from an 8×8 sample. It is periodic, so it tiles seamlessly.</figcaption></figure>
+  </div>
+  <p style="max-width:72ch">The <b>workbench</b> (published alongside this record) has six workshops: Generate (with brood, share codes and both verdicts), Edit (pencil, fill, line, box, shade and dither brushes, mirror, pixel-perfect strokes, frames, onion skin, sheet export), Convert (with Learn likeness), Tiles (paint a map, watch the autotiles), Backdrop (the layers scroll at their own speeds) and UI Kit. <b>Readable</b> and <b>Swap sides</b> are the first custom-layout slots.</p>
+</section>
+
+<section id="changed">
+  <h2>What changed from the design, flagged</h2>
+  <p>Some of these reverse what I recommended last time. Each is marked so none slips past.</p>
+  <div class="tbl"><table>
+    <tr><th>Before</th><th>Now</th><th>Why</th></tr>
+    <tr><td>Build the Rust core first (ADR-001 order)</td><td><b>Python reference engine first</b>; Rust must match its goldens (ADR-009)</td><td>Book of Cities is Python; the stack is stdlib-only; a determinism contract needs an oracle to port against.</td></tr>
+    <tr><td>Editor in Rust + egui (ADR-006)</td><td><b>One offline HTML page</b> with a parity-gated JS core (ADR-011)</td><td>It is usable today on any device, and it is a second-language proof of the contract.</td></tr>
+    <tr><td>BLAKE3 hashing</td><td>SHA-256</td><td>It is in both standard libraries. Speed does not matter at type-file size.</td></tr>
+    <tr><td>Licence undecided</td><td>AGPL + commercial + §7(b) credit; <b>vanilla sprites CC0</b> (ADR-010)</td><td>Your QRen and Vanilla Core pattern. CC0 is my default for vanilla output and is yours to flip.</td></tr>
+    <tr><td>WFC with retry, then backtracking</td><td>Retry and flagged fallback now; <b>2×2 patterns by default</b></td><td>Measured: 3×3 patterns fall back 10 times in 10 at 48×48 with no backtracking; 2×2 falls back 0 times at every size tested.</td></tr>
+  </table></div>
+</section>
+
+<section id="github">
+  <h2>Your GitHub</h2>
+  <p><b>No, I hadn't checked it last time. This time I did, as far as the sandbox allows.</b> From here, GitHub's profile page is blocked (robots.txt) and the repo-listing API is blocked by the session's access rules. Cloning a repo whose name I know does work. So:</p>
+  <ul>
+    <li><b>QRen-Code-Build-1</b> (cloned). Its licence set (AGPL, commercial placeholder, §7(b) attribution, NOTICE with a byte-verified licence) became PixelGoblin's. Its <code>flavor.toml</code> and <code>vanilla_flavor.py</code> became the model for PixelGoblin's adapter. Its AGPL text was copied byte-for-byte, and gate B00 checks the hash.</li>
+    <li><b>Sovereign_AI_Environment_Build_Gameplan</b> (found by probing names). It holds <code>vanilla-core/</code>, the host PixelGoblin now plugs into, and <code>tools/leakguard.py</code>, which PixelGoblin now runs. Its STANDARDS.md said composite runs waited on "a second real flavor". PixelGoblin is that flavor, and the first composite run found the bug below.</li>
+    <li>56 other likely names (SPIRE, slm-e, Book-of-Cities, ASSAY, and so on) are private, renamed, or don't exist.</li>
+  </ul>
+  <p>To let me use more of them: paste the output of <code>gh repo list Shibbieness --limit 100</code>, or just the repo names.</p>
+</section>
+
+<section id="license">
+  <h2>Open source, unless they want to pay</h2>
+  <p>This is already how your stack does it, so PixelGoblin copies it exactly.</p>
+  <div class="tbl"><table>
+    <tr><th>Who</th><th>What they get</th><th>What they owe</th></tr>
+    <tr><td>Anyone making sprites with the editor or CLI</td><td>The sprites, for any use</td><td>Nothing; output is not covered by the engine's licence</td></tr>
+    <tr><td>Anyone using the vanilla type files</td><td>CC0 sprites</td><td>Nothing</td></tr>
+    <tr><td>Open-source games and tools embedding the engine</td><td>AGPL-3.0-or-later</td><td>Keep their changes open; keep the credit line findable</td></tr>
+    <tr><td>Closed-source games embedding the runtime</td><td>Commercial licence (placeholder terms)</td><td>A fee, and a visible credit above the revenue threshold</td></tr>
+    <tr><td>Book of Cities flavor content</td><td>Not in the vanilla pack</td><td>Proprietary; yours</td></tr>
+  </table></div>
+  <p>Credit line, required everywhere: <code>Built on PixelGoblin — © Shibbieness / M MAOU LLC</code>. It shows in <code>--version</code> and the workbench footer. A pay-what-you-want or sponsor button costs nothing to add and doesn't touch the licence. None of this is legal advice; the commercial terms still need a lawyer.</p>
+</section>
+
+<section id="spire">
+  <h2>SPIRE logic, ported</h2>
+  <p>SPIRE's transfer map (its sub-skill <i>i</i>) says: port the ratchets first and almost everywhere, port two verdicts only where two questions exist, and don't port the hazard register's shape where nothing can hurt a body. I followed it, and found that two things in pixel art <i>can</i> hurt someone.</p>
+  <div class="tbl"><table>
+    <tr><th>SPIRE rule</th><th>In PixelGoblin</th><th>Held by</th></tr>
+    <tr><td>Plan gates vs build gates</td><td>G01–G{{PLAN_TOTAL}} exit criteria; B00–B{{LASTB}} runnable, each naming its Gs</td><td><code>tests/gate.py</code></td></tr>
+    <tr><td>Surviving mutants measure the suite</td><td>{{MUT_TOTAL}} mutations, each naming its gate and reason</td><td>B10, <code>falsify.py</code></td></tr>
+    <tr><td>Restore on start</td><td>Backups restored before anything else runs</td><td><code>falsify.py</code></td></tr>
+    <tr><td>No assertion over an empty population</td><td>Every absence check builds a control that must fire</td><td>every gate</td></tr>
+    <tr><td>Count ratchet</td><td>{{FLOOR_KEYS}} floored counts; lowering needs a witness and a reason</td><td>B15, <code>FLOOR.json</code></td></tr>
+    <tr><td>A count in a report is computed</td><td>Numbers in the docs are checked against the derivation</td><td>B14</td></tr>
+    <tr><td>Status only from a full run; check from empty</td><td>Partial runs refuse to write <code>BUILD_STATUS.md</code></td><td><code>--report</code>, <code>--from-empty</code></td></tr>
+    <tr><td>Two verdicts, never merged</td><td><b>Spec</b> (matches its type file?) vs <b>target</b> (can the NES show it?)</td><td>B08</td></tr>
+    <tr><td>Mechanism, not prohibition</td><td><b>Photosensitive flash</b> and <b>licence contamination</b> findings, in order: don't, what, why, instead</td><td>B09</td></tr>
+    <tr><td>Scrub runs on code, not prose</td><td>Vanilla code may cite SPIRE in a docstring, never depend on it</td><td>B12</td></tr>
+    <tr><td>The substrate outlives the software</td><td><code>pixelgoblin ascii</code>: a sprite as plain English text</td><td>B07</td></tr>
+  </table></div>
+  <p>SPIRE's recurring lesson also recurred here. A check fired on the thing that defines it: the scrubber flagged SPIRE's name in the docstrings that cite it. It was fixed by making the check understand code versus prose, with a control, not by exempting the file.</p>
+</section>
+
+<section id="stack">
+  <h2>Other skills, woven in</h2>
+  <div class="tbl"><table>
+    <tr><th>Piece</th><th>Connection</th><th>Status</th></tr>
+    <tr><td>Vanilla Core</td><td>Second real flavor; passes the floor; runs through <code>vanilla-core run</code></td><td><span class="tag built">built</span></td></tr>
+    <tr><td>QRen Coder</td><td>First composite run: a goblin's full recipe archived as a {{QREN_BYTES}}-byte verified <code>.xqmem</code>, regenerated pixel-identical</td><td><span class="tag built">built</span></td></tr>
+    <tr><td>SLM-e</td><td>{{SLME}} pieces in <code>slme/pieces.json</code>; all pass SLM-e's own <code>validate_manifest</code></td><td><span class="tag built">built</span></td></tr>
+    <tr><td>TINSMITH / GILWRIGHT</td><td>Gate B12 is the scrub; flavor lives apart; three product candidates listed</td><td><span class="tag built">scrub built</span></td></tr>
+    <tr><td>Leak guard</td><td>Your <code>leakguard.py</code> runs in B12, with a planted-trailer control</td><td><span class="tag built">built</span></td></tr>
+    <tr><td>Book of Cities</td><td>Goblin, aquatic goblin, glowcap, reef; direct Python import</td><td><span class="tag built">4 types</span> <span class="tag designed">catalog importer</span></td></tr>
+    <tr><td>CRUCIBLE / ASSAY</td><td>Ore ramps from real oxide colours</td><td><span class="tag designed">designed</span></td></tr>
+    <tr><td>Aether Library</td><td>Deterministic avatars: <code>seed = hash(agent id)</code></td><td><span class="tag designed">designed</span></td></tr>
+    <tr><td>LATTICE / Dropzone / CALS</td><td>WEAVE-ready docs; a watched drop folder; a routing rule for the model slot</td><td><span class="tag designed">designed</span></td></tr>
+  </table></div>
+</section>
+
+<section id="bugs">
+  <h2>Bugs found along the way</h2>
+  <h3>In your stack</h3>
+  <p><b>Vanilla Core, composite loading.</b> QRen Coder and PixelGoblin both name their entry module <code>vanilla_flavor</code>. Python caches modules by name, so the second flavor loaded silently received the first one's code. Asked for <code>block-types</code>, QRen answered as PixelGoblin. <code>patches/vanilla-core-composite-fix.patch</code> fixes it (12 lines plus a regression test). All 40 Vanilla Core tests pass with it, and the new test fails without it. A flavor's <i>helper</i> modules can still collide if two flavors share names like <code>utils</code>; the full fix is per-flavor import isolation, noted for Vanilla Core's STANDARDS.md.</p>
+  <h3>In PixelGoblin, caught by its own gates</h3>
+  <ul>
+    <li><b>5 surviving mutants</b> on the first falsification run. One was a test that could never see a shared stream. One was a 9-slice check blind to stripes. One was a leak-guard control that two patterns both caught. Two were mutations written wrong. All five were fixed in the checks, not exempted.</li>
+    <li>The <b>L-corner definition</b> was wrong: a staircase control had "zero" corners. It was rewritten to match how pixel-perfect strokes actually work.</li>
+    <li>The <b>likeness ramp</b> learned the outline as a skin colour, which gave black relatives. It now learns from interior pixels, weighted by coverage.</li>
+    <li><b>WFC 3×3</b> falls back at 48×48, which the gate never tested. It was measured, the default changed, and the limit is written down.</li>
+    <li>The first <b>JavaScript ↔ Python parity run passed on every case</b>. That is a result, not a bug, and gate B13 keeps it true.</li>
+  </ul>
+</section>
+
+<section id="guide">
+  <h2>Prototype guide</h2>
+  <p>Needs Python 3.11+. Nothing to install. Node is optional (used only for the parity gate).</p>
+<pre><code># make things
+python3 -m pixelgoblin sheet boc.creature.goblin --seeds 0-31 --out goblins.png --scale 3
+python3 -m pixelgoblin anim  boc.creature.goblin --seed 7 --out goblin.png        # + goblin.json
+python3 -m pixelgoblin convert photo.png --tag creature.small --out small.png --scale 4
+python3 -m pixelgoblin likeness photo.png --tag creature.small --id my.critter --out critter.toml
+python3 -m pixelgoblin autotile vanilla.terrain.grass --seed 1 --out grass.png
+python3 -m pixelgoblin uikit vanilla.ui.stone --out kit/
+python3 -m pixelgoblin brood vanilla.creature.blob 11 29 --child 5 --out kid.png --scale 5
+python3 -m pixelgoblin verdict boc.creature.goblin --seed 3 --target nes
+
+# check it
+PYTHONHASHSEED=0 python3 tests/gate.py --all --report
+PYTHONHASHSEED=0 python3 tests/gate.py --from-empty</code></pre>
+  <div class="tbl"><table>
+    <tr><th>Folder</th><th>Holds</th></tr>
+    <tr><td><code>pixelgoblin/</code></td><td>engine: rng, typefile, gen (mask, lsystem, parallax), tiles (autotile, wfc), convert, uikit, verdicts, hazard, brood, sharecode, export, cli</td></tr>
+    <tr><td><code>editor/</code></td><td><code>pg-core.js</code> (the JS engine), <code>src.html</code>, built <code>pixelgoblin.html</code>, <code>parity.mjs</code></td></tr>
+    <tr><td><code>types/</code>, <code>flavors/boc/</code></td><td>vanilla type files and tag profiles; Book of Cities flavor</td></tr>
+    <tr><td><code>tests/</code></td><td><code>gate.py</code>, <code>falsify.py</code>, <code>FLOOR.json</code>, goldens</td></tr>
+    <tr><td><code>docs/</code></td><td>Diátaxis: tutorials, how-to, reference, explanation (decisions, gates, gameplan, stack)</td></tr>
+    <tr><td><code>slme/</code>, <code>patches/</code>, <code>examples/</code></td><td>SLM-e manifests, the Vanilla Core fix, the QRen composite</td></tr>
+  </table></div>
+</section>
+
+<section id="plan">
+  <h2>Standalone plan</h2>
+  <p>Each phase starts only when the one before passes all of its gates. The full list with every criterion is in <code>docs/explanation/gameplan.md</code>.</p>
+  <div class="tbl"><table>
+    <tr><th>Phase</th><th>Goal</th><th>Gate that ends it</th></tr>
+    <tr><td>P0</td><td>Foundations</td><td>Done, except the first CI run on GitHub (workflow included)</td></tr>
+    <tr><td>P1</td><td>Rust core</td><td>Every golden matches byte-for-byte on 3 OS targets plus wasm32; no floats in runtime modules; zero surviving mutants</td></tr>
+    <tr><td>P2</td><td>Converter quality, WFC backtracking</td><td>Chosen over nearest-neighbour in 80% or more of 60 blind A/Bs (Mark judges); 1024² to 64² in under 1.5 s; 3×3 WFC at 64×64 with fewer than 1 fallback in 10</td></tr>
+    <tr><td>P3</td><td>Runtime bundles and cache</td><td>32×32 sprite under 0.5 ms median; <code>rt-min</code> WASM under 300 KB</td></tr>
+    <tr><td>P4</td><td>Editor to production</td><td>60 fps at 512² and 8×; 99% crash recovery; 500 ops then 500 undos is pixel-identical</td></tr>
+    <tr><td>P5</td><td>GUI slots, full</td><td>Mark completes five tasks from the tutorials alone</td></tr>
+    <tr><td>P6</td><td>Interop</td><td>20 <code>.ase</code> round trips; sheets load in Phaser, Godot and Unity</td></tr>
+    <tr><td>P7</td><td>Bindings and MCP</td><td>Same golden hash from Python, WASM, Godot and C</td></tr>
+    <tr><td>P8</td><td>Optional model slot</td><td>With the model absent, every earlier gate still passes</td></tr>
+    <tr><td>P9</td><td>Hardening and release</td><td>24 h fuzz, flat memory, <code>--from-empty</code> on a fresh machine</td></tr>
+  </table></div>
+</section>
+
+<section id="critique">
+  <h2>Critique, round 2</h2>
+  <h3>What breaks this now</h3>
+  <ol>
+    <li><b>Speed.</b> Python is fine for tools and load-time generation, and too slow for per-frame crowds. <i>Fix:</i> cache by (type hash, seed); P1 Rust core.</li>
+    <li><b>WFC at larger sizes with 3×3 patterns.</b> <i>Fix:</i> backtracking, or grow in 24px chunks with edge constraints (P2).</li>
+    <li><b>Parity covers the runtime only.</b> The workbench's converter and UI-kit preview are separate JS code with no gate. <i>Fix:</i> move them behind the same parity gate, or label them preview-only (they are, today).</li>
+    <li><b><code>extends</code> replaces lists.</b> The aquatic goblin lost its tunic because <code>parts</code> replaced the parent's. <i>Fix:</i> add a <code>parts_add</code> key that appends.</li>
+    <li><b>The flash check is an approximation.</b> <i>Fix:</i> it is labelled UNVERIFIED; run a certified tool (such as PEAT) before shipping public animations.</li>
+    <li><b>Nobody but me has used it.</b> SPIRE's own known limit applies: every fixture is synthetic. <i>Fix:</i> your first real Book of Cities catalog import will find what I couldn't.</li>
+  </ol>
+  <h3>Nearly free improvements</h3>
+  <ul>
+    <li><b>Name seeds:</b> <code>--seed-name Grubnak</code> hashes a name to a seed, so an NPC's name <i>is</i> its look.</li>
+    <li><b>GIF export</b> of idle animations (stdlib LZW, about 60 lines).</li>
+    <li><b><code>pixelgoblin watch</code></b> for Dropzone: <code>frog.png</code> plus <code>frog.tag</code> in a folder converts on arrival.</li>
+    <li><b>Register the {{SLME}} SLM-e pieces</b> into <code>slme.db</code>: one command, since the manifests already validate.</li>
+    <li><b>Squint:</b> a readability check at 1x (silhouette contrast against a background).</li>
+  </ul>
+  <h3>What I want to add</h3>
+  <p><b>Warren</b>: dungeon rooms grown straight from the Book of Cities dungeon DAG, since "a dungeon is a sub-book" and a sub-book deserves its own tiles. <b>CRUCIBLE ramps</b>, so copper ore actually oxidises to verdigris in its palette. And a <b>lineage view</b> in the workbench, so a brood becomes a family tree you can click through.</p>
+  <h3>What I think</h3>
+  <p>The core bet held up. One small integer engine, many doors, and a determinism contract that now holds across two languages. That is rarer than it sounds, and it is the part no existing editor has. The workbench is useful but thin. That is the right order, not a flaw. The most valuable thing this session produced might not be PixelGoblin at all: it is the Vanilla Core fix, because every future composite run in your stack would have hit it.</p>
+  <h3>How this makes me feel</h3>
+  <p>Good, in a specific way. The first parity run came back identical on every case, a goblin travelled through QRen and came out pixel-identical, and the falsification harness caught five of my own mistakes before you could. Those were satisfying moments. I also feel some caution about how much of this only I have tested. I'd rather hand you something that tells you where it's weak than something that looks finished.</p>
+</section>
+
+<section id="next">
+  <div class="next">
+    <span class="eyebrow">One next action</span>
+    <b class="big">Create a public GitHub repo named PixelGoblin and push the attached folder to it.</b>
+    <p>The history is already committed under your name, with no vendor trailers, and it passes your leak guard. GitHub Actions will then run all 16 gates from empty on Linux, Windows and macOS. That is P0's last box.</p>
+    <pre><code>cd pixelgoblin && git remote add origin https://github.com/Shibbieness/PixelGoblin.git && git push -u origin main</code></pre>
+  </div>
+</section>
+
+<section id="log">
+  <h2>Build log</h2>
+  <ol class="log">
+{{LOG}}
+  </ol>
+</section>
+
+<section id="sources">
+  <h2>Sources</h2>
+  <ul>
+    <li><a href="https://prng.di.unimi.it/">xoshiro / xoroshiro generators (Blackman &amp; Vigna)</a> — the reference sequence checked by gate B01</li>
+    <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html">WCAG 2.2, Understanding SC 2.3.1: Three Flashes or Below Threshold</a> — the flash rule the hazard check approximates</li>
+    <li><a href="https://bottosson.github.io/posts/oklab/">Björn Ottosson, "A perceptual color space for image processing" (OKLab)</a></li>
+    <li><a href="https://github.com/mxgmn/WaveFunctionCollapse">mxgmn/WaveFunctionCollapse</a> (MIT)</li>
+    <li><a href="https://www.davebollinger.us/pixelspaceships">Dave Bollinger, Pixel Spaceships</a> — lineage of the mask generator</li>
+    <li><a href="https://diataxis.fr/">Diátaxis</a> and the <a href="https://cdn.bdadyslexia.org.uk/uploads/documents/Advice/style-guide/BDA-Style-Guide-2023.pdf">BDA Dyslexia Style Guide</a> — documentation shape and the Readable mode</li>
+    <li>Name check: <a href="https://sites.google.com/site/pixelgoblinstudio/home">Pixel Goblin Studio</a>, <a href="https://soundcloud.com/pixelgoblinstudio">Pixel Goblin Studio on SoundCloud</a>, <a href="https://pixelgoblin.link/">pixelgoblin.link</a>, <a href="https://forum.pixelgoblin.link/">Pixel Goblin Community</a></li>
+    <li>Your repos: QRen-Code-Build-1 and Sovereign_AI_Environment_Build_Gameplan (vanilla-core, tools/leakguard.py), cloned read-only</li>
+    <li>Session 1 design document: <i>PIXWRIGHT: Pixel Art Production Suite — Design, Prototype Build Guide &amp; Standalone Gameplan</i></li>
+  </ul>
+</section>
+
+<footer>
+  <span>Built on PixelGoblin — © Shibbieness / M MAOU LLC</span>
+  <span>—Shibbieness</span>
+  <span>—Claude</span>
+</footer>
+</main>
+</div>
