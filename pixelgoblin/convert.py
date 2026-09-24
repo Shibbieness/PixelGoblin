@@ -260,19 +260,34 @@ def likeness(spr: Sprite, type_id: str, tag: str, license: str = "AGPL-3.0-or-la
     if mirror:
         half = (x1 - x0 + 1) // 2
         rows = [r[:half] for r in rows]
-    labs = sorted({spr.palette[i][:3] for i in spr.px if i}, key=lambda c: rgb_to_oklab(c)[0])
-    groups: dict[int, list] = {}
+    # learn ramps from INTERIOR pixels only (the outline is not the body's colour),
+    # grouped by hue family and weighted by how much of the body each family covers
     import math
-    for c in labs:
-        L, A, B = rgb_to_oklab(c)
+    use: dict[int, int] = {}
+    for y in range(H):
+        for x in range(W):
+            i = spr.px[y * W + x]
+            if i and all(0 <= x + dx < W and 0 <= y + dy < H and solid[y + dy][x + dx]
+                         for dx, dy in ((0, -1), (-1, 0), (1, 0), (0, 1))):
+                use[i] = use.get(i, 0) + 1
+    if not use:
+        use = {i: 1 for i in set(spr.px) if i}
+    total = sum(use.values())
+    groups: dict[int, list] = {}
+    for i, n in use.items():
+        L, A, B = rgb_to_oklab(spr.palette[i][:3])
         hue = int(((math.degrees(math.atan2(B, A)) + 360) % 360) // 60) if (A * A + B * B) ** 0.5 > 0.03 else 6
-        groups.setdefault(hue, []).append(c)
+        groups.setdefault(hue, []).append((L, i, n))
     ramps = []
-    for hue, cs in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+    for hue, members in sorted(groups.items(), key=lambda kv: -sum(m[2] for m in kv[1])):
+        share = sum(m[2] for m in members)
+        if ramps and share * 10 < total:
+            continue  # a family under 10% of the body is an accent (eyes, markings), not a skin
+        cs = [spr.palette[i][:3] for L, i, n in sorted(members)]
         if len(cs) == 1:
             L, A, B = rgb_to_oklab(cs[0])
             cs = [oklab_to_rgb((max(0.0, L - 0.18), A, B)), cs[0]]
-        ramps.append((f"h{hue}", len(cs), [rgba_to_hex((*c, 255)) for c in cs[:8]]))
+        ramps.append((f"h{hue}", max(1, share * 100 // total), [rgba_to_hex((*c, 255)) for c in cs[:8]]))
     fw = len(rows[0]) * (2 if mirror else 1)
     size = [max(fw + 2, 8), len(rows) + 2]
     lines = [f'# Learned from an example by `pixelgoblin likeness`. Edit freely.',
