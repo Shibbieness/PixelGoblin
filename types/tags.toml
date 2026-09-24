@@ -1,0 +1,70 @@
+# Tag taxonomy + conversion profiles.
+# A tag is dotted: domain.class.family.variant (creature.humanoid.goblin).
+# Profiles inherit from each dotted parent; a child overrides only what it names.
+# Unknown roots are rejected (with a "did you mean") so typo-tags cannot slip in.
+
+[roots]
+creature = "living things that move: monsters, animals, people"
+object = "items, props, tools, loot"
+flora = "plants, trees, fungi, coral"
+env = "backgrounds, skies, landscapes"
+terrain = "ground and wall tiles"
+ui = "panels, buttons, icons, cursors, fonts"
+ore = "minerals, metals, gems"
+fx = "effects: sparks, smoke, magic"
+
+[default]
+size = 32
+colors = 16
+outline = "selout"      # selout | dark | none
+dither = "none"         # none | bayer | fs
+downsample = "mode"     # nearest | box | mode | median
+palette = "auto"        # auto | pico8 | gameboy | goblin16 | path/to/file.hex
+cleanup = true
+
+[tag.creature]
+size = 32
+colors = 12
+
+[tag."creature.small"]
+size = 16
+colors = 8
+
+[tag.object]
+size = 16
+colors = 8
+outline = "dark"
+
+[tag."object.icon"]
+size = 16
+colors = 6
+
+[tag.flora]
+size = 32
+colors = 10
+
+[tag.env]
+size = 128
+colors = 16
+outline = "none"
+dither = "bayer"
+downsample = "box"
+
+[tag.terrain]
+size = 16
+colors = 6
+outline = "none"
+
+[tag.ui]
+size = 16
+colors = 6
+outline = "dark"
+
+[tag.ore]
+size = 16
+colors = 8
+
+[tag.fx]
+size = 16
+colors = 6
+outline = "none"

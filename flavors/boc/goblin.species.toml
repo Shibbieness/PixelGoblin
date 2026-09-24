@@ -1,0 +1,91 @@
+schema = "pixelgoblin/type@1"
+id = "boc.creature.goblin"
+tag = "creature.humanoid.goblin"
+generator = "mask"
+license = "Proprietary"      # Book of Cities flavor: not part of the vanilla pack
+size = [20, 24]
+mirror = true
+outline_style = "selout"
+max_colors = 16
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "skin"
+weight = 4
+colors = ["#1e3a1e", "#3a6a2a", "#6a9a3a", "#aac86a"]
+
+[[palette.ramps]]
+name = "skin_olive"
+weight = 2
+colors = ["#2a2e14", "#4a5a24", "#7a8a3a", "#b8c27a"]
+
+[[palette.ramps]]
+name = "rags"
+weight = 0
+colors = ["#2a1a14", "#5a3a24", "#8a5a3a", "#b88a5a"]
+
+[[palette.ramps]]
+name = "scrap"
+weight = 0
+colors = ["#2a2a30", "#5a5a64", "#9a9aa4"]
+
+[body]
+anchor = [2, 1]
+template = [
+  "........",
+  "....1111",
+  "...12###",
+  "2..1####",
+  "#2.#####",
+  ".#######",
+  "..1#####",
+  "...1####",
+  "....12##",
+  "......##",
+  "....12##",
+  "...1####",
+  "...#####",
+  "..1#####",
+  "..1#####",
+  "...1####",
+  "....#..#",
+  "....#..#",
+  "....#..#",
+  "...1#..#",
+]
+
+[[parts]]
+name = "tunic"
+chance = 80
+anchor = [4, 11]
+ramp = "rags"
+template = [
+  "..1###",
+  ".1####",
+  ".1####",
+  "..1###",
+  "..2###",
+  "..1#1#",
+]
+
+[[parts]]
+name = "helm"
+chance = 40
+anchor = [4, 1]
+ramp = "scrap"
+template = [
+  "...12#",
+  "..1###",
+  "..####",
+]
+
+[features]
+eyes = 1
+eye_color = "#f2d24a"
+eye_band = [12, 30]
+
+[animation]
+frames = 3
+frame_ms = 240

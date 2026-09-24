@@ -1,0 +1,57 @@
+schema = "pixelgoblin/type@1"
+id = "vanilla.flora.fungus"
+tag = "flora"
+generator = "mask"
+license = "CC0-1.0"
+size = [16, 16]
+mirror = true
+outline_style = "selout"
+
+[palette]
+outline = "#1a1014"
+
+[[palette.ramps]]
+name = "cap_red"
+weight = 3
+colors = ["#4a141e", "#8a1e2a", "#d0403a", "#f29a7a"]
+
+[[palette.ramps]]
+name = "cap_violet"
+weight = 2
+colors = ["#2a1440", "#5a2a7a", "#9a5ac2", "#e0b0f2"]
+
+[[palette.ramps]]
+name = "stem"
+weight = 0
+colors = ["#6a5a4a", "#b8a890", "#efe4d0"]
+
+[body]
+anchor = [1, 2]
+template = [
+  "....111",
+  "..12###",
+  ".1#####",
+  "12#####",
+  "1######",
+  ".11####",
+]
+
+[[parts]]
+name = "stem"
+chance = 100
+anchor = [5, 8]
+ramp = "stem"
+template = [
+  ".##",
+  ".##",
+  "1##",
+  "2##",
+  "12#",
+]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200

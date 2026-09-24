@@ -1,0 +1,23 @@
+schema = "pixelgoblin/type@1"
+id = "boc.flora.fungus.glowcap"
+extends = "vanilla.flora.fungus"
+tag = "flora.fungus.glowcap"
+license = "Proprietary"
+
+[palette]
+outline = "#0e0a1a"
+
+[[palette.ramps]]
+name = "cap_red"
+weight = 2
+colors = ["#123a3a", "#1e7a6a", "#3ac2a0", "#a0f2d8"]
+
+[[palette.ramps]]
+name = "cap_violet"
+weight = 2
+colors = ["#1e1e5a", "#3a3aa0", "#6a7ae0", "#c2d0ff"]
+
+[[palette.ramps]]
+name = "stem"
+weight = 0
+colors = ["#3a3a4a", "#6a6a7a", "#9a9aa8"]

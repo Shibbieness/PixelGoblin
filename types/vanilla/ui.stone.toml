@@ -1,0 +1,15 @@
+schema = "pixelgoblin/type@1"
+id = "vanilla.ui.stone"
+tag = "ui"
+generator = "uikit"
+license = "CC0-1.0"
+size = [12, 12]
+tile = 12
+border = 2
+corner = "round"
+icons = 8
+texture = 10
+
+[palette]
+outline = "#14121a"
+material = ["#2a2830", "#46434e", "#65616e", "#8c8896", "#c2bec8"]

@@ -1,0 +1,355 @@
+[
+ {
+  "id": "pixelgoblin.schema.typefile",
+  "type": "SCHEMA",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Generative type-file schema pixelgoblin/type@1 with plain-English refusals",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "no validation; bad files fail late inside generators",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.typefile:validate"
+  },
+  "input_schema": {
+   "data": "object"
+  },
+  "output_schema": {
+   "problems": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.typehash",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Canonical-JSON SHA-256 identity of a resolved type file",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "no stable identity; caches and share codes cannot be trusted",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.typefile:type_hash"
+  },
+  "input_schema": {
+   "data": "object"
+  },
+  "output_schema": {
+   "hash": "string"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.mask",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Seeded integer mask generator: creatures, items, icons, fungi, with idle frames",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "hand-drawn or pre-rendered sprites only",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.mask:generate_frames"
+  },
+  "input_schema": {
+   "type": "object",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "frames": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.lsystem",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Seeded integer L-system flora generator",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "pre-rendered flora only",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.lsystem:generate_frames"
+  },
+  "input_schema": {
+   "type": "object",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "frames": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.parallax",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Seeded integer parallax backdrop with per-layer scroll factors",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "flat or pre-rendered backgrounds",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.parallax:generate_layers"
+  },
+  "input_schema": {
+   "type": "object",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "layers": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.autotile",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "47-tile blob autotile set and map tiling, table derived in code",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "hand-placed tiles",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.tiles.autotile:build_tileset"
+  },
+  "input_schema": {
+   "type": "object",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "tileset": "object"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.wfc",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Integer overlapping WFC with seeded retry and a flagged fallback",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "periodic tiling of the sample",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.tiles.wfc:generate"
+  },
+  "input_schema": {
+   "sample": "object",
+   "size": "array",
+   "seed": "bytes"
+  },
+  "output_schema": {
+   "image": "object",
+   "fallback": "boolean"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.nineslice",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Pixel-exact 9-slice rendering that tiles edges instead of stretching",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "stretched panels with blurred pixels",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.uikit:nine_slice"
+  },
+  "input_schema": {
+   "src": "object",
+   "inset": "integer",
+   "w": "integer",
+   "h": "integer"
+  },
+  "output_schema": {
+   "image": "object"
+  }
+ },
+ {
+  "id": "pixelgoblin.lexicon.tags",
+  "type": "LEXICON",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Tag taxonomy to conversion profile, inheriting through dotted parents",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "one default profile for every input",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.typefile:profile_for"
+  },
+  "input_schema": {
+   "tag": "string"
+  },
+  "output_schema": {
+   "profile": "object"
+  }
+ },
+ {
+  "id": "pixelgoblin.constant.palettes",
+  "type": "CONSTANT",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Built-in palettes with recorded colour sources",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "palette files supplied by the user",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.palettes:get"
+  },
+  "input_schema": {
+   "name": "string"
+  },
+  "output_schema": {
+   "colors": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.validator.spec",
+  "type": "VALIDATOR",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Spec verdict: does a sprite match its type file (never merged with target)",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "visual review only",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.verdicts:spec_verdict"
+  },
+  "input_schema": {
+   "type": "object",
+   "sprite": "object"
+  },
+  "output_schema": {
+   "verdict": "string",
+   "checks": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.validator.target",
+  "type": "VALIDATOR",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Target verdict: can a platform (NES, Game Boy, PICO-8, modern) show the sprite",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "discover limits on hardware",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.verdicts:target_verdict"
+  },
+  "input_schema": {
+   "sprite": "object",
+   "target": "string"
+  },
+  "output_schema": {
+   "verdict": "string",
+   "checks": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.validator.flash",
+  "type": "VALIDATOR",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Approximate photosensitive flash check, mechanism-first, labelled UNVERIFIED",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "no warning; a certified tool must be used instead",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.hazard:flash_check"
+  },
+  "input_schema": {
+   "frames": "array",
+   "frame_ms": "integer"
+  },
+  "output_schema": {
+   "findings": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.validator.licence",
+  "type": "VALIDATOR",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Licence contamination check for commercial asset packs",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "manual licence review",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.hazard:licence_check"
+  },
+  "input_schema": {
+   "licences": "array",
+   "profile": "string"
+  },
+  "output_schema": {
+   "findings": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.sharecode",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Share codes: engine, type hash prefix, seed and checksum in base32",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "share full type files and seeds by hand",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.sharecode:encode"
+  },
+  "input_schema": {
+   "type_hash": "string",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "code": "string"
+  }
+ },
+ {
+  "id": "pixelgoblin.gate.build",
+  "type": "GATE",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Sixteen build gates with falsification, vacuity guards and a count ratchet",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "unverified build",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "tests.gate:main"
+  },
+  "input_schema": {
+   "gates": "array"
+  },
+  "output_schema": {
+   "exit": "integer"
+  }
+ }
+]

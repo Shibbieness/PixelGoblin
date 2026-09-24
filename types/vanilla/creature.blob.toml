@@ -1,0 +1,62 @@
+# A blob creature. Template cells: . empty  1 maybe body  2 body-or-edge  # always body
+schema = "pixelgoblin/type@1"
+id = "vanilla.creature.blob"
+tag = "creature.small"
+generator = "mask"
+license = "CC0-1.0"          # licence of the SPRITES this file makes
+size = [16, 16]
+mirror = true
+outline_style = "selout"
+max_colors = 12
+
+[palette]
+outline = "#1a1428"
+
+[[palette.ramps]]
+name = "moss"
+weight = 3
+colors = ["#1f3d2b", "#2f6b3a", "#5fa04a", "#b8e07a"]
+
+[[palette.ramps]]
+name = "ember"
+weight = 2
+colors = ["#4a1e2a", "#8a2f2f", "#d0643a", "#f2b86a"]
+
+[[palette.ramps]]
+name = "frost"
+weight = 2
+colors = ["#1e2a4a", "#2f5a8a", "#5aa0d0", "#c2ecf2"]
+
+[body]
+anchor = [1, 2]
+template = [
+  "....111",
+  "...1222",
+  "..12###",
+  "..1####",
+  ".12####",
+  ".1#####",
+  "12#####",
+  "12#####",
+  ".1#####",
+  "..12###",
+  "...1111",
+]
+
+[[parts]]
+name = "horns"
+chance = 50
+anchor = [4, 1]
+template = [
+  "1...",
+  "#1..",
+  ".#..",
+]
+
+[features]
+eyes = 1
+eye_color = "#fff4e0"
+
+[animation]
+frames = 3
+frame_ms = 220

@@ -1,0 +1,64 @@
+schema = "pixelgoblin/type@1"
+id = "vanilla.object.potion"
+tag = "object.icon"
+generator = "mask"
+license = "CC0-1.0"
+size = [12, 16]
+mirror = true
+outline_style = "plain"
+max_colors = 10
+
+[palette]
+outline = "#1a1428"
+
+[[palette.ramps]]
+name = "healing"
+weight = 3
+colors = ["#5a1428", "#a02a3a", "#e0505a", "#ffb0a0"]
+
+[[palette.ramps]]
+name = "mana"
+weight = 3
+colors = ["#141e5a", "#2a3aa0", "#5a7ae0", "#b0d0ff"]
+
+[[palette.ramps]]
+name = "poison"
+weight = 2
+colors = ["#1e3a14", "#3a7a1e", "#7ac23a", "#d8f2a0"]
+
+[[palette.ramps]]
+name = "glass"
+weight = 0
+colors = ["#6a7a8a", "#c2d0dc"]
+
+[body]
+anchor = [1, 4]
+template = [
+  "...##",
+  "..1##",
+  ".1###",
+  "1####",
+  "#####",
+  "#####",
+  "1####",
+  ".1###",
+  "..###",
+]
+
+[[parts]]
+name = "neck"
+chance = 100
+anchor = [4, 1]
+ramp = "glass"
+template = [
+  ".#",
+  "1#",
+  ".#",
+]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200

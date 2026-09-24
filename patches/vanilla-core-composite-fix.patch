@@ -1,0 +1,69 @@
+diff --git a/src/vanilla_core/registry.py b/src/vanilla_core/registry.py
+index 752601f..ae545d7 100644
+--- a/src/vanilla_core/registry.py
++++ b/src/vanilla_core/registry.py
+@@ -83,7 +83,18 @@ def load_flavor(manifest_path: Path, *, enforce_floor: bool = True) -> LoadedFla
+ 
+     module_name, _, callable_name = manifest.entrypoint.partition(":")
+     with _flavor_on_path(str(manifest.path) if manifest.path else None):
+-        module = importlib.import_module(module_name)
++        # Two flavors may use the same entrypoint module name (QRen Coder and
++        # PixelGoblin both use `vanilla_flavor`). importlib caches by name, so
++        # without this the second flavor silently receives the first one's
++        # module and runs the wrong code. Import fresh, then take the name back
++        # out of the cache so the next flavor gets its own module.
++        previous = sys.modules.pop(module_name, None)
++        try:
++            module = importlib.import_module(module_name)
++        finally:
++            sys.modules.pop(module_name, None)
++            if previous is not None:
++                sys.modules[module_name] = previous
+ 
+     run = getattr(module, callable_name)
+     return LoadedFlavor(manifest=manifest, run=run)
+diff --git a/tests/test_composite.py b/tests/test_composite.py
+new file mode 100644
+index 0000000..95b9aa7
+--- /dev/null
++++ b/tests/test_composite.py
+@@ -0,0 +1,39 @@
++"""Composite runs: two flavors that share an entrypoint module name must each
++run their own code. Regression test for the collision found when PixelGoblin
++became the second real flavor."""
++
++import tempfile
++import unittest
++from pathlib import Path
++
++from vanilla_core.registry import load_flavor
++
++MANIFEST = """[flavor]
++name = "{name}"
++version = "0.1.0"
++license = "MIT"
++entrypoint = "vanilla_flavor:run"
++capabilities = ["who"]
++"""
++PLUGIN = """def run(capability=None, params=None):
++    return {{"flavor": "{name}"}}
++"""
++
++
++class TestCompositeLoad(unittest.TestCase):
++    def test_same_module_name_does_not_collide(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            paths = []
++            for name in ("alpha", "beta"):
++                d = Path(tmp, name)
++                d.mkdir()
++                (d / "flavor.toml").write_text(MANIFEST.format(name=name))
++                (d / "vanilla_flavor.py").write_text(PLUGIN.format(name=name))
++                paths.append(d / "flavor.toml")
++            a, b = (load_flavor(p) for p in paths)
++            self.assertEqual(a.invoke("who"), {"flavor": "alpha"})
++            self.assertEqual(b.invoke("who"), {"flavor": "beta"})
++
++
++if __name__ == "__main__":
++    unittest.main()

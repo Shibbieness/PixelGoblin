@@ -1,0 +1,6 @@
+[flavor]
+name = "pixelgoblin"
+version = "v0u1p0"
+license = "AGPL-3.0-or-later"
+entrypoint = "vanilla_flavor:run"
+capabilities = ["generate", "convert", "autotile", "uikit", "validate", "share", "verdict", "self-test"]

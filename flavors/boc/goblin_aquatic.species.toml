@@ -1,0 +1,55 @@
+schema = "pixelgoblin/type@1"
+id = "boc.creature.goblin.aquatic"
+extends = "boc.creature.goblin"
+tag = "creature.humanoid.goblin.aquatic"
+license = "Proprietary"
+
+[palette]
+outline = "#0e1420"
+
+[[palette.ramps]]
+name = "skin"
+weight = 4
+colors = ["#123a3a", "#1e6a6a", "#3aa0a0", "#8ad8d0"]
+
+[[palette.ramps]]
+name = "skin_olive"
+weight = 1
+colors = ["#1e2a4a", "#2f4a7a", "#4a7ab0", "#9ac2e0"]
+
+[[palette.ramps]]
+name = "rags"
+weight = 0
+colors = ["#2a1a2a", "#4a2a4a", "#7a4a6a", "#b87a9a"]
+
+[[palette.ramps]]
+name = "fin"
+weight = 0
+colors = ["#3a1e3a", "#7a3a6a", "#c26a9a", "#f2b0c8"]
+
+[[parts]]
+name = "fins"
+chance = 100
+anchor = [2, 2]
+ramp = "fin"
+template = [
+  "2.......",
+  "#1......",
+  "##......",
+  "#1......",
+]
+
+[[parts]]
+name = "crest"
+chance = 60
+anchor = [7, 1]
+ramp = "fin"
+template = [
+  ".2#",
+  "..#",
+]
+
+[features]
+eyes = 1
+eye_color = "#f2f2a0"
+eye_band = [12, 30]

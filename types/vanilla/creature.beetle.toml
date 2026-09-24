@@ -1,0 +1,74 @@
+schema = "pixelgoblin/type@1"
+id = "vanilla.creature.beetle"
+tag = "creature.small"
+generator = "mask"
+license = "CC0-1.0"
+size = [16, 16]
+mirror = true
+outline_style = "plain"
+
+[palette]
+outline = "#120e18"
+
+[[palette.ramps]]
+name = "shell"
+weight = 1
+colors = ["#2a1e3a", "#4a3a7a", "#7a6ac2", "#c2b8f2"]
+
+[[palette.ramps]]
+name = "jade"
+weight = 1
+colors = ["#12302a", "#1e6a4a", "#3aa06a", "#9ae0a0"]
+
+[[palette.ramps]]
+name = "leg"
+weight = 0
+colors = ["#1e1a14", "#3a3226"]
+
+[body]
+anchor = [2, 3]
+ramp = "any"
+template = [
+  "....2#",
+  "...2##",
+  "..1###",
+  ".12###",
+  ".1####",
+  ".1####",
+  ".1####",
+  "..1###",
+  "...1##",
+]
+
+[[parts]]
+name = "legs"
+chance = 100
+anchor = [1, 5]
+ramp = "leg"
+template = [
+  "#......",
+  ".#.....",
+  ".......",
+  "1#.....",
+  ".......",
+  "#......",
+  ".#.....",
+]
+
+[[parts]]
+name = "antennae"
+chance = 70
+anchor = [4, 1]
+ramp = "leg"
+template = [
+  "#...",
+  ".#..",
+]
+
+[features]
+eyes = 1
+eye_color = "#f2e05a"
+
+[animation]
+frames = 2
+frame_ms = 180

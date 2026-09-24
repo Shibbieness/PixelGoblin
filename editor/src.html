@@ -1,0 +1,660 @@
+<title>PixelGoblin Workbench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Silkscreen&display=swap">
+<style>
+:root{
+  --bg:#191d18;--panel:#232820;--panel2:#2c3228;--line:#3a4234;--ink:#e9e3cf;--mute:#a9a592;
+  --accent:#d9a441;--accent-ink:#1d1a10;--teal:#56a39c;--bad:#e0705a;--good:#8cc265;
+  --check1:#2a2f27;--check2:#323829;--fs:15px;--lh:1.5;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){--bg:#f3eedd;--panel:#fbf7ea;--panel2:#ece5cf;--line:#d4cab0;--ink:#26261e;--mute:#6a6552;
+    --accent:#a86f12;--accent-ink:#fffaf0;--teal:#2f7a74;--bad:#b0402a;--good:#4a7a2a;--check1:#e6dfc8;--check2:#efe9d6;color-scheme:light}
+}
+:root[data-theme="light"]{--bg:#f3eedd;--panel:#fbf7ea;--panel2:#ece5cf;--line:#d4cab0;--ink:#26261e;--mute:#6a6552;
+  --accent:#a86f12;--accent-ink:#fffaf0;--teal:#2f7a74;--bad:#b0402a;--good:#4a7a2a;--check1:#e6dfc8;--check2:#efe9d6;color-scheme:light}
+body.readable{--fs:18px;--lh:1.6;letter-spacing:.02em;word-spacing:.08em}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:400 var(--fs)/var(--lh) "Atkinson Hyperlegible",system-ui,sans-serif;padding-inline:16px;padding-block:12px;box-sizing:border-box}
+*{box-sizing:border-box}
+h1,h2,.tab{font-family:"Silkscreen","Courier New",monospace;font-weight:400;letter-spacing:.04em}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.85em}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-bottom:10px}
+h1{font-size:1.5rem;margin:0;color:var(--accent);text-wrap:balance}
+h1 small{font-family:"Atkinson Hyperlegible",sans-serif;font-size:.8rem;color:var(--mute);letter-spacing:0;margin-left:8px}
+nav{display:flex;flex-wrap:wrap;gap:4px}
+.tab{background:transparent;color:var(--mute);border:1px solid transparent;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:.8rem}
+.tab[aria-selected="true"]{color:var(--accent-ink);background:var(--accent)}
+.tab:hover:not([aria-selected="true"]){color:var(--ink);border-color:var(--line)}
+.spacer{flex:1}
+.app{display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start}
+body.rail-right .app{grid-template-columns:1fr 300px}
+body.rail-right .rail{order:2}
+.rail{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;min-height:420px;display:flex;flex-direction:column;gap:12px;min-width:0}
+label{display:flex;flex-direction:column;gap:4px;font-size:.85em;color:var(--mute)}
+label.row{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
+input,select,textarea,button{font:inherit;color:var(--ink)}
+input[type=number],input[type=text],select,textarea{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:6px 8px;width:100%}
+textarea{min-height:160px;font-family:"JetBrains Mono",monospace;font-size:12px}
+button.btn{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:7px 11px;cursor:pointer}
+button.btn:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button:focus-visible,select:focus-visible,input:focus-visible,.tab:focus-visible,.cell:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:6px}
+.hint{font-size:.82em;color:var(--mute)}
+.pane[hidden]{display:none!important}
+canvas{image-rendering:pixelated;image-rendering:crisp-edges;max-width:100%}
+.checker{background-color:var(--check1);background-image:linear-gradient(45deg,var(--check2) 25%,transparent 25%,transparent 75%,var(--check2) 75%),linear-gradient(45deg,var(--check2) 25%,transparent 25%,transparent 75%,var(--check2) 75%);background-size:16px 16px;background-position:0 0,8px 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.cell{border:1px solid var(--line);border-radius:4px;padding:4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;background:transparent}
+.cell:hover{border-color:var(--accent)}
+.cell.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal)}
+.cell span{font-size:.72em;color:var(--mute);font-variant-numeric:tabular-nums}
+.share{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.share code{background:var(--panel2);border:1px solid var(--line);padding:4px 8px;border-radius:4px;user-select:all;word-break:break-all}
+.chip{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.78em;border:1px solid var(--line)}
+.chip.good{color:var(--good);border-color:var(--good)}.chip.bad{color:var(--bad);border-color:var(--bad)}
+.verdicts{display:flex;flex-wrap:wrap;gap:8px}
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.tool{padding:6px 2px;font-size:.8em}
+.tool[aria-pressed="true"]{background:var(--teal);color:var(--bg);border-color:var(--teal)}
+.swatches{display:flex;flex-wrap:wrap;gap:3px}
+.sw{width:24px;height:24px;border:1px solid var(--line);border-radius:3px;cursor:pointer;padding:0}
+.sw.on{outline:2px solid var(--accent);outline-offset:1px}
+.frames{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.frames .cell{flex-direction:row;padding:3px}
+.editwrap{overflow:auto;max-height:70vh;border-radius:4px;display:flex;justify-content:center;padding:8px}
+#ed{cursor:crosshair;touch-action:none}
+.trio{display:flex;gap:18px;align-items:end;flex-wrap:wrap}
+.trio figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.trio figcaption{font-size:.8em;color:var(--mute)}
+.bgview{width:100%;overflow:hidden;border-radius:4px;border:1px solid var(--line)}
+.bgview canvas{width:100%;display:block}
+.inherit{display:flex;flex-wrap:wrap;gap:4px}
+.save{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px}
+.save img{border:1px solid var(--line);image-rendering:pixelated;max-width:100%}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--accent);color:var(--accent-ink);padding:8px 14px;border-radius:4px;font-weight:700}
+.warn{border:1px solid var(--bad);color:var(--ink);border-radius:4px;padding:8px 10px;font-size:.88em}
+.warn b{color:var(--bad)}
+footer{margin-top:12px;color:var(--mute);font-size:.8em;display:flex;flex-wrap:wrap;gap:10px}
+@media (max-width:760px){.app,body.rail-right .app{grid-template-columns:1fr}body.rail-right .rail{order:0}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header>
+  <h1>PixelGoblin<small id="ver">workbench</small></h1>
+  <nav role="tablist" aria-label="Workshops">
+    <button class="tab" role="tab" data-tab="gen" aria-selected="true">Generate</button>
+    <button class="tab" role="tab" data-tab="edit" aria-selected="false">Edit</button>
+    <button class="tab" role="tab" data-tab="convert" aria-selected="false">Convert</button>
+    <button class="tab" role="tab" data-tab="tiles" aria-selected="false">Tiles</button>
+    <button class="tab" role="tab" data-tab="bg" aria-selected="false">Backdrop</button>
+    <button class="tab" role="tab" data-tab="ui" aria-selected="false">UI Kit</button>
+  </nav>
+  <span class="spacer"></span>
+  <div class="btns">
+    <button class="btn" id="readable" aria-pressed="false" title="Larger text, wider spacing">Readable</button>
+    <button class="btn" id="swapRail" title="Move the controls to the other side">Swap sides</button>
+    <button class="btn" id="theme" title="Switch light or dark">Light / dark</button>
+  </div>
+</header>
+
+<!-- ============ GENERATE ============ -->
+<section class="pane" id="p-gen">
+  <div class="app">
+    <aside class="rail">
+      <label>Type file<select id="g-type"></select></label>
+      <label>First seed<input type="number" id="g-seed" value="0" min="0"></label>
+      <div class="btns">
+        <button class="btn primary" id="g-roll">Roll 16</button>
+        <button class="btn" id="g-next">Next 16</button>
+      </div>
+      <div class="hint">Same type file + same seed = the same sprite, in this page, in Python, and in games. Click a sprite to inspect it.</div>
+      <h2 style="font-size:.9rem;margin:6px 0 0">Brood</h2>
+      <div class="hint">Breed two seeds of this type. Each part is inherited whole from one parent; a few mutate.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+        <label>Parent A<input type="number" id="b-a" value="11" min="0"></label>
+        <label>Parent B<input type="number" id="b-b" value="29" min="0"></label>
+        <label>Child<input type="number" id="b-c" value="5" min="0"></label>
+      </div>
+      <button class="btn" id="b-go">Breed</button>
+      <details>
+        <summary>Edit this type file (JSON)</summary>
+        <textarea id="g-json" spellcheck="false"></textarea>
+        <div class="btns"><button class="btn" id="g-apply">Apply edits</button></div>
+        <div class="hint" id="g-err"></div>
+      </details>
+    </aside>
+    <div class="stage">
+      <div class="grid" id="g-grid"></div>
+      <div id="g-detail"></div>
+      <div id="b-out"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EDIT ============ -->
+<section class="pane" id="p-edit" hidden>
+  <div class="app">
+    <aside class="rail">
+      <div class="tools" role="toolbar" aria-label="Tools">
+        <button class="btn tool" data-tool="pen" aria-pressed="true">Pencil</button>
+        <button class="btn tool" data-tool="erase" aria-pressed="false">Eraser</button>
+        <button class="btn tool" data-tool="fill" aria-pressed="false">Fill</button>
+        <button class="btn tool" data-tool="pick" aria-pressed="false">Picker</button>
+        <button class="btn tool" data-tool="line" aria-pressed="false">Line</button>
+        <button class="btn tool" data-tool="rect" aria-pressed="false">Box</button>
+        <button class="btn tool" data-tool="ramp" aria-pressed="false" title="Shade brush: steps the pixel one colour lighter along its ramp">Shade</button>
+        <button class="btn tool" data-tool="dither" aria-pressed="false">Dither</button>
+      </div>
+      <label class="row"><input type="checkbox" id="e-mirror"> Mirror left/right</label>
+      <label class="row"><input type="checkbox" id="e-pp" checked> Pixel-perfect lines</label>
+      <label class="row"><input type="checkbox" id="e-onion" checked> Onion skin</label>
+      <label>Zoom<input type="range" id="e-zoom" min="4" max="32" value="16"></label>
+      <div>
+        <div class="hint">Palette (click to pick, the + adds a colour)</div>
+        <div class="swatches" id="e-pal"></div>
+        <input type="color" id="e-newc" value="#d9a441" aria-label="New colour" style="margin-top:6px;width:48px;height:28px;padding:0;border:0;background:none">
+      </div>
+      <label>New canvas<span style="display:flex;gap:6px"><input type="number" id="e-w" value="32" min="4" max="256" aria-label="Width"><input type="number" id="e-h" value="32" min="4" max="256" aria-label="Height"><button class="btn" id="e-new">New</button></span></label>
+      <div class="btns"><button class="btn" id="e-undo">Undo</button><button class="btn" id="e-redo">Redo</button><button class="btn" id="e-clean">Clean L-corners</button></div>
+    </aside>
+    <div class="stage">
+      <div class="frames" id="e-frames"></div>
+      <div class="editwrap checker"><canvas id="ed"></canvas></div>
+      <div class="btns">
+        <button class="btn" id="e-addf">Add frame</button><button class="btn" id="e-dupf">Duplicate frame</button><button class="btn" id="e-delf">Delete frame</button>
+        <label class="row">ms per frame <input type="number" id="e-ms" value="200" min="16" max="2000" style="width:90px"></label>
+        <button class="btn" id="e-play">Play</button>
+        <button class="btn primary" id="e-export">Export sheet</button>
+      </div>
+      <div id="e-hazard"></div>
+      <div id="e-save"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONVERT ============ -->
+<section class="pane" id="p-convert" hidden>
+  <div class="app">
+    <aside class="rail">
+      <label>Image<input type="file" id="c-file" accept="image/*"></label>
+      <label>Tag<select id="c-tag"></select></label>
+      <label>Size (pixels) <input type="range" id="c-size" min="8" max="128" value="32"><span class="mono" id="c-sizev"></span></label>
+      <label>Colours <input type="range" id="c-cols" min="2" max="32" value="12"><span class="mono" id="c-colsv"></span></label>
+      <label>Outline<select id="c-out"><option>selout</option><option>dark</option><option>none</option></select></label>
+      <label>Dither<select id="c-dith"><option>none</option><option>bayer</option></select></label>
+      <div class="btns"><button class="btn" id="c-edit">Open in editor</button><button class="btn primary" id="c-like">Learn likeness</button></div>
+      <div class="hint">Learn likeness turns this one example into a type file, then rolls 16 relatives in Generate.</div>
+    </aside>
+    <div class="stage">
+      <div class="trio"><figure><canvas id="c-src" class="checker"></canvas><figcaption>source</figcaption></figure><figure><canvas id="c-dst" class="checker"></canvas><figcaption id="c-info">pixel art</figcaption></figure></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TILES ============ -->
+<section class="pane" id="p-tiles" hidden>
+  <div class="app">
+    <aside class="rail">
+      <label>Terrain type<select id="t-type"></select></label>
+      <label>Seed<input type="number" id="t-seed" value="1" min="0"></label>
+      <div class="hint">Paint land on the map; the 47-tile blob set picks every edge and corner for you.</div>
+      <div class="btns"><button class="btn" id="t-clear">Clear map</button><button class="btn" id="t-island">Sample island</button></div>
+      <canvas id="t-sheet" class="checker"></canvas>
+      <div class="hint">The 47-tile set (8 columns). Blob table generated in code, never typed.</div>
+    </aside>
+    <div class="stage"><canvas id="t-map" class="checker" style="cursor:pointer;touch-action:none"></canvas></div>
+  </div>
+</section>
+
+<!-- ============ BACKDROP ============ -->
+<section class="pane" id="p-bg" hidden>
+  <div class="app">
+    <aside class="rail">
+      <label>Backdrop type<select id="bg-type"></select></label>
+      <label>Seed<input type="number" id="bg-seed" value="0" min="0"></label>
+      <label class="row"><input type="checkbox" id="bg-scroll" checked> Scroll the parallax</label>
+      <div class="hint">Each layer exports on its own with a scroll factor, so an engine can move it at its own speed.</div>
+      <div id="bg-layers" class="hint"></div>
+    </aside>
+    <div class="stage"><div class="bgview"><canvas id="bg-view"></canvas></div></div>
+  </div>
+</section>
+
+<!-- ============ UI KIT ============ -->
+<section class="pane" id="p-ui" hidden>
+  <div class="app">
+    <aside class="rail">
+      <label>Theme type<select id="u-type"></select></label>
+      <label>Material<select id="u-mat"><option value="stone">stone</option><option value="bronze">bronze</option><option value="moss">moss</option><option value="reef">reef</option></select></label>
+      <label>Corner<select id="u-corner"><option>round</option><option>square</option><option>notch</option></select></label>
+      <label>Border<input type="range" id="u-border" min="1" max="3" value="2"></label>
+      <label>Panel width<input type="range" id="u-w" min="12" max="120" value="72"></label>
+      <label>Panel height<input type="range" id="u-h" min="12" max="80" value="40"></label>
+      <div class="hint">9-slice: corners stay put, edges and centre repeat, so pixels stay square at any size.</div>
+    </aside>
+    <div class="stage">
+      <div class="trio" id="u-states"></div>
+      <canvas id="u-panel" class="checker"></canvas>
+      <div id="u-kit" class="hint"></div>
+    </div>
+  </div>
+</section>
+
+<footer><span id="credit"></span><span>Engine major <b id="major"></b></span><span>Runs offline. Nothing leaves this page.</span></footer>
+
+<script>
+/*__PG_CORE__*/
+</script>
+<script>
+const PRESETS = /*__PRESETS__*/;
+(() => {
+"use strict";
+const $ = (id) => document.getElementById(id);
+const store = { get(k, d) { try { const v = localStorage.getItem("pg." + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem("pg." + k, JSON.stringify(v)); } catch (e) {} } };
+$("ver").textContent = PRESETS.version + " workbench";
+$("credit").textContent = PRESETS.credit;
+$("major").textContent = PG.ENGINE_MAJOR;
+function toast(msg) { const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 1800); }
+
+// ---------- chrome: tabs, readable, rail side, theme
+function showTab(name) {
+  document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
+  document.querySelectorAll(".pane").forEach((p) => { p.hidden = p.id !== "p-" + name; });
+  store.set("tab", name);
+  if (name === "bg") drawBg(); if (name === "tiles") drawTiles(); if (name === "ui") drawUi(); if (name === "edit") drawEd();
+}
+document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+function applyChrome() {
+  document.body.classList.toggle("readable", !!store.get("readable", false));
+  $("readable").setAttribute("aria-pressed", String(!!store.get("readable", false)));
+  document.body.classList.toggle("rail-right", !!store.get("railRight", false));
+  const th = store.get("theme", null); if (th) document.documentElement.setAttribute("data-theme", th);
+}
+$("readable").onclick = () => { store.set("readable", !store.get("readable", false)); applyChrome(); };
+$("swapRail").onclick = () => { store.set("railRight", !store.get("railRight", false)); applyChrome(); };
+$("theme").onclick = () => {
+  const cur = document.documentElement.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  const nx = cur === "dark" ? "light" : "dark"; document.documentElement.setAttribute("data-theme", nx); store.set("theme", nx);
+};
+applyChrome();
+
+// ---------- drawing helpers
+function paint(canvas, spr, scale, opts = {}) {
+  canvas.width = spr.w * scale; canvas.height = spr.h * scale;
+  const ctx = canvas.getContext("2d"); ctx.imageSmoothingEnabled = false;
+  const off = document.createElement("canvas"); off.width = spr.w; off.height = spr.h;
+  const oc = off.getContext("2d"), img = oc.createImageData(spr.w, spr.h);
+  for (let i = 0; i < spr.px.length; i++) { const c = spr.palette[spr.px[i]]; img.data.set(c, i * 4); }
+  oc.putImageData(img, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (opts.under) { ctx.globalAlpha = 0.28; ctx.drawImage(opts.under, 0, 0, canvas.width, canvas.height); ctx.globalAlpha = 1; }
+  ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
+  return off;
+}
+function toPngURL(spr, scale = 1) { const c = document.createElement("canvas"); paint(c, spr, scale); return c.toDataURL("image/png"); }
+function spriteCanvas(spr, scale) { const c = document.createElement("canvas"); c.className = "checker"; paint(c, spr, scale); return c; }
+function fillSelect(sel, filter) {
+  sel.innerHTML = "";
+  PRESETS.types.filter(filter).forEach((t) => { const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.id + (t.flavor ? "  (flavor)" : ""); sel.appendChild(o); });
+}
+const typeById = (id) => (PRESETS.types.find((t) => t.data.id === id) || {}).data;
+
+// ---------- GENERATE
+let genType = null;
+fillSelect($("g-type"), (t) => ["mask", "lsystem"].includes(t.data.generator));
+function setGenType(id) { genType = JSON.parse(JSON.stringify(typeById(id))); $("g-json").value = JSON.stringify(genType, null, 1); $("g-err").textContent = ""; roll(); }
+$("g-type").onchange = () => setGenType($("g-type").value);
+function roll() {
+  const grid = $("g-grid"); grid.innerHTML = "";
+  const s0 = Math.max(0, parseInt($("g-seed").value || "0", 10));
+  const scale = Math.max(2, Math.floor(80 / Math.max(genType.size[0], genType.size[1])));
+  for (let i = 0; i < 16; i++) {
+    const seed = s0 + i, frames = PG.frames(genType, seed);
+    const b = document.createElement("button"); b.className = "cell"; b.type = "button";
+    b.appendChild(spriteCanvas(frames[0], scale));
+    const sp = document.createElement("span"); sp.textContent = "seed " + seed; b.appendChild(sp);
+    b.onclick = () => { grid.querySelectorAll(".cell").forEach((c) => c.classList.remove("sel")); b.classList.add("sel"); detail(seed); };
+    grid.appendChild(b);
+  }
+  detail(s0); grid.firstChild.classList.add("sel");
+}
+function flashCheck(frames, ms) {
+  if (frames.length < 2) return null;
+  const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+  const L = frames.map((f) => Array.from(f.px, (i) => (i ? lum(f.palette[i]) : null)));
+  const steps = Math.max(frames.length, Math.floor(2000 / ms) + 2), tr = [];
+  for (let t = 1; t < steps; t++) {
+    const a = L[(t - 1) % frames.length], b = L[t % frames.length]; let up = 0, dn = 0;
+    for (let i = 0; i < a.length; i++) { if (a[i] === null || b[i] === null) continue; if (Math.abs(a[i] - b[i]) >= 0.1 && Math.min(a[i], b[i]) < 0.8) { if (b[i] > a[i]) up++; else dn++; } }
+    const area = Math.floor(Math.max(up, dn) * 100 / a.length);
+    if (area >= 25) tr.push([t * ms, up >= dn ? 1 : -1, area]);
+  }
+  let worst = 0, area = 0;
+  for (let i = 0; i < tr.length; i++) {
+    const w = tr.filter((x) => x[0] >= tr[i][0] && x[0] < tr[i][0] + 1000); let flips = 0;
+    for (let j = 1; j < w.length; j++) if (w[j][1] !== w[j - 1][1]) flips++;
+    const fl = Math.floor((flips + 1) / 2); if (fl > worst) { worst = fl; area = Math.max(...w.map((x) => x[2])); }
+  }
+  return worst > 3 ? { count: worst, area } : null;
+}
+function hazardBox(h) {
+  if (!h) return "";
+  return `<div class="warn"><b>Flashing hazard.</b> Do not ship this animation as-is. Here is what happens: it flashes between light and dark ${h.count} times within one second over ${h.area}% of the frame. Here is why that matters: rapid flashing can trigger seizures in people with photosensitive epilepsy, including people who have never had one. Here is what to do instead: slow it to 3 flashes per second or fewer, reduce the brightness difference, or shrink the flashing area. <span class="hint">(Approximate check, not a certified test.)</span></div>`;
+}
+function verdictChips(spr) {
+  const n = spr.usedColors(), d = genType;
+  const specOk = spr.w === d.size[0] && spr.h === d.size[1] && (!d.max_colors || n <= d.max_colors);
+  const nesOk = n <= 3 && spr.w % 8 === 0 && spr.h % 8 === 0;
+  return `<div class="verdicts"><span class="chip ${specOk ? "good" : "bad"}">Spec: ${specOk ? "SOUND" : "UNSOUND"}</span><span class="chip ${nesOk ? "good" : "bad"}">NES: ${nesOk ? "FITS" : "DOES NOT FIT"}</span><span class="chip">${n} colours</span><span class="hint">Two separate questions: does it match its type file, and can the target show it.</span></div>`;
+}
+let anim = null;
+function detail(seed) {
+  const frames = PG.frames(genType, seed), code = PG.shareCode(PG.typeHash(genType), seed);
+  const ms = (genType.animation && genType.animation.frame_ms) || 200;
+  const scale = Math.max(4, Math.floor(200 / Math.max(genType.size[0], genType.size[1])));
+  const box = $("g-detail");
+  box.innerHTML = `<div class="trio"><figure id="g-big"></figure><div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+    <div class="share"><span class="hint">Share code</span><code class="mono" id="g-code">${code}</code><button class="btn" id="g-copy">Copy</button></div>
+    <div class="hint mono">pixels ${frames[0].pixelHash().slice(0, 16)}… · type ${PG.typeHash(genType).slice(0, 12)} · licence ${genType.license}</div>
+    ${verdictChips(frames[0])}
+    <div class="btns"><button class="btn primary" id="g-edit">Open in editor</button></div>
+    ${hazardBox(flashCheck(frames, ms))}</div></div>`;
+  const cv = spriteCanvas(frames[0], scale); $("g-big").appendChild(cv);
+  const cap = document.createElement("figcaption"); cap.textContent = frames.length > 1 ? `${frames.length} frames @ ${ms} ms` : "still"; $("g-big").appendChild(cap);
+  clearInterval(anim); let k = 0;
+  if (frames.length > 1 && !matchMedia("(prefers-reduced-motion: reduce)").matches) anim = setInterval(() => { k = (k + 1) % frames.length; paint(cv, frames[k], scale); }, ms);
+  $("g-copy").onclick = () => { navigator.clipboard.writeText(code).then(() => toast("Copied share code"), () => { const r = document.createRange(); r.selectNodeContents($("g-code")); getSelection().removeAllRanges(); getSelection().addRange(r); }); };
+  $("g-edit").onclick = () => { loadDoc(frames, ms); showTab("edit"); };
+}
+$("g-roll").onclick = roll;
+$("g-next").onclick = () => { $("g-seed").value = parseInt($("g-seed").value || "0", 10) + 16; roll(); };
+$("g-apply").onclick = () => {
+  try { const d = JSON.parse($("g-json").value); PG.frames(d, 0); genType = d; $("g-err").textContent = "Applied. The type hash changed, so every seed makes a new sprite."; roll(); }
+  catch (e) { $("g-err").textContent = "Could not use these edits: " + e.message + ". Check the JSON and the template rows."; }
+};
+$("b-go").onclick = () => {
+  const a = +$("b-a").value, b = +$("b-b").value, c = +$("b-c").value, res = PG.brood(genType, a, b, c);
+  const scale = Math.max(3, Math.floor(120 / Math.max(genType.size[0], genType.size[1])));
+  const out = $("b-out"); out.innerHTML = "<h2 style='font-size:.9rem'>Brood</h2><div class='trio' id='b-trio'></div><div class='inherit' id='b-inh'></div>";
+  [["parent A · " + a, PG.frames(genType, a)[0]], ["child · " + c, res.frames[0]], ["parent B · " + b, PG.frames(genType, b)[0]]].forEach(([t, s]) => {
+    const f = document.createElement("figure"); f.appendChild(spriteCanvas(s, scale)); const cap = document.createElement("figcaption"); cap.textContent = t; f.appendChild(cap); $("b-trio").appendChild(f);
+  });
+  Object.entries(res.inherited).forEach(([k, v]) => { const s = document.createElement("span"); s.className = "chip" + (v === "mutation" ? " bad" : ""); s.textContent = k + " ← " + v; $("b-inh").appendChild(s); });
+};
+
+// ---------- EDIT
+let doc = null, cur = 0, color = 1, tool = "pen", undo = [], redo = [], drag = null, playing = null;
+function newDoc(w, h) { doc = { w, h, palette: [[0, 0, 0, 0], [26, 20, 40, 255], [217, 164, 65, 255], [86, 163, 156, 255], [233, 227, 207, 255]], frames: [new Uint8Array(w * h)], ms: 200 }; cur = 0; color = 2; undo = []; redo = []; }
+function loadDoc(frames, ms) { doc = { w: frames[0].w, h: frames[0].h, palette: frames[0].palette.map((c) => c.slice()), frames: frames.map((f) => new Uint8Array(f.px)), ms }; cur = 0; color = 1; undo = []; redo = []; $("e-ms").value = ms; buildPal(); }
+const frameSprite = (i) => { const s = new PG.Sprite(doc.w, doc.h, doc.palette); s.px.set(doc.frames[i]); return s; };
+function buildPal() {
+  const box = $("e-pal"); box.innerHTML = "";
+  doc.palette.forEach((c, i) => {
+    const b = document.createElement("button"); b.className = "sw" + (i === color ? " on" : "") + (i === 0 ? " checker" : "");
+    b.style.background = i === 0 ? "" : `rgba(${c[0]},${c[1]},${c[2]},${c[3] / 255})`; b.title = i === 0 ? "transparent" : "colour " + i; b.setAttribute("aria-label", b.title);
+    b.onclick = () => { color = i; buildPal(); }; box.appendChild(b);
+  });
+  const add = document.createElement("button"); add.className = "sw"; add.textContent = "+"; add.title = "Add the colour from the picker below"; add.setAttribute("aria-label", add.title);
+  add.onclick = () => { const v = $("e-newc").value; doc.palette.push([parseInt(v.slice(1, 3), 16), parseInt(v.slice(3, 5), 16), parseInt(v.slice(5, 7), 16), 255]); color = doc.palette.length - 1; buildPal(); };
+  box.appendChild(add);
+}
+function buildFrames() {
+  const box = $("e-frames"); box.innerHTML = "";
+  doc.frames.forEach((_, i) => { const b = document.createElement("button"); b.className = "cell" + (i === cur ? " sel" : ""); b.appendChild(spriteCanvas(frameSprite(i), Math.max(1, Math.floor(32 / doc.w)) || 1)); const s = document.createElement("span"); s.textContent = i + 1; b.appendChild(s); b.onclick = () => { cur = i; drawEd(); }; box.appendChild(b); });
+}
+let onionCanvas = null;
+function drawEd() {
+  if (!doc) return;
+  const z = +$("e-zoom").value;
+  const under = $("e-onion").checked && cur > 0 ? (() => { const c = document.createElement("canvas"); paint(c, frameSprite(cur - 1), 1); return c; })() : null;
+  paint($("ed"), frameSprite(cur), z, { under });
+  const ctx = $("ed").getContext("2d");
+  if (z >= 8) { ctx.strokeStyle = "rgba(128,128,128,.18)"; ctx.lineWidth = 1; ctx.beginPath(); for (let x = 0; x <= doc.w; x++) { ctx.moveTo(x * z + .5, 0); ctx.lineTo(x * z + .5, doc.h * z); } for (let y = 0; y <= doc.h; y++) { ctx.moveTo(0, y * z + .5); ctx.lineTo(doc.w * z, y * z + .5); } ctx.stroke(); }
+  if (drag && (tool === "line" || tool === "rect") && drag.preview) { ctx.fillStyle = "rgba(217,164,65,.6)"; drag.preview.forEach(([x, y]) => ctx.fillRect(x * z, y * z, z, z)); }
+  buildFrames();
+}
+function snap() { undo.push({ f: cur, px: new Uint8Array(doc.frames[cur]), pal: doc.palette.map((c) => c.slice()) }); if (undo.length > 200) undo.shift(); redo = []; }
+function setPx(x, y, v) { const px = doc.frames[cur]; if (x < 0 || y < 0 || x >= doc.w || y >= doc.h) return; px[y * doc.w + x] = v; if ($("e-mirror").checked) px[y * doc.w + (doc.w - 1 - x)] = v; }
+function linePts(x0, y0, x1, y1) { const pts = [], dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1; let e = dx + dy; for (;;) { pts.push([x0, y0]); if (x0 === x1 && y0 === y1) return pts; const e2 = 2 * e; if (e2 >= dy) { e += dy; x0 += sx; } if (e2 <= dx) { e += dx; y0 += sy; } } }
+function rampStep(i) {
+  // step to the next lighter colour with the most similar hue among palette entries
+  const c = doc.palette[i]; if (!c || i === 0) return i;
+  const L = (q) => 0.2126 * q[0] + 0.7152 * q[1] + 0.0722 * q[2], hue = (q) => Math.atan2(Math.sqrt(3) * (q[1] - q[2]), 2 * q[0] - q[1] - q[2]);
+  let best = i, bd = 1e9;
+  doc.palette.forEach((q, j) => { if (!j || L(q) <= L(c)) return; const d = (L(q) - L(c)) + 60 * Math.abs(hue(q) - hue(c)); if (d < bd) { bd = d; best = j; } });
+  return best;
+}
+function ppFix(stroke) {
+  // pixel-perfect: drop the corner of each L in the freehand stroke
+  if (!$("e-pp").checked || stroke.length < 3) return;
+  const px = doc.frames[cur];
+  for (let i = 1; i < stroke.length - 1; i++) {
+    const [ax, ay] = stroke[i - 1], [bx, by] = stroke[i], [cx, cy] = stroke[i + 1];
+    if (Math.abs(ax - cx) === 1 && Math.abs(ay - cy) === 1 && (ax === bx || ay === by)) { px[by * doc.w + bx] = drag.before[by * doc.w + bx]; stroke.splice(i, 1); i--; }
+  }
+}
+function cellAt(ev) { const r = $("ed").getBoundingClientRect(), z = r.width / doc.w; return [Math.floor((ev.clientX - r.left) / z), Math.floor((ev.clientY - r.top) / z)]; }
+function flood(x, y, v) { const px = doc.frames[cur], t = px[y * doc.w + x]; if (t === v) return; const st = [[x, y]]; while (st.length) { const [a, b] = st.pop(); if (a < 0 || b < 0 || a >= doc.w || b >= doc.h || px[b * doc.w + a] !== t) continue; px[b * doc.w + a] = v; st.push([a + 1, b], [a - 1, b], [a, b + 1], [a, b - 1]); } }
+$("ed").addEventListener("pointerdown", (ev) => {
+  if (!doc) return; $("ed").setPointerCapture(ev.pointerId);
+  const [x, y] = cellAt(ev); snap(); drag = { x0: x, y0: y, last: [x, y], stroke: [[x, y]], before: new Uint8Array(doc.frames[cur]) };
+  if (tool === "pick") { color = doc.frames[cur][y * doc.w + x]; buildPal(); drag = null; return; }
+  if (tool === "fill") { flood(x, y, color); drag = null; drawEd(); return; }
+  applyPoint(x, y); drawEd();
+});
+function applyPoint(x, y) {
+  if (tool === "pen") setPx(x, y, color);
+  else if (tool === "erase") setPx(x, y, 0);
+  else if (tool === "ramp") setPx(x, y, rampStep(doc.frames[cur][y * doc.w + x]));
+  else if (tool === "dither") { if ((x + y) % 2 === 0) setPx(x, y, color); }
+}
+$("ed").addEventListener("pointermove", (ev) => {
+  if (!drag) return; const [x, y] = cellAt(ev);
+  if (tool === "line") { drag.preview = linePts(drag.x0, drag.y0, x, y); drawEd(); return; }
+  if (tool === "rect") { const p = []; const [a, b, c, d] = [Math.min(drag.x0, x), Math.min(drag.y0, y), Math.max(drag.x0, x), Math.max(drag.y0, y)]; for (let i = a; i <= c; i++) { p.push([i, b], [i, d]); } for (let j = b; j <= d; j++) { p.push([a, j], [c, j]); } drag.preview = p; drawEd(); return; }
+  if (x === drag.last[0] && y === drag.last[1]) return;
+  linePts(drag.last[0], drag.last[1], x, y).slice(1).forEach(([a, b]) => { applyPoint(a, b); drag.stroke.push([a, b]); });
+  if (tool === "pen") ppFix(drag.stroke);
+  drag.last = [x, y]; drawEd();
+});
+$("ed").addEventListener("pointerup", () => { if (drag && drag.preview) drag.preview.forEach(([a, b]) => setPx(a, b, color)); drag = null; drawEd(); });
+document.querySelectorAll(".tool").forEach((b) => b.onclick = () => { tool = b.dataset.tool; document.querySelectorAll(".tool").forEach((t) => t.setAttribute("aria-pressed", String(t === b))); });
+$("e-zoom").oninput = drawEd; $("e-onion").onchange = drawEd;
+$("e-undo").onclick = () => { const u = undo.pop(); if (!u) return; redo.push({ f: u.f, px: new Uint8Array(doc.frames[u.f]), pal: doc.palette.map((c) => c.slice()) }); doc.frames[u.f] = u.px; doc.palette = u.pal; cur = u.f; buildPal(); drawEd(); };
+$("e-redo").onclick = () => { const r = redo.pop(); if (!r) return; undo.push({ f: r.f, px: new Uint8Array(doc.frames[r.f]), pal: doc.palette.map((c) => c.slice()) }); doc.frames[r.f] = r.px; doc.palette = r.pal; cur = r.f; buildPal(); drawEd(); };
+document.addEventListener("keydown", (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); (e.shiftKey ? $("e-redo") : $("e-undo")).click(); } });
+$("e-new").onclick = () => { newDoc(Math.min(256, Math.max(4, +$("e-w").value)), Math.min(256, Math.max(4, +$("e-h").value))); buildPal(); drawEd(); };
+$("e-addf").onclick = () => { doc.frames.splice(cur + 1, 0, new Uint8Array(doc.w * doc.h)); cur++; drawEd(); };
+$("e-dupf").onclick = () => { doc.frames.splice(cur + 1, 0, new Uint8Array(doc.frames[cur])); cur++; drawEd(); };
+$("e-delf").onclick = () => { if (doc.frames.length < 2) return; doc.frames.splice(cur, 1); cur = Math.max(0, cur - 1); drawEd(); };
+$("e-clean").onclick = () => {
+  snap(); const s = frameSprite(cur); let n = 0;
+  for (let y = 0; y < s.h; y++) for (let x = 0; x < s.w; x++) {
+    const c = s.px[y * s.w + x]; if (!c) continue;
+    const same = []; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if ((dx || dy) && s.get(x + dx, y + dy) === c) same.push([dx, dy]);
+    const hz = same.filter((q) => q[1] === 0), vt = same.filter((q) => q[0] === 0);
+    if (hz.length === 1 && vt.length === 1 && same.length <= 3 && s.get(x + hz[0][0], y + vt[0][1]) !== c) { s.px[y * s.w + x] = 0; n++; }
+  }
+  doc.frames[cur] = s.px; drawEd(); toast(n + " L-corner" + (n === 1 ? "" : "s") + " removed");
+};
+$("e-play").onclick = () => {
+  if (playing) { clearInterval(playing); playing = null; $("e-play").textContent = "Play"; return; }
+  $("e-play").textContent = "Stop"; playing = setInterval(() => { cur = (cur + 1) % doc.frames.length; drawEd(); }, Math.max(16, +$("e-ms").value));
+};
+$("e-export").onclick = () => {
+  const ms = Math.max(16, +$("e-ms").value), n = doc.frames.length, sheet = new PG.Sprite(doc.w * n, doc.h, doc.palette);
+  doc.frames.forEach((f, i) => { for (let y = 0; y < doc.h; y++) sheet.px.set(f.subarray(y * doc.w, (y + 1) * doc.w), y * sheet.w + i * doc.w); });
+  const frames = {}; doc.frames.forEach((_, i) => frames["frame " + i] = { frame: { x: i * doc.w, y: 0, w: doc.w, h: doc.h }, duration: ms });
+  const meta = { frames, meta: { app: "PixelGoblin", version: PRESETS.version, image: "sheet.png", size: { w: sheet.w, h: sheet.h }, frameTags: [{ name: "idle", from: 0, to: n - 1, direction: "forward" }], credit: PRESETS.credit } };
+  const hz = flashCheck(doc.frames.map((_, i) => frameSprite(i)), ms);
+  $("e-hazard").innerHTML = hazardBox(hz);
+  const url = toPngURL(sheet, 1), big = toPngURL(sheet, 4), json = JSON.stringify(meta, null, 1);
+  $("e-save").innerHTML = `<div class="save"><figure style="margin:0"><img src="${big}" alt="Exported sprite sheet at 4x"><figcaption class="hint">Right-click or long-press the image to save it (4x). The 1x sheet is in the link.</figcaption></figure>
+    <div style="display:flex;flex-direction:column;gap:6px"><a class="btn" href="${url}" download="sheet.png">Download 1x sheet</a><button class="btn" id="e-copyjson">Copy sheet JSON</button><span class="hint">Aseprite-style JSON, readable by Godot, Phaser and Unity importers.</span></div></div>`;
+  $("e-copyjson").onclick = () => navigator.clipboard.writeText(json).then(() => toast("Copied sheet JSON"), () => toast("Copy blocked here; select the text instead"));
+};
+
+// ---------- CONVERT (tool-time: floats allowed; output is saved as pixels)
+const oklab = (r, g, b) => { const f = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; r = f(r); g = f(g); b = f(b);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b), m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b), s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s, 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s]; };
+const fromLab = ([L, a, b]) => { const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3, m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3, s = (L - 0.0894841775 * a - 1.2914855480 * b) ** 3;
+  const g = (v) => { v = v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(Math.max(v, 0), 1 / 2.4) - 0.055; return Math.max(0, Math.min(255, Math.round(v * 255))); };
+  return [g(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s), g(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s), g(-0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s)]; };
+const d2 = (p, q) => (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 + (p[2] - q[2]) ** 2;
+const BAY = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+let srcImg = null, converted = null;
+PRESETS.tags.forEach((t) => { const o = document.createElement("option"); o.value = t.name; o.textContent = t.name; $("c-tag").appendChild(o); });
+$("c-tag").onchange = () => { const t = PRESETS.tags.find((x) => x.name === $("c-tag").value).profile; $("c-size").value = t.size; $("c-cols").value = t.colors; $("c-out").value = t.outline; $("c-dith").value = t.dither === "bayer" ? "bayer" : "none"; convert(); };
+["c-size", "c-cols", "c-out", "c-dith"].forEach((id) => $(id).addEventListener("input", convert));
+$("c-file").onchange = () => { const f = $("c-file").files[0]; if (!f) return; const img = new Image(); img.onload = () => { srcImg = img; convert(); }; img.src = URL.createObjectURL(f); };
+function sampleImage() {
+  // a built-in example: a round orange critter drawn with soft gradients, so the page opens working
+  const c = document.createElement("canvas"); c.width = c.height = 160; const x = c.getContext("2d");
+  const g = x.createRadialGradient(64, 60, 10, 80, 86, 70); g.addColorStop(0, "#ffd08a"); g.addColorStop(0.6, "#e0703a"); g.addColorStop(1, "#7a2a1e");
+  x.fillStyle = g; x.beginPath(); x.ellipse(80, 90, 58, 50, 0, 0, 7); x.fill();
+  x.fillStyle = "#e0703a"; x.beginPath(); x.moveTo(40, 60); x.lineTo(30, 18); x.lineTo(66, 46); x.fill(); x.beginPath(); x.moveTo(120, 60); x.lineTo(130, 18); x.lineTo(94, 46); x.fill();
+  x.fillStyle = "#fff4e0"; [[62, 82], [98, 82]].forEach(([a, b]) => { x.beginPath(); x.arc(a, b, 9, 0, 7); x.fill(); });
+  x.fillStyle = "#1a1428"; [[64, 84], [96, 84]].forEach(([a, b]) => { x.beginPath(); x.arc(a, b, 4, 0, 7); x.fill(); });
+  x.fillStyle = "#5a8a3a"; x.fillRect(58, 132, 12, 12); x.fillRect(90, 132, 12, 12);
+  const im = new Image(); im.onload = () => { srcImg = im; convert(); }; im.src = c.toDataURL();
+}
+function convert() {
+  $("c-sizev").textContent = $("c-size").value + " px"; $("c-colsv").textContent = $("c-cols").value;
+  if (!srcImg) return;
+  const size = +$("c-size").value, cols = +$("c-cols").value, outline = $("c-out").value, dith = $("c-dith").value, margin = outline === "none" ? 0 : 1;
+  const sc = document.createElement("canvas"), W = Math.min(512, srcImg.naturalWidth), H = Math.round(srcImg.naturalHeight * W / srcImg.naturalWidth);
+  sc.width = W; sc.height = H; const sx = sc.getContext("2d"); sx.drawImage(srcImg, 0, 0, W, H); const d = sx.getImageData(0, 0, W, H).data;
+  const scale = Math.max(1, Math.floor(180 / Math.max(W, H) * 2)) / 2; $("c-src").width = W; $("c-src").height = H; $("c-src").getContext("2d").drawImage(sc, 0, 0); $("c-src").style.width = Math.min(260, W) + "px";
+  let x0 = W, y0 = H, x1 = 0, y1 = 0; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (d[(y * W + x) * 4 + 3] >= 128) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x + 1); y1 = Math.max(y1, y + 1); }
+  if (x1 <= x0) return; const cw = x1 - x0, ch = y1 - y0, inner = size - 2 * margin;
+  const tw = cw >= ch ? inner : Math.max(1, Math.round(inner * cw / ch)), th = cw >= ch ? Math.max(1, Math.round(inner * ch / cw)) : inner;
+  const cells = [];
+  for (let ty = 0; ty < th; ty++) for (let tx = 0; tx < tw; tx++) {
+    const ax = x0 + Math.floor(tx * cw / tw), bx = Math.max(ax + 1, x0 + Math.floor((tx + 1) * cw / tw)), ay = y0 + Math.floor(ty * ch / th), by = Math.max(ay + 1, y0 + Math.floor((ty + 1) * ch / th));
+    const buckets = new Map(); let n = 0, op = 0;
+    for (let y = ay; y < by; y++) for (let x = ax; x < bx; x++) { n++; const i = (y * W + x) * 4; if (d[i + 3] < 128) continue; op++; const k = (d[i] >> 4) * 256 + (d[i + 1] >> 4) * 16 + (d[i + 2] >> 4); const e = buckets.get(k) || [0, 0, 0, 0]; e[0] += d[i]; e[1] += d[i + 1]; e[2] += d[i + 2]; e[3]++; buckets.set(k, e); }
+    if (op * 2 < n) { cells.push(null); continue; }
+    let best = null; buckets.forEach((e) => { if (!best || e[3] > best[3]) best = e; }); cells.push([best[0] / best[3], best[1] / best[3], best[2] / best[3]]);
+  }
+  const labs = cells.filter(Boolean).map((c) => oklab(...c)), k = Math.max(1, cols - (outline === "dark" ? 1 : 0));
+  const uniq = Array.from(new Map(labs.map((l) => [l.map((v) => v.toFixed(4)).join(","), l])).values());
+  let centers = [uniq[0]];
+  while (centers.length < Math.min(k, uniq.length)) { let bp = null, bd = -1; uniq.forEach((p) => { const m = Math.min(...centers.map((c) => d2(p, c))); if (m > bd) { bd = m; bp = p; } }); centers.push(bp); }
+  for (let it = 0; it < 10; it++) { const gs = centers.map(() => [0, 0, 0, 0]); labs.forEach((p) => { let bi = 0, bd = 1e9; centers.forEach((c, i) => { const q = d2(p, c); if (q < bd) { bd = q; bi = i; } }); const g = gs[bi]; g[0] += p[0]; g[1] += p[1]; g[2] += p[2]; g[3]++; }); centers = centers.map((c, i) => gs[i][3] ? [gs[i][0] / gs[i][3], gs[i][1] / gs[i][3], gs[i][2] / gs[i][3]] : c); }
+  centers.sort((a, b) => a[0] - b[0]);
+  const pal = [[0, 0, 0, 0]].concat(centers.map((c) => fromLab(c).concat(255))), spr = new PG.Sprite(size, size, pal), ox = Math.floor((size - tw) / 2), oy = Math.floor((size - th) / 2);
+  const near = (l) => { let bi = 0, bd = 1e9; centers.forEach((c, i) => { const q = d2(l, c); if (q < bd) { bd = q; bi = i; } }); return bi; };
+  for (let y = 0; y < th; y++) for (let x = 0; x < tw; x++) { const c = cells[y * tw + x]; if (!c) continue; const l = oklab(...c); if (dith === "bayer") l[0] += (BAY[y % 4][x % 4] - 7.5) / 16 * 0.06; spr.px[(oy + y) * size + ox + x] = near(l) + 1; }
+  if (outline !== "none") {
+    const marks = [];
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) { if (spr.px[y * size + x]) continue; for (const [dx, dy] of [[0, -1], [-1, 0], [1, 0], [0, 1]]) { const b = spr.get(x + dx, y + dy); if (b) { marks.push([x, y, outline === "dark" ? 1 : near([centers[b - 1][0] * 0.55, centers[b - 1][1], centers[b - 1][2]]) + 1]); break; } } }
+    marks.forEach(([x, y, i]) => spr.px[y * size + x] = i);
+  }
+  converted = spr; const z = Math.max(2, Math.floor(256 / size)); paint($("c-dst"), spr, z);
+  $("c-info").textContent = `${size}x${size} · ${spr.usedColors()} colours · tag ${$("c-tag").value}`;
+}
+$("c-edit").onclick = () => { if (converted) { loadDoc([converted], 200); showTab("edit"); } };
+$("c-like").onclick = () => {
+  if (!converted) return; const s = converted, W = s.w, H = s.h, solid = (x, y) => x >= 0 && y >= 0 && x < W && y < H && s.px[y * W + x] !== 0;
+  let x0 = W, y0 = H, x1 = 0, y1 = 0; for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (solid(x, y)) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x + 1); y1 = Math.max(y1, y + 1); }
+  let sym = 0; for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) if (solid(x, y) === solid(x1 - 1 - (x - x0), y)) sym++;
+  const mirror = sym * 100 >= 85 * (x1 - x0) * (y1 - y0);
+  let rows = []; for (let y = y0; y < y1; y++) { let r = ""; for (let x = x0; x < x1; x++) r += !solid(x, y) ? "." : ([[0, -1], [-1, 0], [1, 0], [0, 1]].every(([a, b]) => solid(x + a, y + b)) ? "#" : "1"); rows.push(r); }
+  if (mirror) rows = rows.map((r) => r.slice(0, Math.ceil((x1 - x0) / 2)));
+  // keep the dominant hue family (like pixelgoblin.convert.likeness), sorted dark -> light
+  const used = new Map(); s.px.forEach((i) => { if (i) used.set(i, (used.get(i) || 0) + 1); });
+  const fam = new Map();
+  used.forEach((n, i) => { const [L, a, b] = oklab(...s.palette[i]); const key = Math.hypot(a, b) > 0.03 ? Math.floor(((Math.atan2(b, a) * 180 / Math.PI + 360) % 360) / 60) : 6; const f = fam.get(key) || { n: 0, c: [] }; f.n += n; f.c.push([L, i]); fam.set(key, f); });
+  const top = Array.from(fam.values()).sort((p, q) => q.n - p.n)[0].c.sort((p, q) => p[0] - q[0]);
+  const cols = top.slice(-8).map(([, i]) => "#" + s.palette[i].slice(0, 3).map((v) => v.toString(16).padStart(2, "0")).join(""));
+  if (cols.length === 1) { const [L, a, b] = oklab(...PG.hexToRgba(cols[0])); cols.unshift("#" + fromLab([Math.max(0, L - 0.18), a, b]).map((v) => v.toString(16).padStart(2, "0")).join("")); }
+  const fw = rows[0].length * (mirror ? 2 : 1);
+  const t = { schema: "pixelgoblin/type@1", id: "custom.likeness", tag: $("c-tag").value, generator: "mask", license: "CC0-1.0", size: [Math.max(fw + 2, 8), rows.length + 2], mirror, outline_style: "selout",
+    palette: { outline: "#14101c", ramps: [{ name: "learned", weight: 1, colors: cols }] }, body: { anchor: [1, 1], template: rows }, features: { eyes: 0 }, animation: { frames: 1, frame_ms: 200 } };
+  PRESETS.types = PRESETS.types.filter((x) => x.data.id !== "custom.likeness"); PRESETS.types.unshift({ data: t, flavor: false });
+  fillSelect($("g-type"), (x) => ["mask", "lsystem"].includes(x.data.generator)); $("g-type").value = "custom.likeness"; setGenType("custom.likeness"); showTab("gen"); toast("Learned a type file from your image");
+};
+
+// ---------- TILES
+let tileGrid = null, tileSheet = null;
+fillSelect($("t-type"), (t) => t.data.generator === "autotile");
+function island() { const w = 16, h = 10; tileGrid = Array.from({ length: h }, (_, y) => Array.from({ length: w }, (_, x) => ((x - 7.5) ** 2 / 36 + (y - 4.5) ** 2 / 12 < 1) ? 1 : 0)); tileGrid[1][12] = tileGrid[2][12] = tileGrid[2][13] = 1; }
+island();
+function drawTiles() {
+  const d = typeById($("t-type").value); if (!d) return; const [sheet] = PG.buildTileset(d, +$("t-seed").value); tileSheet = sheet;
+  paint($("t-sheet"), sheet, 1); $("t-sheet").style.width = "100%";
+  const T = d.tile, tiles = PG.mapTiles(tileGrid), h = tileGrid.length, w = tileGrid[0].length, img = new PG.Sprite(w * T, h * T, sheet.palette);
+  tiles.forEach((row, ty) => row.forEach((ti, tx) => { if (ti < 0) return; const sx = (ti % PG.COLS) * T, sy = Math.floor(ti / PG.COLS) * T; for (let y = 0; y < T; y++) img.px.set(sheet.px.subarray((sy + y) * sheet.w + sx, (sy + y) * sheet.w + sx + T), (ty * T + y) * img.w + tx * T); }));
+  paint($("t-map"), img, 2);
+}
+let tilePaint = null;
+$("t-map").addEventListener("pointerdown", (e) => { const r = $("t-map").getBoundingClientRect(), T = typeById($("t-type").value).tile, z = r.width / (tileGrid[0].length * T); const x = Math.floor((e.clientX - r.left) / z / T), y = Math.floor((e.clientY - r.top) / z / T); if (!tileGrid[y]) return; tilePaint = tileGrid[y][x] ? 0 : 1; tileGrid[y][x] = tilePaint; $("t-map").setPointerCapture(e.pointerId); drawTiles(); });
+$("t-map").addEventListener("pointermove", (e) => { if (tilePaint === null) return; const r = $("t-map").getBoundingClientRect(), T = typeById($("t-type").value).tile, z = r.width / (tileGrid[0].length * T); const x = Math.floor((e.clientX - r.left) / z / T), y = Math.floor((e.clientY - r.top) / z / T); if (tileGrid[y] && tileGrid[y][x] !== undefined && tileGrid[y][x] !== tilePaint) { tileGrid[y][x] = tilePaint; drawTiles(); } });
+$("t-map").addEventListener("pointerup", () => tilePaint = null);
+$("t-clear").onclick = () => { tileGrid = tileGrid.map((r) => r.map(() => 0)); drawTiles(); };
+$("t-island").onclick = () => { island(); drawTiles(); };
+$("t-type").onchange = drawTiles; $("t-seed").oninput = drawTiles;
+
+// ---------- BACKDROP (the one moving thing: layers scroll at their own speeds)
+fillSelect($("bg-type"), (t) => t.data.generator === "parallax");
+let bgLayers = null, bgRaf = null, bgT = 0;
+function drawBg() {
+  const d = typeById($("bg-type").value); if (!d) return; bgLayers = PG.parallaxLayers(d, +$("bg-seed").value).map(([n, s, spr]) => { const c = document.createElement("canvas"); paint(c, spr, 1); return [n, s, c]; });
+  $("bg-layers").innerHTML = bgLayers.slice(1).map(([n, s]) => `<div><span class="mono">${n}</span> scrolls at ${s}%</div>`).join("");
+  const v = $("bg-view"); v.width = d.size[0]; v.height = d.size[1]; frameBg();
+  cancelAnimationFrame(bgRaf); if ($("bg-scroll").checked && !matchMedia("(prefers-reduced-motion: reduce)").matches) loopBg();
+}
+function frameBg() {
+  const v = $("bg-view"), x = v.getContext("2d"); x.imageSmoothingEnabled = false; x.clearRect(0, 0, v.width, v.height);
+  x.drawImage(bgLayers[0][2], 0, 0);
+  bgLayers.slice(1).forEach(([, s, c]) => { const off = Math.floor(bgT * s / 100) % v.width; x.drawImage(c, -off, 0); x.drawImage(c, v.width - off, 0); });
+}
+function loopBg() { bgT += 0.5; frameBg(); if (!$("p-bg").hidden) bgRaf = requestAnimationFrame(loopBg); }
+$("bg-type").onchange = drawBg; $("bg-seed").oninput = drawBg; $("bg-scroll").onchange = drawBg;
+
+// ---------- UI KIT (mirrors pixelgoblin/uikit.py panel())
+fillSelect($("u-type"), (t) => t.data.generator === "uikit");
+const MATS = { stone: ["#2a2830", "#46434e", "#65616e", "#8c8896", "#c2bec8"], bronze: ["#3a2414", "#6a4424", "#a0703a", "#d0a060", "#f2d8a0"],
+  moss: ["#1e2a14", "#34502a", "#4f7a3a", "#78a452", "#b8d88a"], reef: ["#123040", "#1e5a6a", "#2f8a8a", "#5ac2b0", "#b0f2e0"] };
+function uiPanel(d, state) {
+  const T = d.tile, b = d.border, mat = d.palette.material.map(PG.hexToRgba), n = mat.length, pal = [[0, 0, 0, 0], PG.hexToRgba(d.palette.outline)].concat(mat);
+  const shift = { normal: 0, hover: 1, pressed: 0, disabled: -1 }[state], hi = n - 1, lo = 0, base = Math.max(1, Math.min(n - 2, Math.floor((n - 1) / 2) + shift));
+  const s = new PG.Sprite(T, T, pal);
+  for (let y = 0; y < T; y++) for (let x = 0; x < T; x++) {
+    const cx = Math.min(x, T - 1 - x), cy = Math.min(y, T - 1 - y);
+    if (d.corner === "round" && cx + cy < b) continue; if (d.corner === "notch" && cx < b && cy < b) continue;
+    let dd = Math.min(cx, cy); if (d.corner === "round" && cx + cy === b) dd = 0;
+    let idx;
+    if (dd === 0) idx = 1; else if (dd < b) idx = 2 + Math.min(n - 1, lo + 1);
+    else if (dd === b) { const tl = cy <= cx ? y < T - 1 - y : x < T - 1 - x; const bright = state !== "pressed" ? tl : !tl; idx = 2 + (bright ? hi : lo); }
+    else idx = 2 + base;
+    if (state === "disabled" && dd <= b) idx = dd === b ? 2 + lo : 1;
+    s.px[y * T + x] = idx;
+  }
+  return s;
+}
+function drawUi() {
+  const base = typeById($("u-type").value); if (!base) return;
+  const d = JSON.parse(JSON.stringify(base)); d.palette.material = MATS[$("u-mat").value]; d.corner = $("u-corner").value; d.border = +$("u-border").value;
+  const states = $("u-states"); states.innerHTML = "";
+  ["normal", "hover", "pressed", "disabled"].forEach((st) => { const f = document.createElement("figure"); f.appendChild(spriteCanvas(PG.nineSlice(uiPanel(d, st), d.border + 1, 40, 16), 4)); const c = document.createElement("figcaption"); c.textContent = st; f.appendChild(c); states.appendChild(f); });
+  paint($("u-panel"), PG.nineSlice(uiPanel(d, "normal"), d.border + 1, +$("u-w").value, +$("u-h").value), 4);
+  $("u-kit").innerHTML = `Insets <span class="mono">${d.border + 1}px</span> on every side. The CLI writes this kit as <span class="mono">atlas.png</span>, <span class="mono">kit.json</span>, a Godot StyleBox and a CSS border-image rule.`;
+}
+["u-type", "u-mat", "u-corner", "u-border", "u-w", "u-h"].forEach((id) => $(id).addEventListener("input", drawUi));
+
+// ---------- boot in a working state
+newDoc(32, 32); buildPal();
+$("g-type").value = "boc.creature.goblin"; if (!$("g-type").value) $("g-type").selectedIndex = 0;
+setGenType($("g-type").value);
+loadDoc(PG.frames(genType, 7), (genType.animation && genType.animation.frame_ms) || 200);
+$("c-tag").value = "creature"; $("c-tag").onchange(); sampleImage();
+showTab(store.get("tab", "gen"));
+})();
+</script>

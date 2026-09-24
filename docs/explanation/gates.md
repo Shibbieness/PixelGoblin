@@ -1,0 +1,52 @@
+# How the build checks itself
+
+PixelGoblin ports the self-checking discipline from SPIRE (Shibbieness / M MAOU LLC). The port is deliberately partial.
+
+## Ported
+
+| SPIRE rule | Here |
+|---|---|
+| Plan gates (G) and build gates (B) are separate namespaces | `tests/gate.py`; each B declares the Gs it covers |
+| A gate must be able to fail | `tests/falsify.py`: 23 mutations, each naming the gate that must catch it |
+| Restore on start (SIGKILL cannot be caught) | `falsify.py` restores `.falsify_backup/` before doing anything |
+| No assertion over an empty population | `Check.population()`; every absence check builds a control first |
+| Counts are derived, never typed | `tests/FLOOR.json` ratchet; lowering needs a witness and a reason |
+| Status only from a full run | `BUILD_STATUS.md` is refused after a partial run |
+| Check from empty | `gate.py --from-empty` copies the repo to a clean folder with a minimal environment |
+| Tests never touch the network | socket guard in `gate.py` |
+| Two verdicts, never merged | spec verdict and target verdict (`verdicts.py`) |
+| Mechanism, not prohibition | hazard findings say: don't, what happens, why, what instead |
+| Capability floor holds with no model | the whole engine is model-free; ML is a later optional slot |
+| Scrub runs against executable code, not prose | B12 skips docstrings and comments; a citation is not a dependency |
+| Frozen registries | the generator registry is a read-only mapping |
+| Longevity export | `pixelgoblin ascii`: a sprite as plain English text |
+
+## Not ported, and why
+
+- **The full hazard register shape.** It exists because chemistry can injure people. PixelGoblin keeps a hazard layer only for the two ways it can hurt someone: **photosensitive flashing** in animations, and **licence contamination** in commercial packs.
+- **Held-out splits and grading.** Nothing here is graded.
+- **Seven SQLite stores.** Type files are text, which is already the most durable format.
+
+## Build gates
+
+| Gate | Checks | Covers |
+|---|---|---|
+| B00 | licence text hash, attribution, credit in `--version` | G22 |
+| B01 | RNG reference vector, cross-process determinism, part streams | G01 G02 |
+| B02 | canonical hash, 20 plain-English validator cases, floats refused | G03 G04 G05 |
+| B03 | goldens, spec verdict on 120 seeds per type, variety of 90 or more per 100 | G06 G07 G08 |
+| B04 | exactly 47 blob tiles, seamless map, WFC always returns | G09 G10 |
+| B05 | conversion fuzz, colour budget, zero L-corners, likeness | G11 G12 |
+| B06 | 9-slice unbroken at 5 sizes, four distinct button states | G13 |
+| B07 | PNG and ASCII round trips, re-export is byte-identical, share codes | G14 G23 |
+| B08 | two verdicts never merged | G15 |
+| B09 | flash hazard and licence hazard, in mechanism order | G16 G17 |
+| B10 | falsification: every mutant killed | — |
+| B11 | Vanilla Core flavor contract | G18 |
+| B12 | scrub (vanilla has no stack terms) and leak guard | G19 |
+| B13 | JavaScript pixels match Python pixels | G20 |
+| B14 | every command has help and an example; derived CLI doc is current | G21 |
+| B15 | brood inherits from both parents; count ratchet | G24 |
+
+—Shibbieness
+—Claude

@@ -1,0 +1,12 @@
+schema = "pixelgoblin/type@1"
+id = "vanilla.terrain.grass"
+tag = "terrain"
+generator = "autotile"
+license = "CC0-1.0"
+size = [16, 16]
+tile = 16
+
+[palette]
+outline = "#1a2414"
+highlight = "#b8e07a"
+fill = ["#2a4a1e", "#3a6a2a", "#5a8a3a", "#7aaa4a"]

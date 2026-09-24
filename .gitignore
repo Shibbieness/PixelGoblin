@@ -1,0 +1,5 @@
+__pycache__/
+.falsify_backup/
+out/
+dist/
+*.pyc

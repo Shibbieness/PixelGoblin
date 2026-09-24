@@ -1,0 +1,89 @@
+{
+ "floor": {
+  "build_gates": 16,
+  "plan_gates_covered": 24,
+  "goldens": 43,
+  "validator_negative_cases": 20,
+  "mutations": 23,
+  "vanilla_types": 8,
+  "flavor_types": 4,
+  "cli_commands": 14,
+  "flavor_capabilities": 8,
+  "tag_roots": 8,
+  "doc_pages": 13
+ },
+ "history": [
+  {
+   "key": "build_gates",
+   "from": null,
+   "to": 16,
+   "kind": "raise"
+  },
+  {
+   "key": "plan_gates_covered",
+   "from": null,
+   "to": 24,
+   "kind": "raise"
+  },
+  {
+   "key": "goldens",
+   "from": null,
+   "to": 43,
+   "kind": "raise"
+  },
+  {
+   "key": "validator_negative_cases",
+   "from": null,
+   "to": 20,
+   "kind": "raise"
+  },
+  {
+   "key": "mutations",
+   "from": null,
+   "to": 23,
+   "kind": "raise"
+  },
+  {
+   "key": "vanilla_types",
+   "from": null,
+   "to": 8,
+   "kind": "raise"
+  },
+  {
+   "key": "flavor_types",
+   "from": null,
+   "to": 4,
+   "kind": "raise"
+  },
+  {
+   "key": "cli_commands",
+   "from": null,
+   "to": 14,
+   "kind": "raise"
+  },
+  {
+   "key": "flavor_capabilities",
+   "from": null,
+   "to": 8,
+   "kind": "raise"
+  },
+  {
+   "key": "tag_roots",
+   "from": null,
+   "to": 8,
+   "kind": "raise"
+  },
+  {
+   "key": "doc_pages",
+   "from": null,
+   "to": 12,
+   "kind": "raise"
+  },
+  {
+   "key": "doc_pages",
+   "from": 12,
+   "to": 13,
+   "kind": "raise"
+  }
+ ]
+}

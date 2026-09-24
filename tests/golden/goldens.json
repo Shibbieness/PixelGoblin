@@ -1,0 +1,387 @@
+{
+ "engine_major": 0,
+ "cases": [
+  {
+   "kind": "frames",
+   "type": "vanilla.creature.beetle",
+   "seed": 0,
+   "hashes": [
+    "406e2456e4406b6357393feff67b69730a800c2594c79c97003c4a9c118a081c",
+    "0fda7c11a8959229adbf62d8115ba1556293bd245cafa2333b7933f3d566ae6b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.creature.beetle",
+   "seed": 1,
+   "hashes": [
+    "47a8baf07ed5f22180929d44b72d35c9ac8f59e3a9eb7e6161f8b21c2b4bc0ed",
+    "91e5b55ec83fbb042047cac6e7339240a69b40edf76747d0db05f2f69501f807"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.creature.beetle",
+   "seed": 42,
+   "hashes": [
+    "80b9acafae7c932d7100da4fa576a01fe8a4d9aaf6bc05cc6e30bf910d3cf3d5",
+    "e6df9037d738e4721b1f23dabe704d635afef89a32d63aba5200d0343fb4868b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.creature.beetle",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "c1eae56c4146ae4105c39fe8f16be660256e8031a5fbee2d49b236b39a96c7f2",
+    "723eec92cbbb543605d90f2f985d55c97de610825b8be19582b2332867386036"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.creature.blob",
+   "seed": 0,
+   "hashes": [
+    "c40ce6a1388d4646c52316ec6fe0fbe71bcf84199978a5501f33bfbf19e29fb0",
+    "3b794a87ee6d4df4e2caadd0b85716dab600a74f3fb7d3c1552d1c37e2772447",
+    "9d0c67fee52989e04e11a0752c63823382c064c142b3894536c6158505ecb956"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.creature.blob",
+   "seed": 1,
+   "hashes": [
+    "ccfc38538b050a4f533ec011314faf7881450c7da066abd2bdf12837f90527cf",
+    "0b79044eb2c72cfff9d1744aa153ee58ca6fc8df6f412138e963fcf847cc032d",
+    "470d172627e091f0902e18d2a652b1a30030ca8b4265f7111931cf9f1335548c"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.creature.blob",
+   "seed": 42,
+   "hashes": [
+    "40749b813fcc3050715fb26fc0df7b7a1754bac80b2a654b6fec55982b52c31d",
+    "1d5692a566534e308d8bbf69d9e97265bf692633abd6054dd63ad1f78bdd7923",
+    "9e4f08f33530fa0c86c6990d7f423cf6701f31abe0d5e293890febbe01b0c743"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.creature.blob",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "5085861e82e9e2533c207d8d32397ed9291c6fbed37dc327736f372fe1101c3b",
+    "efb1d8f3184f7b9429b666d7d194e82ecd901d46771f27c237986306e85c76bc",
+    "5e62e26c59d12032e04cc64ee361b23f682d578632d70613dce2c08f1a0477d1"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.env.dusk",
+   "seed": 0,
+   "hashes": [
+    "e9e92c81e996ec31f0b08fe670a23da4138188bc5cbd7f7f53ee1fe99b8c3d17"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.env.dusk",
+   "seed": 1,
+   "hashes": [
+    "f249e97218451761b397112f575e84a5c6e9070f25b4ac061a4ae3cf917919b7"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.env.dusk",
+   "seed": 42,
+   "hashes": [
+    "b6838c09f8ebdd9364517d1b84435602edaf788c550ee9c3d9cce0ec1c0eddad"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.env.dusk",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "3a6fda1c1f9cd7f1b9f596de9dbfa0c5e2bce605ce2a8d9c0afe42ca2189dc75"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.flora.fungus",
+   "seed": 0,
+   "hashes": [
+    "9f568d5513d315c50b0de13009816dd774f7861cc9afd0be2615609be20f4b89"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.flora.fungus",
+   "seed": 1,
+   "hashes": [
+    "4a7d71a6cea73bfd279296770c979251af025f0167866725a30fb890627afbd1"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.flora.fungus",
+   "seed": 42,
+   "hashes": [
+    "56819acb71c512ae41865d8bfdb0bd143b8f792777ec0b873be82972b6f6e8dc"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.flora.fungus",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "5c482b2476cf8804f1ee25a29529e1647168c7bcd6b8318b2522ed2908a7608b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.flora.shrub",
+   "seed": 0,
+   "hashes": [
+    "2a6b956f800e45fb3215043680444e343db74be706684e4bf8bafa6cd40470cf"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.flora.shrub",
+   "seed": 1,
+   "hashes": [
+    "cbd3830617bcf5cfd380041aea3dc7e0087903e7b550d27fd55f50cffce4e1a1"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.flora.shrub",
+   "seed": 42,
+   "hashes": [
+    "fefeaebf18ad2b843d3f89c5d6af9ea71814e8f43ddf61bee7d15aec4e0fb812"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.flora.shrub",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "a0d4b6e538fcaa7a39e02b7dc13aa77ef45390a810ad68382609df04f826bf1b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.object.potion",
+   "seed": 0,
+   "hashes": [
+    "b0a21acd7b326ec64355259372c7ae77745c262cf04fbc9a758219272a6c4f9f"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.object.potion",
+   "seed": 1,
+   "hashes": [
+    "2066cd8555d7df1dd8804d8583074c3ddd98f34cc884401bf6603c96b1f04962"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.object.potion",
+   "seed": 42,
+   "hashes": [
+    "637888b3938a9bd8b06c2606ccbbc8c32025e2a1a54de57178a1bc3d75823732"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.object.potion",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "f79bd2883cd26a70ecfda9d5316734bfdd06b004f192de8601b845dabdedd46c"
+   ]
+  },
+  {
+   "kind": "autotile",
+   "type": "vanilla.terrain.grass",
+   "seed": 1,
+   "hashes": [
+    "62172f652b6fb3fe1015d6eaee2f79d79b4ba82a7194df3d1f02f174347bd660"
+   ]
+  },
+  {
+   "kind": "uikit",
+   "type": "vanilla.ui.stone",
+   "seed": 1,
+   "hashes": [
+    "5e6a6aefb98de80d3408b520bbb8be1d2f3a306bb821c0357b9d6476896e3355"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.flora.fungus.glowcap",
+   "seed": 0,
+   "hashes": [
+    "f9d55d6e0c6b4ca78a078f878e48831648a6cdef4c7c4b801578d801e0581ce9"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.flora.fungus.glowcap",
+   "seed": 1,
+   "hashes": [
+    "428a9c3c0dcfa23509cd83ef959ed744f544e8bd02ec32f57003a136c083fa61"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.flora.fungus.glowcap",
+   "seed": 42,
+   "hashes": [
+    "6eb0e39d14040bd18c4d89dedcdc65292eaefdd2c725075a3b5ed5f7536d1e4f"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.flora.fungus.glowcap",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "e357bf826b4535f94433eb58d9a08ae5f51c0d09395099e052a20f956b05d4be"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.creature.goblin",
+   "seed": 0,
+   "hashes": [
+    "95f8fba7557e640ccc7ecb27a9ae799ec9f7c5de6c826e4110741da9f6a780e9",
+    "6c7423b1ae21b39e13b040414d2782132e3662d2e3813f25fd053cb186534663",
+    "29c5b8087c37f200a7a16122c3a306e7a3f35b449c94c71165859858fe79a1fa"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.creature.goblin",
+   "seed": 1,
+   "hashes": [
+    "2ddf8a80494febee5c026038431a3f817ae21bf3046d089a048d850f5b677c48",
+    "75920268d56d7474d37e2697c475354cdd8d56f84fd6eba7caa2586a98b27ed4",
+    "dabc7f1bb41f6d03b394d7e145cd00e4b2b362cd6a803a3e22b55e4485ea4c86"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.creature.goblin",
+   "seed": 42,
+   "hashes": [
+    "812bb84ad920f35c4eea2adf4123e64c83a7e63eb3edb048884769d5950c9d4a",
+    "42dcceacad3b37955d82f06b590c50a35597ed934d41068919353c1cbe7faf64",
+    "9a00662be3bf2e57f6df0c6101193757dafa0aed289e5ce6084137e5db8f6df7"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.creature.goblin",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "6090419c943a97379c6d0a0fbb0d642436db4bfa93b262385f4e2213bd468122",
+    "a6098667e0a4b3c689790554a61a63c8116f0ab1373d39246905d90f06a25016",
+    "78a9fe243a0f85a038f2b12d6c7d764dbba82cc0a708d68d5703a86a9d77cc81"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.creature.goblin.aquatic",
+   "seed": 0,
+   "hashes": [
+    "9272567f800c8b7472ee64270cb8554013de74c4f19aea2cfb7f35f0fb5f83b1",
+    "7d0f677f955c0bf2caedec5ee9da611478e9925ece62bc52026a71ad0ae0268e",
+    "08534ab1ae6d8ee0a73b78325023eeb9f1b134e8c974c61fba1984f858efdc6d"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.creature.goblin.aquatic",
+   "seed": 1,
+   "hashes": [
+    "d5aa9be0ce9e6cc93c2605e918e1a0757c17dda56def354170d4bd241f33224b",
+    "ece1c3b8d5819d0fd4e4f1da931634c335e9f5fcc08e56437eb787c03df939d6",
+    "019f7959737798dec6dd9edc241f4fbefe117bdf412384ef7f51f3e747ad61f8"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.creature.goblin.aquatic",
+   "seed": 42,
+   "hashes": [
+    "b779b503c3d8f23e2819b1262c462b39dfb1b136878f3b2d0061121b3df7ef3a",
+    "4ed6f13531b00780bb13c3b3f93a4e268e1ee994b87da5fc02dca59a895fecc8",
+    "38d50f52e47c8efba2afe4945ecfa7ebe62dbf1855704f836497749d461796de"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.creature.goblin.aquatic",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "b445e9478597673802353496b022e883be7ebc6856dfef92582e841850599333",
+    "0abf8a1a31510adc39f3bc848ec51af58e5cdc52a2003b0de59aa3b5c7038e28",
+    "540204cd37f1204cde96258fd337956cde7a8f670492de5355e8aa1e7affdaaa"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.env.reef",
+   "seed": 0,
+   "hashes": [
+    "871f4b1b36d2cc9e41be3bb3078fb90dbd48494191bb737351a778f9354ab240"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.env.reef",
+   "seed": 1,
+   "hashes": [
+    "7c9b2faf0f382dfd8fc467c9177f0a46650f3ae2d7d8b361115ef5120725d3cd"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.env.reef",
+   "seed": 42,
+   "hashes": [
+    "f6b828912d33302f878363af1f85676f87ccd141e28a74001cf311e01da1b2e1"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.env.reef",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "d3b1b35188f78b30294412130630a0bfcc8b6fa49efac3ef3602cb1cd2b17435"
+   ]
+  },
+  {
+   "kind": "wfc",
+   "type": "builtin.cave",
+   "seed": 3,
+   "hashes": [
+    "5b32ffdbcee54ae8c69289ca61c1244eb7362adefee46187d2ea43e4ad7b6c55"
+   ]
+  }
+ ],
+ "history": [
+  {
+   "engine_major": 0,
+   "cases": 43,
+   "changed": [],
+   "removed": [],
+   "witness": "initial",
+   "reason": "first blessing"
+  }
+ ]
+}

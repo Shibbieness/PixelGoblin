@@ -1,0 +1,26 @@
+schema = "pixelgoblin/type@1"
+id = "vanilla.flora.shrub"
+tag = "flora"
+generator = "lsystem"
+license = "CC0-1.0"
+size = [32, 32]
+axiom = "FX"
+iterations = 3
+step = [2, 4]
+leaf_radius = 2
+fruit_chance = 25
+trunk_width = 2
+
+[rules]
+X = [
+  { to = "F[+X][-X]FX", weight = 3 },
+  { to = "F[+X]FX", weight = 2 },
+  { to = "F[-X]FX", weight = 2 },
+  { to = "F[++X][-X]X", weight = 1 },
+]
+
+[palette]
+outline = "#140e14"
+fruit = "#e0403a"
+bark = ["#3a2418", "#6a4428", "#9a6a3a"]
+leaf = ["#1e3a1e", "#2f6a2a", "#5aa03a", "#a8d86a"]
