@@ -73,6 +73,23 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;max-width:100%}
 .bgview{width:100%;overflow:hidden;border-radius:4px;border:1px solid var(--line)}
 .bgview canvas{width:100%;display:block}
 .inherit{display:flex;flex-wrap:wrap;gap:4px}
+.chain{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.chain figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px;max-width:100%}
+.chain figcaption{font-size:.78em;color:var(--mute);text-align:center;max-width:260px}
+.chain figcaption b{color:var(--ink);font-family:"Silkscreen","Courier New",monospace;font-weight:400}
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px}
+.roster .cell span{text-align:center;line-height:1.2}
+table.gen{border-collapse:collapse;font-size:.82em;width:100%}
+table.gen td,table.gen th{border-bottom:1px solid var(--line);padding:3px 6px;text-align:left;vertical-align:top}
+table.gen th{color:var(--mute);font-weight:400;white-space:nowrap}
+.ladder{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.ladder div{border:1px solid var(--line);border-radius:4px;padding:6px;font-size:.78em}
+.ladder b{font-family:"Silkscreen","Courier New",monospace;font-weight:400;color:var(--accent)}
+.tree{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:end;text-align:center}
+.tree figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tree figcaption{font-size:.75em;color:var(--mute)}
+.scenewrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:4px}
+.scenewrap canvas{display:block;cursor:pointer}
 .save{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px}
 .save img{border:1px solid var(--line);image-rendering:pixelated;max-width:100%}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--accent);color:var(--accent-ink);padding:8px 14px;border-radius:4px;font-weight:700}
@@ -87,6 +104,8 @@ footer{margin-top:12px;color:var(--mute);font-size:.8em;display:flex;flex-wrap:w
   <h1>PixelGoblin<small id="ver">workbench</small></h1>
   <nav role="tablist" aria-label="Workshops">
     <button class="tab" role="tab" data-tab="gen" aria-selected="true">Generate</button>
+    <button class="tab" role="tab" data-tab="chars" aria-selected="false">Characters</button>
+    <button class="tab" role="tab" data-tab="village" aria-selected="false">Village</button>
     <button class="tab" role="tab" data-tab="edit" aria-selected="false">Edit</button>
     <button class="tab" role="tab" data-tab="convert" aria-selected="false">Convert</button>
     <button class="tab" role="tab" data-tab="tiles" aria-selected="false">Tiles</button>
@@ -132,6 +151,56 @@ footer{margin-top:12px;color:var(--mute);font-size:.8em;display:flex;flex-wrap:w
       <div id="g-detail"></div>
       <div id="b-out"></div>
     </div>
+  </div>
+</section>
+
+<!-- ============ CHARACTERS ============ -->
+<section class="pane" id="p-chars" hidden>
+  <div class="app">
+    <aside class="rail">
+      <label>Role<select id="k-role"></select></label>
+      <label>Subspecies<select id="k-sub"></select></label>
+      <label>Name (a name is a seed)<input type="text" id="k-name" placeholder="e.g. Grubnak" autocomplete="off"></label>
+      <label>Seed<input type="text" id="k-seed" value="7" inputmode="numeric"></label>
+      <div class="btns"><button class="btn" id="k-prev">Previous</button><button class="btn primary" id="k-next">Next goblin</button></div>
+      <label>Era style<select id="k-era">
+        <option value="">Build bit chain (default per tier)</option>
+        <option value="8-bit">8-bit everywhere</option><option value="16-bit">16-bit everywhere</option>
+        <option value="32-bit">32-bit everywhere</option><option value="hd">HD everywhere</option></select></label>
+      <label>Animation<select id="k-anim"><option value="idle">idle</option><option value="walk">walk</option><option value="">still</option></select></label>
+      <label class="row"><input type="checkbox" id="k-rim"> Light rim (for dark ground)</label>
+      <label class="row"><input type="checkbox" id="k-true"> True pixel size (×2)</label>
+      <div class="hint">One genome, six resolutions. The genome never looks at the tier; each tier only decides which features exist at that size, how many shades, and which era palette limit applies.</div>
+      <div class="btns"><button class="btn" id="k-savechain">Save chain PNG</button><button class="btn" id="k-edit">Open 64 px in editor</button></div>
+    </aside>
+    <div class="stage">
+      <h2 style="font-size:1rem;margin:0" id="k-title"></h2>
+      <div class="chain" id="k-chain"></div>
+      <div id="k-checks" class="verdicts"></div>
+      <details open><summary>Genome (what this goblin IS, at every size)</summary><table class="gen" id="k-genome"></table></details>
+      <details><summary>Level-of-detail ladder (what each tier adds)</summary><div class="ladder" id="k-ladder"></div></details>
+      <details><summary>Family tree (three generations of this role)</summary>
+        <div class="hint">Four founders are this seed and the next three. Each child takes whole parts from one parent; about one part in ten mutates.</div>
+        <div class="tree" id="k-tree"></div></details>
+      <h2 style="font-size:.9rem;margin:6px 0 0">Roster</h2>
+      <div class="hint">Every role, same seed and subspecies, at 32 px. Click one to open it.</div>
+      <div class="roster" id="k-roster"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VILLAGE ============ -->
+<section class="pane" id="p-village" hidden>
+  <div class="app">
+    <aside class="rail">
+      <label>Scene<select id="v-type"></select></label>
+      <label>Seed<input type="number" id="v-seed" value="1" min="0"></label>
+      <div class="btns"><button class="btn primary" id="v-next">New village</button><button class="btn" id="v-save">Save PNG</button></div>
+      <label>Zoom<input type="range" id="v-zoom" min="1" max="6" value="3"></label>
+      <div class="hint">Background goblins are real characters drawn at a depth tier (far ones at 16 px, near ones at 64), so a distant goblin still has ears, eyes and a job. Click any goblin to open it in Characters.</div>
+      <div id="v-crowd" class="hint"></div>
+    </aside>
+    <div class="stage"><div class="scenewrap"><canvas id="v-view"></canvas></div><div id="v-pick" class="hint"></div></div>
   </div>
 </section>
 
@@ -279,6 +348,7 @@ function showTab(name) {
   document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
   document.querySelectorAll(".pane").forEach((p) => { p.hidden = p.id !== "p-" + name; });
   store.set("tab", name);
+  if (name === "chars") drawChars(); if (name === "village") drawVillage();
   if (name === "bg") drawBg(); if (name === "tiles") drawTiles(); if (name === "ui") drawUi(); if (name === "edit") drawEd();
 }
 document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
@@ -399,6 +469,159 @@ $("b-go").onclick = () => {
     const f = document.createElement("figure"); f.appendChild(spriteCanvas(s, scale)); const cap = document.createElement("figcaption"); cap.textContent = t; f.appendChild(cap); $("b-trio").appendChild(f);
   });
   Object.entries(res.inherited).forEach(([k, v]) => { const s = document.createElement("span"); s.className = "chip" + (v === "mutation" ? " bad" : ""); s.textContent = k + " ← " + v; $("b-inh").appendChild(s); });
+};
+
+
+// ---------- CHARACTERS (rig: one genome, six tiers)
+PGRig.setResolver((id) => { const d = typeById(id); if (!d) throw new Error("unknown type " + id); return d; });
+const rigRoles = PRESETS.types.filter((t) => t.data.generator === "rig" && t.data.role && !t.own && t.data.label).sort((a, b) => (a.data.label || a.data.id).localeCompare(b.data.label || b.data.id));
+const rigSubs = PRESETS.types.filter((t) => t.data.generator === "rig" && t.own);
+(() => {
+  const r = $("k-role"); rigRoles.forEach((t) => { const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.label || t.data.id; r.appendChild(o); });
+  const sb = $("k-sub"); const o0 = document.createElement("option"); o0.value = ""; o0.textContent = "Common (role as written)"; sb.appendChild(o0);
+  rigSubs.forEach((t) => { const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.label || t.data.id; sb.appendChild(o); });
+  r.value = store.get("k.role", "boc.goblin.blacksmith"); if (!r.value && rigRoles.length) r.value = rigRoles[0].data.id;
+  sb.value = store.get("k.sub", "");
+  $("k-seed").value = store.get("k.seed", "7");
+})();
+function charData(roleId, subId) {
+  const base = typeById(roleId);
+  if (!subId) return base;
+  const sub = rigSubs.find((t) => t.data.id === subId);
+  return PGRig.compose(base, sub.own, subId);
+}
+const kSeed = () => { const v = ($("k-seed").value || "0").trim(); return /^\d+$/.test(v) ? v : "0"; };
+let kAnim = null;
+const nice = (k) => k.replace(/_/g, " ");
+function drawChars() {
+  if (!rigRoles.length) return;
+  const roleId = $("k-role").value, subId = $("k-sub").value, seed = kSeed();
+  store.set("k.role", roleId); store.set("k.sub", subId); store.set("k.seed", seed);
+  const data = charData(roleId, subId), g = PGRig.genome(data, PGRig.streamsFor(data, seed));
+  const eraAll = $("k-era").value || null, rim = $("k-rim").checked, trueSize = $("k-true").checked, anim = $("k-anim").value;
+  const role = typeById(roleId), sub = subId ? typeById(subId) : null;
+  $("k-title").textContent = `${role.label || roleId}${sub ? " · " + (sub.label || subId) : ""} · seed ${seed.length > 12 ? seed.slice(0, 12) + "…" : seed}`;
+  const box = $("k-chain"); box.innerHTML = "";
+  const seen = new Set(), anims = [], checks = [];
+  PGRig.TIERS.forEach((t) => {
+    const era = eraAll || PGRig.DEFAULT_CHAIN[t];
+    const poses = anim ? PGRig.POSES[anim] : [{}];
+    const frames = poses.map((p) => PGRig.render(data, g, t, { era, pose: p, rim }).sprite);
+    const r = PGRig.render(data, g, t, { era, rim });
+    const adds = r.features.filter((f) => !seen.has(f)); r.features.forEach((f) => seen.add(f));
+    const scale = trueSize ? 2 : Math.max(1, Math.floor(256 / t));
+    const fig = document.createElement("figure"); const cv = spriteCanvas(frames[0], scale); fig.appendChild(cv);
+    const legs = PGRig.legsCheck(data, g, t); checks.push(legs);
+    const cap = document.createElement("figcaption");
+    cap.innerHTML = `<b>${t} px</b> · ${era} · ${frames[0].usedColors()}/${PGRig.ERAS[era].max_colors} colours<br>${adds.length ? "adds: " + adds.map(nice).join(", ") : "adds nothing new"}`;
+    fig.appendChild(cap); box.appendChild(fig);
+    anims.push([cv, frames, scale]);
+  });
+  clearInterval(kAnim); let k = 0;
+  if (anim && !matchMedia("(prefers-reduced-motion: reduce)").matches) kAnim = setInterval(() => { k = (k + 1) % 4; anims.forEach(([cv, fr, sc]) => paint(cv, fr[k % fr.length], sc)); }, 220);
+  const bad = checks.filter((c) => !c.ok);
+  $("k-checks").innerHTML = `<span class="chip ${bad.length ? "bad" : "good"}">Legs: ${bad.length ? "CHECK " + bad.map((c) => c.tier).join(", ") : "two at every tier"}</span>` +
+    `<span class="chip">type ${PG.typeHash(data).slice(0, 12)}</span><span class="chip">licence ${data.license}</span>` +
+    `<span class="hint">Legs are checked twice: drawn alone they must be exactly two with a gap; drawn dressed, items may hide one but never add one.</span>`;
+  const rows = [["age", g.age], ["height", g.height + " / 1024"], ["build", g.build], ["head", `${g.head_pct}% of height, ${g.head_w_pct}% wide`],
+    ["ears", `${g.ear_len}% long, lift ${g.ear_lift}, width ${g.ear_w}%`], ["nose", g.nose + "%"], ["eyes", `${g.eye}% · ${g.iris}`],
+    ["expression", g.expression], ["hair", `${nice(g.hair)} · ${g.hair_color}`], ["outfit", `${nice(g.top)} + ${nice(g.bottom)} · ${g.cloth_a} / ${g.cloth_b}`],
+    ["headwear", nice(g.headwear)], ["holding", `${nice(g.held)}${g.offhand !== "none" ? " + " + nice(g.offhand) : ""}`], ["on back", nice(g.back)],
+    ["accessories", g.accessories.map(nice).join(", ") || "none"]];
+  $("k-genome").innerHTML = rows.map(([a, b]) => `<tr><th>${a}</th><td>${b}</td></tr>`).join("");
+  const byTier = {}; PGRig.ladder().forEach(([f, t]) => { (byTier[t] = byTier[t] || []).push(nice(f)); });
+  $("k-ladder").innerHTML = Object.keys(byTier).sort((a, b) => a - b).map((t) => `<div><b>${t} px</b><br>${byTier[t].join(", ")}</div>`).join("");
+  drawTree(data, seed);
+  drawRoster(subId, seed, roleId);
+}
+function drawTree(data, seed) {
+  const box = $("k-tree"); box.innerHTML = "";
+  const s0 = BigInt(seed), f = [0n, 1n, 2n, 3n].map((i) => (s0 + i) % (1n << 64n));
+  const fam = PGRig.family(data, f.map(String), 0);
+  const fig = (label, frames) => { const e = document.createElement("figure"); e.appendChild(spriteCanvas(frames[0], 2)); const c = document.createElement("figcaption"); c.textContent = label; e.appendChild(c); return e; };
+  const frames = (s, over) => PGRig.rigFrames(data, s, over, 64, null, "idle");
+  fam.founders.forEach((s, i) => box.appendChild(fig("founder " + "ABCD"[i], frames(String(f[i])))));
+  const c1 = fam.children[0], c2 = fam.children[1];
+  const sp = document.createElement("div"); box.appendChild(sp);
+  box.appendChild(fig("child of A+B", frames(c1.seed, c1.overrides)));
+  box.appendChild(fig("child of C+D", frames(c2.seed, c2.overrides)));
+  box.appendChild(document.createElement("div"));
+  const g1 = document.createElement("div"); box.appendChild(g1);
+  const gc = fig("grandchild", frames(fam.grandchild.seed, fam.grandchild.overrides)); box.appendChild(gc);
+  const inh = document.createElement("div"); inh.className = "inherit"; inh.style.gridColumn = "3 / span 2";
+  Object.entries(fam.grandchild.inherited).forEach(([k, v]) => { const s = document.createElement("span"); s.className = "chip" + (v === "mutation" ? " bad" : ""); s.textContent = k.replace("g/", "") + " ← " + v; inh.appendChild(s); });
+  box.appendChild(inh);
+}
+function drawRoster(subId, seed, current) {
+  const box = $("k-roster"); box.innerHTML = "";
+  rigRoles.forEach((t) => {
+    const d = charData(t.data.id, subId), g = PGRig.genome(d, PGRig.streamsFor(d, seed));
+    const b = document.createElement("button"); b.type = "button"; b.className = "cell" + (t.data.id === current ? " sel" : "");
+    b.appendChild(spriteCanvas(PGRig.render(d, g, 32, {}).sprite, 2));
+    const sp = document.createElement("span"); sp.textContent = t.data.label || t.data.id; b.appendChild(sp);
+    b.onclick = () => { $("k-role").value = t.data.id; drawChars(); window.scrollTo({ top: 0 }); };
+    box.appendChild(b);
+  });
+}
+["k-role", "k-sub", "k-era", "k-anim", "k-rim", "k-true"].forEach((id) => { $(id).onchange = drawChars; });
+$("k-seed").onchange = () => { $("k-name").value = ""; drawChars(); };
+$("k-name").oninput = () => { const n = $("k-name").value; if (n.trim()) { $("k-seed").value = PGRig.seedFromName(n); drawChars(); } };
+const stepSeed = (d) => { const v = (BigInt(kSeed()) + BigInt(d) + (1n << 64n)) % (1n << 64n); $("k-seed").value = v.toString(); $("k-name").value = ""; drawChars(); };
+$("k-next").onclick = () => stepSeed(1); $("k-prev").onclick = () => stepSeed(-1);
+function chainStrip() {
+  const data = charData($("k-role").value, $("k-sub").value), g = PGRig.genome(data, PGRig.streamsFor(data, kSeed()));
+  const eraAll = $("k-era").value || null, rim = $("k-rim").checked;
+  const sprs = PGRig.TIERS.map((t) => PGRig.render(data, g, t, { era: eraAll || PGRig.DEFAULT_CHAIN[t], rim }).sprite);
+  const W = sprs.reduce((a, s) => a + s.w + 4, 4), H = 260;
+  const out = new PG.Sprite(W, H, [[0, 0, 0, 0]]);
+  let x = 4;
+  for (const s of sprs) {
+    const map = s.palette.map((c, i) => { if (!i) return 0; const k = out.palette.findIndex((p) => p[0] === c[0] && p[1] === c[1] && p[2] === c[2] && p[3] === c[3]); if (k >= 0) return k; out.palette.push(c.slice()); return out.palette.length - 1; });
+    for (let y = 0; y < s.h; y++) for (let xx = 0; xx < s.w; xx++) { const i = s.px[y * s.w + xx]; if (i) out.set(x + xx, H - 2 - s.h + y, map[i]); }
+    x += s.w + 4;
+  }
+  return out;
+}
+$("k-savechain").onclick = async () => saveFile(`${$("k-role").value}${$("k-sub").value ? "@" + $("k-sub").value.split(".").pop() : ""}-${kSeed()}-chain.png`, await pngBlob(chainStrip(), 1));
+$("k-edit").onclick = () => {
+  const data = charData($("k-role").value, $("k-sub").value);
+  const g = PGRig.genome(data, PGRig.streamsFor(data, kSeed()));
+  const fr = PGRig.POSES[$("k-anim").value || "idle"].map((p) => PGRig.render(data, g, 64, { era: $("k-era").value || null, pose: p, rim: $("k-rim").checked }).sprite);
+  loadDoc(fr, 220); showTab("edit");
+};
+
+// ---------- VILLAGE (scene composer)
+fillSelect($("v-type"), (t) => t.data.generator === "scene");
+let vPlaced = [], vSprite = null;
+function drawVillage() {
+  const d = typeById($("v-type").value); if (!d) return;
+  const seed = Math.max(0, parseInt($("v-seed").value || "0", 10));
+  vPlaced = [];
+  vSprite = PGRig.sceneFrames(d, seed, null, (c) => vPlaced.push(c))[0];
+  const z = +$("v-zoom").value; paint($("v-view"), vSprite, z);
+  const counts = {}; vPlaced.forEach((c) => { counts[c.band] = (counts[c.band] || 0) + 1; });
+  $("v-crowd").innerHTML = d.crowd.map((b) => `${b.name}: ${counts[b.name] || 0} goblins at ${b.tier} px`).join("<br>") + `<br>${d.size[0]}×${d.size[1]} · ${vSprite.usedColors()} colours`;
+  $("v-pick").textContent = "";
+}
+$("v-type").onchange = drawVillage; $("v-seed").onchange = drawVillage; $("v-zoom").oninput = () => { if (vSprite) paint($("v-view"), vSprite, +$("v-zoom").value); };
+$("v-next").onclick = () => { $("v-seed").value = +$("v-seed").value + 1; drawVillage(); };
+$("v-save").onclick = async () => { if (vSprite) saveFile(`${$("v-type").value}-${$("v-seed").value}.png`, await pngBlob(vSprite, 1)); };
+$("v-view").onclick = (ev) => {
+  const cv = $("v-view"), r = cv.getBoundingClientRect();
+  const x = Math.floor((ev.clientX - r.left) * vSprite.w / r.width), y = Math.floor((ev.clientY - r.top) * vSprite.h / r.height);
+  // front-most goblin whose opaque pixel is under the click
+  for (let i = vPlaced.length - 1; i >= 0; i--) {
+    const c = vPlaced[i];
+    if (x < c.x || y < c.y || x >= c.x + c.tier || y >= c.y + c.tier) continue;
+    const d = typeById(c.role), g = PGRig.genome(d, PGRig.streamsFor(d, c.seed));
+    const spr = PGRig.render(d, g, c.tier, {}).sprite;
+    if (!spr.px[(y - c.y) * c.tier + (x - c.x)]) continue;
+    $("k-role").value = c.role; $("k-sub").value = ""; $("k-seed").value = String(c.seed); $("k-name").value = "";
+    $("v-pick").textContent = `${d.label || c.role}, seed ${c.seed}, drawn at ${c.tier} px.`;
+    showTab("chars"); window.scrollTo({ top: 0 });
+    return;
+  }
+  $("v-pick").textContent = "No goblin there. Click a goblin to open it.";
 };
 
 // ---------- EDIT

@@ -132,6 +132,19 @@ def compute_case(kind, tid, seed) -> list[str]:
     return [uikit.build_kit(tf, seed)["atlas"].pixel_hash()]
 
 
+def expected_size(tf) -> tuple[int, int]:
+    """What `size` means depends on the generator: pixels for most; for a rig the
+    largest tier it may be drawn at (frames come out at its default tier); for a
+    Warren, the map in tiles."""
+    if tf.generator == "rig":
+        t = tf.data.get("tier", 64)
+        return t, t
+    if tf.generator == "warren":
+        T = typefile.load(tf.data["terrain"]).data["tile"]
+        return tf.data["size"][0] * T, tf.data["size"][1] * T
+    return tuple(tf.data["size"])
+
+
 def base_mask_type() -> dict:
     return json.loads(json.dumps(typefile.load("vanilla.creature.blob").data))
 
@@ -244,7 +257,7 @@ def b03(c: Check):
             continue
         seeds = range(120 if tf.generator == "mask" else 12)
         sprites = [gen.sprite(tf, s) for s in seeds]
-        W, H = tf.data["size"]
+        W, H = expected_size(tf)
         c.ok(all((s.w, s.h) == (W, H) for s in sprites), f"{tf.id}: every sprite is {W}x{H}")
         if tf.generator == "mask":
             bad = [s for s in sprites if verdicts.spec_verdict(tf, s)["verdict"] != "SOUND"]
@@ -545,36 +558,77 @@ def _repo_files() -> list[Path]:
             and p.suffix not in (".png", ".gif")]
 
 
-@gate("B13", "cross-language parity (JavaScript editor core)", ["G20"])
+@gate("B13", "cross-language parity (JavaScript editor core, rig, scene)", ["G20"])
 def b13(c: Check):
+    sys.path.insert(0, str(ROOT / "tools"))
+    import build_editor
+    import transpile_rig
+    from pixelgoblin.gen import rig
     node = shutil.which("node")
-    core = ROOT / "editor" / "pg-core.js"
     html = ROOT / "editor" / "pixelgoblin.html"
-    c.ok(core.exists() and html.exists(), "editor core and page exist")
+    c.ok(html.exists(), "editor page exists")
     if not node:
         c.ok(False, "node not found — parity could not be checked (a skipped check is not a pass)")
         return
-    c.ok(core.read_text() in html.read_text(), "the page embeds the exact pg-core.js (derived file is current)")
-    cases = []
+    gen_js = (ROOT / "editor" / "pg-rig.gen.js")
+    c.ok(gen_js.exists() and gen_js.read_text() == transpile_rig.main(),
+         "editor/pg-rig.gen.js is current with pixelgoblin/gen/rig.py (regenerate: tools/transpile_rig.py)")
+    c.ok(build_editor.engine_script() in html.read_text(), "the page embeds the exact engine script (derived file is current)")
+    types = {tf.id: tf.data for tf in all_types()}
+    cases, want = [], []
     for tf in all_types():
         if tf.generator in ("mask", "lsystem", "parallax", "autotile"):
             for s in (0, 1, 42, 2 ** 63 + 5):
-                cases.append({"type": tf.data, "hash": tf.type_hash, "seed": str(s), "kind": tf.generator})
+                cases.append({"type": tf.data, "seed": str(s)})
+                if tf.generator == "autotile":
+                    h = [autotile.build_tileset(tf, s)[0].pixel_hash()]
+                else:
+                    h = [f.pixel_hash() for f in gen.frames(tf, s)]
+                want.append({"type_hash": tf.type_hash, "hashes": h, "share": sharecode.encode(tf.type_hash, s)})
+    # characters: every rig type at every tier up to 64, six of them at 128 and 256; overlays, rim and poses too
+    rigs = sorted(t.id for t in all_types() if t.generator == "rig" and ".sub." not in t.id)
+    subs = sorted(t.id for t in all_types() if t.generator == "rig" and ".sub." in t.id)
+    for i, rid in enumerate(rigs):
+        seed = i * 7919 + 3
+        tiers = [8, 16, 32, 64] + ([128, 256] if i % 6 == 0 else [])
+        ov = None
+        if i % 3 == 1 and subs:
+            sid = subs[i % len(subs)]
+            ov = {"own": typefile._read_toml(typefile.find_by_id(sid)), "id": sid}
+            tf = typefile.compose(rid, sid)
+        else:
+            tf = typefile.load(rid)
+        rim, pose = i % 5 == 2, ({"bob": 1, "blink": 1} if i % 4 == 3 else {"lift_l": 2, "swing": 1} if i % 4 == 1 else {})
+        g = rig.genome(tf.data, rig.streams_for(tf, seed))
+        cases.append({"kind": "rig", "type": types[rid], "seed": seed, "tiers": tiers, "overlay": ov, "rim": rim, "pose": pose})
+        want.append({"type_hash": tf.type_hash, "genome": g,
+                     "hashes": [rig.render(tf.data, g, t, pose=pose, rim=rim)[0].pixel_hash() for t in tiers],
+                     "legs": [rig.legs_check(tf.data, g, t)["ok"] for t in tiers]})
+    for tf in all_types():
+        if tf.generator in ("scene", "rig") and ".sub." not in tf.id and (tf.generator == "scene" or tf.id == "boc.goblin"):
+            for s in (0, 42):
+                cases.append({"type": tf.data, "seed": str(s)})
+                want.append({"type_hash": tf.type_hash, "hashes": [f.pixel_hash() for f in gen.frames(tf, s)],
+                             "share": sharecode.encode(tf.type_hash, s)})
+    fam_tf = typefile.load("boc.goblin.hunter")
+    fam = brood.family(fam_tf, (5, 6, 7, 8), 3)
+    cases.append({"kind": "family", "type": fam_tf.data, "founders": [5, 6, 7, 8], "seed": 3})
+    want.append({"hashes": [gen.frames(fam_tf, k["seed"], k["overrides"])[0].pixel_hash() for k in fam["children"]]
+                 + [gen.frames(fam_tf, fam["grandchild"]["seed"], fam["grandchild"]["overrides"])[0].pixel_hash()],
+                 "inherited": fam["grandchild"]["inherited"]})
     c.population(len(cases), "parity cases")
-    r = subprocess.run([node, str(ROOT / "editor" / "parity.mjs")], input=json.dumps(cases), capture_output=True, text=True)
+    r = subprocess.run([node, str(ROOT / "editor" / "parity.mjs")], input=json.dumps({"types": types, "cases": cases}),
+                       capture_output=True, text=True)
     if r.returncode != 0:
         c.ok(False, f"node parity run failed: {r.stderr[-500:]}")
         return
     got = json.loads(r.stdout)
-    for case, out in zip(cases, got):
-        tf = typefile.from_dict(case["type"])
-        c.ok(out["type_hash"] == tf.type_hash, f"JS type hash {tf.id}")
-        if case["kind"] == "autotile":
-            want = [autotile.build_tileset(tf, int(case["seed"]))[0].pixel_hash()]
-        else:
-            want = [f.pixel_hash() for f in gen.frames(tf, int(case["seed"]))]
-        c.ok(out["hashes"] == want, f"JS pixels == Python pixels: {tf.id} seed {case['seed']}")
-        c.ok(out["share"] == sharecode.encode(tf.type_hash, int(case["seed"])), f"JS share code == Python: {tf.id} seed {case['seed']}")
+    c.ok(len(got) == len(cases), "node answered every case")
+    for case, w, o in zip(cases, want, got):
+        name = f"{case['type'].get('id')} seed {case.get('seed')}"
+        for k, v in w.items():
+            c.ok(o.get(k) == v, f"JS {k} == Python: {name}")
+    c.ok(transpile_rig.main() != transpile_rig.main().replace("F(", "Math.floor(", 1), "control: a changed geometry file is detected as stale", negative=True)
 
 
 @gate("B14", "documentation is present and derived docs are current", ["G21"])
@@ -618,6 +672,147 @@ def b15(c: Check):
             c.ok(False, f"count '{k}' is unfloored (a capability nobody counts is one nobody misses)")
         else:
             c.ok(v >= floor[k], f"{k}: {v} >= floor {floor[k]}")
+
+
+@gate("B16", "characters: one genome, six tiers", ["G25"])
+def b16(c: Check):
+    from pixelgoblin.gen import rig
+    from pixelgoblin.readability import squint
+    rigs = [t for t in all_types() if t.generator == "rig" and ".sub." not in t.id]
+    c.population(len(rigs), "rig types")
+    # every feature the geometry emits has a rung on the ladder (nothing silently defaults to 8 px)
+    feats = set()
+    for tf in rigs:
+        g = rig.genome(tf.data, rig.streams_for(tf, 0))
+        feats |= {sh.feat for sh in rig.build_shapes(g, 4, {})}
+    c.ok(feats <= set(rig.LOD), f"every emitted feature is on the LOD ladder (missing: {sorted(feats - set(rig.LOD))})")
+    c.ok(not ({"zzz"} <= set(rig.LOD)), "control: an unknown feature is reported as missing", negative=True)
+    # the tier is not an input to the genome
+    tf = typefile.load("boc.goblin.blacksmith")
+    g1 = rig.genome(tf.data, rig.streams_for(tf, 9))
+    _, ch = rig.chain(tf, 9)
+    c.ok(g1 == rig.genome(tf.data, rig.streams_for(tf, 9)) and len(ch) == 6, "the chain draws one genome at six tiers")
+    # legs: two at every tier, for every role (the three-leg bug cannot come back)
+    n = bad = 0
+    for tf in rigs:
+        for seed in (0, 1, 2):
+            g = rig.genome(tf.data, rig.streams_for(tf, seed))
+            for t in (8, 16, 32, 64):
+                n += 1
+                r = rig.legs_check(tf.data, g, t)
+                if not r["ok"]:
+                    bad += 1
+                    c.ok(False, f"legs {tf.id} seed {seed} at {t} px: alone {r['alone']}, shown {r['shown']}")
+    c.population(n, "leg checks")
+    c.ok(bad == 0, f"{n} leg checks, {bad} failed")
+    N = 8
+    three = [""] * (N * N)
+    for x in (1, 2, 4, 6):
+        for y in (5, 6, 7):
+            three[y * N + x] = "legs"
+    c.ok(rig.leg_count(three, N) == 3, "control: a third leg is counted as three", negative=True)
+    merged = [("legs" if y >= 5 and 1 <= x <= 6 else "") for y in range(N) for x in range(N)]
+    c.ok(rig.leg_count(merged, N) == 1, "control: merged legs are counted as one", negative=True)
+    # era palette budgets hold at every tier of the default chain, and when an era is forced
+    for tf in rigs[::4]:
+        g = rig.genome(tf.data, rig.streams_for(tf, 0))
+        for t in rig.TIERS[:5]:
+            era = rig.DEFAULT_CHAIN[t]
+            spr = rig.render(tf.data, g, t, era)[0]
+            c.ok(spr.used_colors() <= rig.ERAS[era]["max_colors"], f"{tf.id} {t} px {era}: {spr.used_colors()} colours")
+        spr = rig.render(tf.data, g, 64, "8-bit")[0]
+        c.ok(spr.used_colors() <= 3, f"{tf.id} forced 8-bit at 64 px: {spr.used_colors()} colours")
+    from pixelgoblin.sprite import Sprite
+    ctl = Sprite(4, 4, [(0, 0, 0, 0)] + [(i * 20, 0, 0, 255) for i in range(1, 11)])
+    ctl.px[:] = bytes([0] * 6 + list(range(1, 11)))
+    rig._era_reduce(ctl, 3, False)
+    c.ok(ctl.used_colors() == 3, "control: the era reducer brings 10 colours down to exactly 3", negative=True)
+    # identity across tiers: silhouette (IoU) and material agreement with the
+    # style-matched 256 px reference. Floors were MEASURED over every role at
+    # seed 0 (docs/explanation/tier-chain.md) and set just under the minimum;
+    # the averages are the real claim, the minimums catch a broken role.
+    floors = {8: (30, 35, 55, 80), 16: (60, 55, 75, 75), 32: (78, 78, 88, 88), 64: (88, 82, 93, 93), 128: (92, 92, 94, 94)}
+    sample = rigs[::3]
+    got = {t: [] for t in floors}
+    for tf in sample:
+        g = rig.genome(tf.data, rig.streams_for(tf, 0))
+        for t, (fi, fm, _, _) in floors.items():
+            co = rig.coherence(tf.data, g, t)
+            got[t].append(co)
+            c.ok(co["iou"] >= fi and co["material"] >= fm, f"{tf.id} {t} px coherence iou {co['iou']} (>= {fi}), material {co['material']} (>= {fm})")
+    for t, (_, _, ai, am) in floors.items():
+        avg_i = sum(x["iou"] for x in got[t]) // len(got[t])
+        avg_m = sum(x["material"] for x in got[t]) // len(got[t])
+        c.ok(avg_i >= ai and avg_m >= am, f"{t} px average coherence iou {avg_i} (>= {ai}), material {avg_m} (>= {am})")
+    # small tiers are stylised (bigger head), large tiers are not
+    c.ok(rig.TIER_HEAD[8] > rig.TIER_HEAD[64] >= rig.TIER_HEAD[256] == 0, "chibi rule: head grows as the tier shrinks")
+    # rim: a dark sprite on dark ground reads once the rim is on
+    tf = typefile.load("boc.goblin.assassin")
+    g = rig.genome(tf.data, rig.streams_for(tf, 0))
+    plain = squint(rig.render(tf.data, g, 64)[0], {"dark": (24, 22, 26)})["contrast"]["dark"]
+    rimmed = squint(rig.render(tf.data, g, 64, rim=True)[0], {"dark": (24, 22, 26)})["contrast"]["dark"]
+    c.ok(rimmed["reads"], f"assassin with rim reads on dark ground ({rimmed['ratio']}:1)")
+    c.ok(not plain["reads"], f"control: without the rim it does not ({plain['ratio']}:1)", negative=True)
+
+
+@gate("B17", "scenes, dungeons, names, overlays and outputs", ["G26"])
+def b17(c: Check):
+    from pixelgoblin import cards, gif
+    from pixelgoblin.gen import rig, scene, warren
+    from pixelgoblin.rng import seed_from_name, sha256
+    # scenes: deterministic, identity includes the characters' type files, seeds differ
+    scenes = [t for t in all_types() if t.generator == "scene"]
+    c.population(len(scenes), "scene types")
+    for tf in scenes:
+        a, b = gen.frames(tf, 1)[0], gen.frames(tf, 1)[0]
+        c.ok(a.pixel_hash() == b.pixel_hash(), f"{tf.id} is deterministic")
+        c.ok((a.w, a.h) == tuple(tf.data["size"]), f"{tf.id} is {tf.data['size']}")
+        refs = sorted({r for d in tf.data["crowd"] for r in d["roles"]})
+        want = sha256("".join([tf.type_hash] + [typefile.load(r).type_hash for r in refs]).encode()).hex()
+        c.ok(scene.identity(tf) == want, f"{tf.id} identity includes all {len(refs)} role type files")
+        c.ok(scene.identity(tf) != tf.type_hash, f"control: {tf.id} identity is not its own type hash", negative=True)
+        c.ok(gen.frames(tf, 2)[0].pixel_hash() != a.pixel_hash(), f"{tf.id}: seeds make different villages", negative=True)
+    # dungeons: every room is reachable from the entrance
+    def reachable(grid, start):
+        H, W = len(grid), len(grid[0])
+        seen, todo = {start}, [start]
+        while todo:
+            x, y = todo.pop()
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                q = (x + dx, y + dy)
+                if 0 <= q[0] < W and 0 <= q[1] < H and grid[q[1]][q[0]] and q not in seen:
+                    seen.add(q)
+                    todo.append(q)
+        return seen
+    warrens = [t for t in all_types() if t.generator == "warren"]
+    c.population(len(warrens), "warren types")
+    for tf in warrens:
+        for seed in range(6):
+            lay = warren.layout(tf, seed)
+            rooms = lay["rooms"]
+            ent = (rooms[0]["x"], rooms[0]["y"])
+            seen = reachable(lay["grid"], ent)
+            c.ok(all((r["x"], r["y"]) in seen for r in rooms), f"{tf.id} seed {seed}: all {len(rooms)} rooms reachable")
+            c.ok(rooms[0]["kind"] == "entrance" and rooms[-1]["kind"] == "boss", f"{tf.id} seed {seed}: entrance and boss rooms")
+    cut = [[1, 1, 0, 0, 1], [1, 1, 0, 0, 1]]
+    c.ok((4, 0) not in reachable(cut, (0, 0)), "control: a walled-off room is found unreachable", negative=True)
+    # names are seeds
+    c.ok(seed_from_name("  Grubnak ") == seed_from_name("grubnak"), "names ignore case and surrounding spaces")
+    c.ok(seed_from_name("Grubnak") != seed_from_name("Grubnok"), "different names, different goblins", negative=True)
+    # overlays and list-append keys
+    c.ok(typefile._merge({"a": [1], "b": 1}, {"a_add": [2]}) == {"a": [1, 2], "b": 1}, "`_add` keys append")
+    c.ok(typefile._merge({"a": [1]}, {"a": [2]}) == {"a": [2]}, "control: a plain key replaces", negative=True)
+    base, snow = typefile.load("boc.goblin.guard"), typefile.compose("boc.goblin.guard", "boc.goblin.sub.snow")
+    c.ok(snow.data["role"] == base.data["role"], "a subspecies overlay keeps the role's outfit and job")
+    c.ok(snow.data["palette"]["materials"]["skin"] != base.data["palette"]["materials"]["skin"], "and changes the skin", negative=True)
+    # GIF: frames survive the round trip; the card shows every tier
+    tf = typefile.load("boc.goblin.musician")
+    frames = rig.generate_frames(tf, 4, anim="walk")
+    data = gif.encode(frames, 200, 2)
+    c.ok(data[:6] == b"GIF89a" and gif.decode_frame_count(data) == 4, "walk cycle GIF has 4 frames")
+    c.ok(gif.decode_frame_count(gif.encode(frames[:1], 200)) == 1, "control: a still has one frame", negative=True)
+    spr, info = cards.card(tf, 4)
+    c.ok(spr.w > 256 and len(info["chain"]) == 6, "the character card shows six tiers")
 
 
 # ---------------------------------------------------------------- data
@@ -677,6 +872,7 @@ REQUIRED_DOCS = [
     "docs/explanation/gameplan.md",
     "docs/explanation/decisions.md",
     "docs/explanation/stack.md",
+    "docs/explanation/tier-chain.md",
 ]
 
 
@@ -730,7 +926,7 @@ def run(ids: list[str]) -> dict:
                 g["fn"](c)
         except Exception as e:  # noqa: BLE001
             c.ok(False, f"gate crashed: {e!r}")
-        if c.asserts and not c.negatives and bid not in ("B00", "B03", "B10", "B13", "B14", "B15"):
+        if c.asserts and not c.negatives and bid not in ("B00", "B03", "B10", "B14", "B15"):
             c.ok(False, "gate has no negative assertion (a gate that cannot fail proves nothing)")
         results[bid] = {"title": g["title"], "covers": g["covers"], "passed": c.failed == 0 and c.asserts > 0,
                         "asserts": c.asserts, "failed": c.failed, "lines": c.lines[:12]}

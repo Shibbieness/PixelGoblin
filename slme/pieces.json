@@ -332,11 +332,266 @@
   }
  },
  {
+  "id": "pixelgoblin.solver.rig",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Character rig: one tier-independent genome drawn at 8 to 256 px with an era look",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "one fixed-size hand-drawn sprite per character",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.rig:render"
+  },
+  "input_schema": {
+   "type": "object",
+   "genome": "object",
+   "tier": "integer",
+   "era": "string"
+  },
+  "output_schema": {
+   "sprite": "object",
+   "features": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.rigchain",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Build bit chain: the same genome at every tier, with what each tier adds",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "tiers drawn separately by hand, with drift",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.rig:chain"
+  },
+  "input_schema": {
+   "type": "object",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "genome": "object",
+   "chain": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.scene",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Scene composer: layered village with a crowd of real characters at depth tiers",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "a painted backdrop with no characters",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.scene:generate_frames"
+  },
+  "input_schema": {
+   "type": "object",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "frames": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.warren",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Warren dungeons: room graph first, then autotiled floors; every room reachable",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "hand-built maps",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.warren:layout"
+  },
+  "input_schema": {
+   "type": "object",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "grid": "array",
+   "rooms": "array",
+   "edges": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.card",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Character card: the chain, the genome and the LOD ladder on one sheet",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "a spreadsheet of tier notes",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.cards:card"
+  },
+  "input_schema": {
+   "type": "object",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "sprite": "object",
+   "data": "object"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.gif",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Stdlib GIF89a encoder with transparency and looping",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "export PNG sheets and animate elsewhere",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gif:encode"
+  },
+  "input_schema": {
+   "frames": "array",
+   "frame_ms": "integer"
+  },
+  "output_schema": {
+   "bytes": "bytes"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.nameseed",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "A name is a seed: the same name always makes the same character",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "store numeric seeds",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.rng:seed_from_name"
+  },
+  "input_schema": {
+   "name": "string"
+  },
+  "output_schema": {
+   "seed": "integer"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.family",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Three-generation family tree from four founder seeds; pictures regenerate from the tree",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "unrelated characters",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.brood:family"
+  },
+  "input_schema": {
+   "type": "object",
+   "founders": "array",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "tree": "object"
+  }
+ },
+ {
+  "id": "pixelgoblin.validator.legs",
+  "type": "VALIDATOR",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Legs check: exactly two legs with a gap when drawn alone; items may hide one, never add one",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "visual review (the three-leg bug shipped once)",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.rig:legs_check"
+  },
+  "input_schema": {
+   "data": "object",
+   "genome": "object",
+   "tier": "integer"
+  },
+  "output_schema": {
+   "ok": "boolean",
+   "alone": "integer",
+   "shown": "integer"
+  }
+ },
+ {
+  "id": "pixelgoblin.validator.coherence",
+  "type": "VALIDATOR",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Tier coherence: silhouette IoU and material agreement against a style-matched reference",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "eyeballing the chain",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.rig:coherence"
+  },
+  "input_schema": {
+   "data": "object",
+   "genome": "object",
+   "tier": "integer"
+  },
+  "output_schema": {
+   "iou": "integer",
+   "material": "integer"
+  }
+ },
+ {
+  "id": "pixelgoblin.validator.squint",
+  "type": "VALIDATOR",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Squint: edge contrast per background, detail kept at 1x, and mass",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "sprites that vanish on some ground",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.readability:squint"
+  },
+  "input_schema": {
+   "sprite": "object"
+  },
+  "output_schema": {
+   "contrast": "object",
+   "detail": "integer",
+   "mass": "integer"
+  }
+ },
+ {
   "id": "pixelgoblin.gate.build",
   "type": "GATE",
   "version": "v0u1p0",
   "source_capsule": "pixelgoblin",
-  "summary": "Sixteen build gates with falsification, vacuity guards and a count ratchet",
+  "summary": "Eighteen build gates with falsification, vacuity guards and a count ratchet",
   "deterministic": true,
   "needs_model": false,
   "degrades_to": "unverified build",

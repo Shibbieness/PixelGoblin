@@ -45,10 +45,10 @@ BAYER4 = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]]
 LOD = {
     "body": 8, "head": 8, "ears": 8, "legs": 8, "arms": 8, "torso": 8,
     "held.large": 8, "headwear.large": 8, "back.large": 8,
-    "top": 8, "bottom": 8, "hair": 8,
+    "top": 8, "bottom": 8, "hair": 8, "feet": 8,
     "eyes": 16, "held": 16, "headwear": 16, "back": 16,
     "beard": 16, "belt": 16, "glasses": 16, "goggles": 16, "pauldrons": 16, "fins": 16,
-    "mouth": 32, "nose": 32, "hands": 32, "feet": 32, "sleeves": 32, "scarf": 32, "earrings": 32, "buckle": 32,
+    "mouth": 32, "nose": 32, "hands": 32, "sleeves": 32, "scarf": 32, "earrings": 32, "buckle": 32,
     "brows": 64, "eye_whites": 64, "ear_inner": 64, "necklace": 64, "tusks": 64, "pouches": 64, "bracers": 64,
     "tongue": 64, "flowers": 64, "straps": 64,
     "pupils": 128, "highlights": 128, "pattern": 128, "stitches": 128, "fur_tufts": 128, "nails": 128,
@@ -327,7 +327,10 @@ def build_shapes(g: dict, px: int, pose: dict, style_px: int | None = None) -> l
     for side, lift in ((-1, lift_l), (1, lift_r)):
         fx = CX + side * lx
         s.append(C(CX + side * lx, hip_y - leg_r // 2, fx, GROUND - foot_h - lift, leg_r, "skin", 10, "legs"))
-        s.append(E(fx + side * leg_r // 3, GROUND - foot_h // 2 - lift, leg_r * 14 // 10, foot_h * 6 // 10 + 1, "leather", 12, "feet"))
+        # below 32 px the feet are drawn in front of everything: a held spear or
+        # shield covering both feet makes an 8 px character float
+        s.append(E(fx + side * leg_r // 3, GROUND - foot_h // 2 - lift, leg_r * 14 // 10, foot_h * 6 // 10 + 1, "leather",
+                   12 if tier >= 32 else 60, "feet"))
     if bottom == "trousers" or bottom == "shorts":
         knee = hip_y + (leg_len * 45 // 100 if bottom == "trousers" else leg_len * 30 // 100)
         for side, lift in ((-1, lift_l), (1, lift_r)):

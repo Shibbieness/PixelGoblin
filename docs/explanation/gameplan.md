@@ -4,7 +4,7 @@
 
 ## Where things stand (v0u1p0)
 
-The **prototype** is built and gated: Python reference engine, CLI, browser editor with a parity-checked JavaScript core, Vanilla Core flavor, and 16 build gates. Plan gates G01 to G24 below are the prototype's exit criteria. `BUILD_STATUS.md` shows which pass.
+The **prototype** is built and gated: Python reference engine, CLI, browser editor with a parity-checked JavaScript core, Vanilla Core flavor, a character rig drawn at six resolution tiers (8 to 256 px), a village scene composer, Warren dungeons, and 18 build gates. Plan gates G01 to G26 below are the prototype's exit criteria. `BUILD_STATUS.md` shows which pass.
 
 ## Plan gates for the prototype
 
@@ -34,6 +34,8 @@ The **prototype** is built and gated: Python reference engine, CLI, browser edit
 | G22 | The licence text is byte-exact; the credit line shows in `--version` |
 | G23 | Share codes round-trip, and a single typo is caught |
 | G24 | Brood is deterministic and inherits from both parents |
+| G25 | A character is one genome drawn at 8, 16, 32, 64, 128 and 256 px: two legs at every tier, era colour budgets hold, every feature has a rung on the LOD ladder, and silhouette and material coherence stay above the measured floors |
+| G26 | Scenes are deterministic and keyed to their characters' type files; every Warren room is reachable; names are seeds; overlays keep the role; animated GIFs keep every frame |
 
 ## Standalone phases
 
@@ -46,7 +48,7 @@ Each phase lists its gates. Phase numbers match the original design document.
 
 ### P1 — Rust core, bound to the Python goldens
 The Python engine becomes the **oracle**. The Rust core must reproduce it.
-1. `pixelgoblin-core` crate: rng, typefile (canonical JSON + SHA-256), mask, lsystem, parallax, autotile, wfc, uikit.
+1. `pixelgoblin-core` crate: rng, typefile (canonical JSON + SHA-256), mask, lsystem, parallax, autotile, wfc, uikit, rig, scene, warren. The rig geometry is already transpiled from Python for JavaScript (`tools/transpile_rig.py`); the same AST walk can emit Rust.
    - **Gate:** every golden in `tests/golden/goldens.json` matches, byte for byte, on all three CI targets plus `wasm32`.
 2. Integer-only lint: no `f32`/`f64` in the runtime modules.
    - **Gate:** a CI grep over the runtime modules finds zero float types.

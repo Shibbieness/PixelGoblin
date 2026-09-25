@@ -55,5 +55,29 @@ Format: **Context → Decision → Consequences.** ADR-001 to ADR-008 are from t
 
 **Decision.** Animation exports run an approximate WCAG-style general-flash check. Findings are labelled UNVERIFIED, because this is not a certified test, and are delivered in SPIRE's order: don't, what happens, why, what instead. Detection reports and never blocks on its own. Blocking is a bundle-profile judgement, used only for commercial packs with non-commercial inputs.
 
+## ADR-015 — Characters: a genome that never sees the tier
+
+**Context.** Mark wants a character to "translate up and down in pixel resolution" from 8 to 256 px. Hand-made sprite chains redraw a character at every size, and the redraws drift.
+
+**Decision.** A rig character is split into a **genome** (what it is, decoded once from named streams) and a **render** (how it is drawn at one tier). Only the render reads the tier: the LOD ladder, shade bands, outline, and the chibi head and eye bonus. All geometry lives in a 1024-unit design space that every tier divides evenly.
+
+**Consequences.** + Identity across tiers is measurable (coherence) and checkable (legs, era budgets) per role. + A name, a seed or a family tree fixes a character at every size at once. − 8 px is an icon, not a copy; that is measured and stated, not hidden.
+
+## ADR-016 — "Bit" is an era look, not a size
+
+**Context.** The request named 8- to 256-"bit" characters. Console "bits" are CPU generations, and 128- and 256-bit consoles have no distinct pixel-art style.
+
+**Decision.** Keep two settings, never merged: the **tier** (8 to 256 px) and the **era** (8-bit, 16-bit, 32-bit, HD: colour budget, bands, outline, dither). A build bit chain uses a default era per tier; any era can be forced at any tier.
+
+**Consequences.** + Both readings of the request work. + An 8-bit-look HD sprite is expressible. − One more word to learn; `tier-chain.md` explains it.
+
+## ADR-017 — The JavaScript character geometry is generated, not ported
+
+**Context.** ADR-011 ports the runtime to JavaScript line for line. The rig's geometry is about 400 lines of dense integer arithmetic, and hand copies of that would drift.
+
+**Decision.** `tools/transpile_rig.py` walks the Python AST of the geometry functions and emits `editor/pg-rig.gen.js`. It handles only the small integer subset those functions use (floor division and modulo with Python semantics, `in`, `.get`, `.append`) and refuses anything else by name. Gate B13 regenerates it and fails if the committed copy differs, and then compares pixels at every tier. The render loop around it stays hand-ported and parity-gated.
+
+**Consequences.** + Geometry changes cannot silently skip the editor. + The same AST walk can target Rust in P1. − Geometry must stay inside the documented subset.
+
 —Shibbieness
 —Claude

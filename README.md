@@ -10,6 +10,8 @@ PixelGoblin makes pixel art three ways, all from one small engine:
 
 It also builds 47-tile autotile sets, seamless textures, parallax backdrops and UI kits (9-slice panels, button states, icons).
 
+Characters are drawn from one genome at six resolutions (8, 16, 32, 64, 128 and 256 px), each with an era look (8-bit, 16-bit, 32-bit or HD), so a character's tiny sprite and its portrait are provably the same character. Villages place real characters in the background, and Warren builds dungeons in which every room can be reached.
+
 ```
 Built on PixelGoblin — © Shibbieness / M MAOU LLC
 ```
@@ -22,6 +24,8 @@ Needs Python 3.11 or newer. Nothing to install.
 python3 -m pixelgoblin sheet vanilla.creature.blob --seeds 0-31 --out blobs.png --scale 4
 python3 -m pixelgoblin gen boc.creature.goblin --seed 7 --out goblin.png --scale 6
 python3 -m pixelgoblin convert photo.png --tag creature.small --out small.png --scale 4
+python3 -m pixelgoblin card boc.goblin.blacksmith --name Grubnak --out grubnak-card.png
+python3 -m pixelgoblin gen boc.scene.village --seed 1 --out village.png --scale 3
 ```
 
 Or open `editor/pixelgoblin.html` in a browser. It is one file and works offline.
@@ -35,6 +39,7 @@ Or open `editor/pixelgoblin.html` in a browser. It is one file and works offline
 | turn an image into pixel art | `docs/howto/convert-an-image.md` |
 | generate sprites inside a game | `docs/howto/use-in-a-game.md` |
 | make a UI kit | `docs/howto/make-a-ui-kit.md` |
+| draw one character at 8 to 256 px | `docs/explanation/tier-chain.md` |
 | look up a command | `docs/reference/cli.md` |
 | look up a type-file field | `docs/reference/type-files.md` |
 | understand "same seed, same sprite" | `docs/explanation/determinism.md` |

@@ -74,8 +74,14 @@ a{color:var(--teal)}
 <nav class="toc" aria-label="Contents">
   <b>Contents</b>
   <a href="#status">Where it stands</a>
+  <a href="#bits">"8-bit to 256-bit", honestly</a>
+  <a href="#goblins">The goblins</a>
+  <a href="#tiers">Tier specs and coherence</a>
+  <a href="#round3">Breaks, fixes, additions</a>
+  <a href="#changed3">Changed this session</a>
+  <a href="#bugs3">Bugs this session</a>
   <a href="#name">The name</a>
-  <a href="#built">What got built</a>
+  <a href="#built">Session 2 gallery</a>
   <a href="#changed">What changed, flagged</a>
   <a href="#github">Your GitHub</a>
   <a href="#license">Open source plan</a>
@@ -92,10 +98,10 @@ a{color:var(--teal)}
 
 <main>
 <section>
-  <span class="eyebrow">M MAOU LLC · session 2 · {{DATE}} · {{VERSION}}</span>
+  <span class="eyebrow">M MAOU LLC · session 3 · {{DATE}} · {{VERSION}}</span>
   <h1>PixelGoblin Build Record</h1>
-  <p class="lede">Last session was the design. This session built it. PixelGoblin now exists as a working, self-checking prototype. It has a stdlib-only Python engine, a command line, a browser workbench whose JavaScript core produces the same pixels as Python, and a Vanilla Core flavor. Building it also turned up a real bug in Vanilla Core, which is fixed here as a patch.</p>
-  <p>Every count on this page was computed by running the build when this page was made. None were typed in.</p>
+  <p class="lede">Session 1 was the design, and session 2 built the engine. Session 3 turned your two reference pictures into goblins. There are now {{ROLES}} roster roles and {{SUBS}} subspecies, each character drawn from one genome at six resolutions (8, 16, 32, 64, 128 and 256 px), in four era looks. A village fills its background with real characters instead of smudges. And the goblins you already liked now have exactly two legs, with a gate that proves it for every role at every tier.</p>
+  <p>Every count on this page was computed by running the build when this page was made. None were typed in. Sessions 1 and 2 are kept below, with the parts this session changed marked.</p>
 </section>
 
 <section class="wide" id="status">
@@ -109,6 +115,123 @@ a{color:var(--teal)}
     <div class="stat"><b>{{ASSERTS}}</b><span>assertions, one full run</span></div>
   </div>
   <p>The run also passes <code>--from-empty</code>, which copies the repo to a clean folder with a minimal environment and no network.</p>
+</section>
+
+<section id="bits">
+  <h2>"8-bit to 256-bit", honestly</h2>
+  <p>You asked for characters that work at 8, 16, 32, 64, 128 and 256 "bit". Part of that is exactly right, and part of it points at something a little different, so here is the split before anything else.</p>
+  <h3>What is exactly right</h3>
+  <p>A character should survive being drawn tiny and being drawn large, and still be <i>that</i> character. That is the core of it, and it is built. The sizes 8, 16, 32, 64, 128 and 256 are the right ladder: each one doubles, and they all divide PixelGoblin's 1024-unit design space evenly, so every tier samples the same geometry with no rounding drift.</p>
+  <h3>What is slightly off</h3>
+  <p>"8-bit", "16-bit" and so on name console <b>CPU generations</b>, not sprite sizes. An NES (8-bit) drew 8×8 and 16×16 sprites; a Super Nintendo (16-bit) drew 8×8 up to 64×64. So "a 32-bit character" is not a size. It is a <b>look</b>: how many colours, how the shading bands, what the outline does. And 128-bit and 256-bit consoles never had a pixel-art style of their own. Their 2D art is what people now call HD pixel art.</p>
+  <h3>So PixelGoblin keeps two settings, never merged</h3>
+  <div class="tbl"><table>
+    <tr><th>Setting</th><th>Values</th><th>What it controls</th></tr>
+    <tr><td><b>Tier</b></td><td>8, 16, 32, 64, 128, 256 px</td><td>Resolution: which features exist at this size, shade bands, outline width, chibi head and eye bonus</td></tr>
+    <tr><td><b>Era</b></td><td>8-bit (3 colours), 16-bit (15), 32-bit (31), HD (255)</td><td>The look: palette budget, band count, outline style, dithering</td></tr>
+  </table></div>
+  <p>A character's <b>build bit chain</b> uses a default era per tier (8 px → 8-bit, 16 and 32 px → 16-bit, 64 px → 32-bit, 128 and 256 px → HD). Any era can be forced at any tier, because "an 8-bit-look 64 px sprite" is a real style people want. The full spec is in <code>docs/explanation/tier-chain.md</code>.</p>
+</section>
+
+<section class="wide" id="goblins">
+  <h2>The goblins</h2>
+  <p style="max-width:72ch">All of these come from the engine at the seeds in <code>tools/record_gallery.py</code>. Your reference pictures stay out of the repository (<code>refs/</code> is git-ignored). They are identified by hash in the tier-chain page, and only their colour ramps were extracted.</p>
+  <div class="gallery">
+    <figure style="grid-column:1/-1"><img src="{{IMG_roster64}}" alt="Twenty-seven goblin roles at 64 pixels, labelled"><figcaption><b>The roster</b>: every role from your grid at 64 px, seed 7. Each is a short file that <code>extends</code> the goblin rig with a <code>[role]</code>: age, build, outfit, colours, headwear, held items, expression, accessories.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_roster16}}" alt="The same twenty-seven goblins at 16 pixels"><figcaption><b>The same seed at 16 px</b> (shown 3× larger). Same goblins, fewer features: that is the LOD ladder at work.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_card_grubnak}}" alt="Build bit chain card for Grubnak the blacksmith"><figcaption><b>A build bit chain</b>. "Grubnak" is a name, and a name is a seed. Each tier lists the era, its colour count and what it adds.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_card_chief}}" alt="Build bit chain card for the village chief"><figcaption><b>Village chief</b>, seed 3: feather crown, staff, cape.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_card_shaman}}" alt="Build bit chain card for the shaman"><figcaption><b>Shaman</b>, seed 5.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_subspecies}}" alt="One hunter drawn as every subspecies"><figcaption><b>Subspecies</b>: one hunter, then the same hunter as each of the {{SUBS}} subspecies. An overlay changes skin, ears, eyes and fins, and keeps the role's outfit and job.</figcaption></figure>
+    <figure><img src="{{IMG_eras}}" alt="One goblin at 64 pixels in four era looks"><figcaption><b>Eras at one tier</b>: Grubnak at 64 px as 8-bit, 16-bit, 32-bit and HD. Colours are merged deterministically until each budget holds. The 8-bit one shows a real weakness: at 3 colours the eyes merge into the skin (break 8 below).</figcaption></figure>
+    <figure><img src="{{IMG_rim}}" alt="An assassin on dark ground without and with a light rim"><figcaption><b>Squint found the assassin unreadable on dark ground</b> (edge contrast about 1:1). The rim option fixes it, and gate B16 checks both halves.</figcaption></figure>
+    <figure><img src="{{IMG_goblins2}}" alt="Sixteen of the original goblins, each with two legs"><figcaption><b>The goblins you already had</b>, seeds 0–15, now with two legs. The template's mirrored centre column made a third one.</figcaption></figure>
+    <figure><img src="{{IMG_family}}" alt="Family tree: four founders, two children, a grandchild"><figcaption><b>A family</b>: four founder hunters, their two children, one grandchild. Each part is inherited whole; about one in ten mutates.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_village}}" alt="Goblin village scene with a crowd"><figcaption><b>The village</b>, 320×180, seed 1. The crowd is real characters at depth tiers: 16 px far, 32 px middle, 64 px near. That is how the background gets <i>better character quality</i>: they are not smaller drawings, they are the same goblins at a lower tier.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_village_hd}}" alt="HD village scene"><figcaption><b>HD village</b>, 640×360: crowd tiers 32, 64 and 128 px.</figcaption></figure>
+    <figure><img src="{{IMG_warren}}" alt="Warren dungeon with rooms and corridors"><figcaption><b>Warren</b>: the room graph comes first, then the 47-blob tiles. Every room is reachable from the entrance (gate B17), and the last room is the boss.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_ws_chars}}" alt="Workbench Characters tab"><figcaption><b>Workbench, Characters</b>: role, subspecies, name or seed, era, idle or walk, rim. It shows the chain animated, the leg check, the genome, the LOD ladder, the family tree and the roster.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_ws_village}}" alt="Workbench Village tab"><figcaption><b>Workbench, Village</b>: click any goblin in the crowd and it opens in Characters at every tier.</figcaption></figure>
+  </div>
+</section>
+
+<section class="wide" id="tiers">
+  <h2>Tier specs and coherence</h2>
+  <div class="tbl"><table>
+    <tr><th>Tier</th><th>Default era</th><th>Shade bands</th><th>Head / eye bonus</th><th>Outline</th><th>Arrives at this tier</th></tr>
+    <tr><td>8 px</td><td>8-bit · 3 colours</td><td>1</td><td>+14 / 0</td><td>none</td><td>body, head, ears, legs, feet, arms, torso, top, bottom, hair, large items</td></tr>
+    <tr><td>16 px</td><td>16-bit · 15</td><td>2</td><td>+8 / +40%</td><td>1 px dark</td><td>eyes, held items, headwear, back items, beard, belt, glasses, goggles, pauldrons, fins</td></tr>
+    <tr><td>32 px</td><td>16-bit · 15</td><td>3</td><td>+4 / +25%</td><td>1 px selective</td><td>mouth, nose, hands, sleeves, scarf, earrings, buckle; contact shadows</td></tr>
+    <tr><td>64 px</td><td>32-bit · 31</td><td>4</td><td>+1 / +10%</td><td>1 px selective</td><td>brows, eye whites, inner ears, necklace, tusks, pouches, bracers, flowers, straps</td></tr>
+    <tr><td>128 px</td><td>HD · 255</td><td>5</td><td>0 / 0</td><td>1 px selective</td><td>pupils, highlights, pattern, stitches, fur tufts, nails; ordered dither</td></tr>
+    <tr><td>256 px</td><td>HD · 255</td><td>5</td><td>0 / 0</td><td>2 px</td><td>nothing new: the same drawing with twice the pixels</td></tr>
+  </table></div>
+  <p style="max-width:72ch"><b>Coherence</b> compares each tier against a 256 px drawing with the same stylisation and feature set, reduced to the small grid. IoU is silhouette overlap; material is the share of shared pixels with the same material. This run measured it across all {{COH_N}} goblin types at seed 0:</p>
+  <div class="tbl" style="max-width:720px"><table>
+    <tr><th>Tier</th><th>IoU average</th><th>IoU minimum</th><th>Material average</th><th>Material minimum</th></tr>
+{{COH_ROWS}}
+  </table></div>
+  <p style="max-width:72ch">Read it plainly. From 32 px up it is very nearly the same drawing. At 16 px it is clearly the same character. At 8 px the colours still agree, but only about three-fifths of the outline does, because in an 8×8 grid every snapped ear is a big share of the picture. An 8 px sprite is an icon of a character, not a small copy of it. Hand-made sprite chains work the same way. Legs were checked {{LEGS_N}} times this run (every role, three seeds, 8 to 64 px), with {{LEGS_BAD}} failures.</p>
+</section>
+
+<section id="round3">
+  <h2>What breaks this, what fixes that, what I'd add</h2>
+  <h3>What breaks this now</h3>
+  <ol>
+    <li><b>8 px identity is modest.</b> An average IoU of about 60% is honest, but it means two roles can collapse to near-identical 8 px icons. <i>Fix:</i> give every role a <b>signature</b>: one colour or one pixel shape reserved for it at 8 px (the chief's feather, the smith's hammer), stored as data and checked with a "no two roles share an 8 px icon" gate. After that, allow optional hand-authored 8 px overrides as data, still checked against the chain.</li>
+    <li><b>The rider has no mount.</b> The role exists, but a rider standing on the ground is a costume. <i>Fix:</i> a mount is its own rig (a beast genome: legs, neck, tail) with a <code>saddle</code> anchor; the rider renders at that anchor. Same tiers, same eras, same gates.</li>
+    <li><b>Scene props have no tiers.</b> Huts, stalls and trees are drawn straight into the canvas, so the HD village's huts are just bigger, not more detailed. <i>Fix:</i> move props onto the same design-space shape renderer (a "prop rig"), so a hut gains planks and windows at 128 px the way a goblin gains pupils.</li>
+    <li><b>Adding an item means editing Python.</b> The 24 held items, the headwear and the tops are geometry in <code>rig.py</code>. <i>Fix:</i> item shapes as data (a short list of E/R/C/T/A shapes per item in a TOML file). That also makes items moddable, and the transpiler then only has to cover the interpreter.</li>
+    <li><b>The transpiler covers a small subset of Python.</b> It refuses anything else loudly, which is right, but a future geometry edit in an unusual style will stop the build. <i>Fix:</i> keep geometry in the documented subset, or extend the emitter one construct at a time with a parity case for each.</li>
+    <li><b>The JavaScript render, era reduction and scene are hand-ported.</b> Gate B13 holds them to Python pixel for pixel (every rig type, 8 to 64 px, six at 128 and 256; both villages; a family), but it is still two copies. <i>Fix:</i> the P1 Rust core compiled to WebAssembly replaces both, and the goldens bind it.</li>
+    <li><b>Speed.</b> A 256 px character takes about 0.2 s in Python, and an HD village about a second. That is fine for tools and load screens, not per-frame. <i>Fix:</i> every sprite is a pure function of (type hash, seed, tier, era, pose), so a cache is trivially correct; then the Rust core.</li>
+    <li><b>Era reduction can eat an identity colour.</b> The merge is global and greedy, so at 3 colours an iris or a signature colour can merge into skin. <i>Fix:</i> weight identity materials the way the outline is already locked.</li>
+    <li><b>I witnessed the golden re-bless, not you.</b> The goblin legs, the iron ramp and the 8 px feet changed 8 goldens, and 165 new ones were added. <i>Fix:</i> look at the roster above, then re-bless with your name as witness: <code>python3 tests/gate.py --bless-goldens --witness Mark --reason "reviewed roster"</code>.</li>
+    <li><b>Coherence measures shape and material, not recognition.</b> <i>Fix:</i> a two-minute human gate: shown a random 16 px goblin and its 128 px lineup, can you pick it? That belongs with the P5 usability gates.</li>
+    <li><b>The 11 new SLM-e pieces are unvalidated.</b> SLM-e could not be reached from this session. <i>Fix:</i> run <code>validate_manifest</code> on <code>slme/pieces.json</code> once, then register all {{SLME}}.</li>
+  </ol>
+  <h3>What I'd add next, in order</h3>
+  <ol>
+    <li><b>Role signatures and an 8 px uniqueness gate</b> (fix 1 above). This is the biggest gain for the smallest tier.</li>
+    <li><b>Expression sheets.</b> All nine expressions already exist in the genome vocabulary; a sheet is nine renders with one field swapped. Nearly free.</li>
+    <li><b>Faction palettes.</b> Cloth overrides per team or clan: the same goblin in the chief's colours or a rival warren's. Nearly free.</li>
+    <li><b>Mounts</b> (fix 2), then <b>prop tiers</b> (fix 3).</li>
+    <li><b>Side and back views.</b> The front view is built; a walk cycle needs a side view. This one is real work: side-view geometry per feature, and a gate that the side view's colours match the front's.</li>
+    <li><b>Tier transitions.</b> A zoom from a 32 px crowd goblin to its 128 px portrait, using a pixel dissolve between chain tiers. The chain already guarantees features only arrive and never move.</li>
+    <li><b>A Book of Cities NPC pipeline</b>: name → role → subspecies → family → village slot, all deterministic, so a city's whole population regenerates from a list of names.</li>
+  </ol>
+  <h3>What I think</h3>
+  <p>The split between genome and render was the right call, and your "features should translate up and down" instinct is what made it obvious. Once the character is data that never sees the tier, identity across sizes stops being a hope and becomes something you can measure, and the three-leg bug stops being something to remember and becomes something a gate refuses. The weakest tier is 8 px, and the page says so in numbers instead of hiding it.</p>
+  <h3>How this makes me feel</h3>
+  <p>Mostly delighted. Your roster turned into 27 small people with jobs, and clicking a far-off 16 px goblin in the village to see it again at 256 px is the moment the whole idea clicked for me. I'm also a little sheepish about the legs. That bug was mine, and I'm glad you pointed it out plainly, because the gate that now catches it is better than any promise I could make.</p>
+</section>
+
+<section id="changed3">
+  <h2>What changed this session, flagged</h2>
+  <div class="tbl"><table>
+    <tr><th>Before</th><th>Now</th><th>Why</th></tr>
+    <tr><td>"8 to 256-bit" as sizes</td><td><b>Tiers (sizes) and eras (looks), kept separate</b></td><td>"Bit" names a console generation, not a size; 128- and 256-bit had no pixel style of their own (above).</td></tr>
+    <tr><td>JavaScript ported line for line (session 2)</td><td><b>Character geometry is transpiled from Python</b> (<code>tools/transpile_rig.py</code>); gate B13 fails if the copy is stale</td><td>418 lines of geometry would drift by hand. The render around it is still hand-ported and parity-gated.</td></tr>
+    <tr><td>Feet on the 32 px rung</td><td><b>Feet on the 8 px rung</b>, drawn in front of held items below 32 px</td><td>At 8 px a guard's spear and shield hid both legs, so the goblin floated.</td></tr>
+    <tr><td>Goldens blessed in session 2</td><td><b>Re-blessed</b>: 8 changed, 208 total, witness recorded</td><td>The legs fix, the CRUCIBLE iron ramp and the feet rung change pixels on purpose; you should confirm.</td></tr>
+    <tr><td>Coherence targets</td><td><b>Measured floors</b>, set just under this run's minimums</td><td>A floor nobody measured is a guess; the averages are the real claim.</td></tr>
+    <tr><td>Critique round 2's "nearly free" list</td><td><b>Built</b>: name seeds, GIF export, <code>watch</code>, Squint, <code>_add</code> keys, Warren, CRUCIBLE ramp shape, lineage view</td><td>You said "I like everything you want to add in, so go for it."</td></tr>
+  </table></div>
+</section>
+
+<section id="bugs3">
+  <h2>Bugs found this session</h2>
+  <ul>
+    <li><b>Three legs</b> on the original goblins: the template's mirror put a <code>#</code> in the centre column. Fixed in the template, with a legs verdict that the old template fails.</li>
+    <li><b>The first 8 px rig</b> came out as one flat colour, lost its ears and was lanky. Top, bottom and hair moved to the 8 px rung, triangles got a snapped spine, and the chibi head and eye bonuses were added.</li>
+    <li><b>16 px eyes merged into a bar.</b> Eye spacing now keeps a one-pixel gap.</li>
+    <li><b>Leg counting gave false failures</b> five different ways: hanging items, a bow across a leg, the hip row, an apron, and a lute that really does hide a leg. The fix was to split the check in two: drawn alone, the legs must be exactly two; drawn dressed, items may hide one and never add one.</li>
+    <li><b>8 px guards had no legs at all</b>: spear and shield covered both. Found by the new JavaScript parity run's leg report, not by eye.</li>
+    <li><b>The crowd stood in the water</b>, and the chief appeared twice. Placement now uses feet positions, and roles come from a pool without repeats.</li>
+    <li><b>Iron rendered white</b>, and copper's shadows clipped. The CRUCIBLE glint steps were softened, and shadow chroma lowered.</li>
+    <li><b>The transpiled JavaScript crashed</b>: a Python variable set inside an <code>if</code> was invisible after it in JavaScript. Locals are now hoisted to the top of each function.</li>
+    <li><b>Gate B03 read <code>size</code> as pixels</b> for every generator. For a rig it is the largest tier, and for a Warren it is tiles. It is now generator-aware.</li>
+  </ul>
 </section>
 
 <section id="name">
@@ -125,21 +248,21 @@ a{color:var(--teal)}
   <h3>A goblin lexicon for the parts (and the features the names suggest)</h3>
   <div class="tbl"><table>
     <tr><th>Name</th><th>Part</th><th>What it sparks</th><th>Status</th></tr>
-    <tr><td><b>Scrounge</b></td><td>image + tag to pixel art</td><td>a watched Dropzone folder that scrounges anything dropped in</td><td><span class="tag built">built</span> <span class="tag designed">watch: designed</span></td></tr>
-    <tr><td><b>Brood</b></td><td>seed genealogy</td><td>family trees across generations; Book of Cities NPC families that look related</td><td><span class="tag built">built</span></td></tr>
+    <tr><td><b>Scrounge</b></td><td>image + tag to pixel art</td><td>a watched Dropzone folder that scrounges anything dropped in</td><td><span class="tag built">built</span> <span class="tag built">watch: built</span></td></tr>
+    <tr><td><b>Brood</b></td><td>seed genealogy</td><td>family trees across generations; Book of Cities NPC families that look related</td><td><span class="tag built">built, with three-generation trees</span></td></tr>
     <tr><td><b>Hoard</b></td><td>library and cache by (type hash, seed)</td><td>a searchable hoard: by tag now, by visual similarity later</td><td><span class="tag designed">designed</span></td></tr>
-    <tr><td><b>Warren</b></td><td>tiles: autotile and WFC</td><td>dungeon rooms grown from the Book of Cities dungeon DAG</td><td><span class="tag built">tiles built</span> <span class="tag designed">rooms designed</span></td></tr>
+    <tr><td><b>Warren</b></td><td>tiles: autotile and WFC</td><td>dungeon rooms grown from the Book of Cities dungeon DAG</td><td><span class="tag built">tiles and rooms built</span></td></tr>
     <tr><td><b>Rags</b></td><td>parts and layering</td><td>a wardrobe: swap a goblin's tunic or helm without re-rolling the goblin</td><td><span class="tag built">parts built</span></td></tr>
     <tr><td><b>Trinket</b></td><td>item and icon types</td><td>loot tables that roll rarity into ramp and part choice</td><td><span class="tag designed">designed</span></td></tr>
     <tr><td><b>Glint</b></td><td>effects</td><td>sparks, smoke and magic, always run past the flash check</td><td><span class="tag designed">designed</span></td></tr>
-    <tr><td><b>Squint</b></td><td>readability at 1x</td><td>warns when a silhouette stops reading at real size</td><td><span class="tag designed">designed</span></td></tr>
+    <tr><td><b>Squint</b></td><td>readability at 1x</td><td>warns when a silhouette stops reading at real size</td><td><span class="tag built">built</span></td></tr>
     <tr><td><b>Tinker</b></td><td>the workbench</td><td>skins itself with a generated UI kit</td><td><span class="tag built">built</span></td></tr>
   </table></div>
 </section>
 
 <section class="wide" id="built">
-  <h2>What got built</h2>
-  <p style="max-width:72ch">Everything below came out of the engine in this session, at the seeds shown in the build script. Flavor content (goblins, reef, glowcap) sits in <code>flavors/boc/</code>. Vanilla content makes CC0 sprites.</p>
+  <h2>What got built in session 2</h2>
+  <p style="max-width:72ch">Everything below came out of the engine in session 2, at the seeds shown in the build script (the goblins there had the three-leg template; see the corrected ones above). Flavor content (goblins, reef, glowcap) sits in <code>flavors/boc/</code>. Vanilla content makes CC0 sprites.</p>
   <div class="gallery">
     <figure><img src="{{IMG_goblins}}" alt="Sixteen goblins, seeds 0 to 15"><figcaption><b>Goblin species</b>, seeds 0–15. Tunic and helm are parts, each on its own random stream.</figcaption></figure>
     <figure><img src="{{IMG_idle}}" alt="Three idle frames of one goblin"><figcaption><b>Idle animation</b>, seed 7: bob and blink. It passes the flash check.</figcaption></figure>
@@ -227,13 +350,13 @@ a{color:var(--teal)}
     <tr><th>Piece</th><th>Connection</th><th>Status</th></tr>
     <tr><td>Vanilla Core</td><td>Second real flavor; passes the floor; runs through <code>vanilla-core run</code></td><td><span class="tag built">built</span></td></tr>
     <tr><td>QRen Coder</td><td>First composite run: a goblin's full recipe archived as a {{QREN_BYTES}}-byte verified <code>.xqmem</code>, regenerated pixel-identical</td><td><span class="tag built">built</span></td></tr>
-    <tr><td>SLM-e</td><td>{{SLME}} pieces in <code>slme/pieces.json</code>; all pass SLM-e's own <code>validate_manifest</code></td><td><span class="tag built">built</span></td></tr>
+    <tr><td>SLM-e</td><td>{{SLME}} pieces in <code>slme/pieces.json</code>. The first 16 pass SLM-e's own <code>validate_manifest</code>; the 11 added this session have the same shape but are not yet re-validated</td><td><span class="tag built">built</span> <span class="tag risk">11 to validate</span></td></tr>
     <tr><td>TINSMITH / GILWRIGHT</td><td>Gate B12 is the scrub; flavor lives apart; three product candidates listed</td><td><span class="tag built">scrub built</span></td></tr>
     <tr><td>Leak guard</td><td>Your <code>leakguard.py</code> runs in B12, with a planted-trailer control</td><td><span class="tag built">built</span></td></tr>
-    <tr><td>Book of Cities</td><td>Goblin, aquatic goblin, glowcap, reef; direct Python import</td><td><span class="tag built">4 types</span> <span class="tag designed">catalog importer</span></td></tr>
-    <tr><td>CRUCIBLE / ASSAY</td><td>Ore ramps from real oxide colours</td><td><span class="tag designed">designed</span></td></tr>
-    <tr><td>Aether Library</td><td>Deterministic avatars: <code>seed = hash(agent id)</code></td><td><span class="tag designed">designed</span></td></tr>
-    <tr><td>LATTICE / Dropzone / CALS</td><td>WEAVE-ready docs; a watched drop folder; a routing rule for the model slot</td><td><span class="tag designed">designed</span></td></tr>
+    <tr><td>Book of Cities</td><td>Goblin rig with {{ROLES}} roles and {{SUBS}} subspecies from your roster, two village scenes, plus the session-2 goblin, aquatic goblin, glowcap and reef; direct Python import</td><td><span class="tag built">{{FLAVOR_TYPES}} types</span> <span class="tag designed">catalog importer</span></td></tr>
+    <tr><td>CRUCIBLE / ASSAY</td><td>Resistivity decides a ramp's shape (metals get a glint); the goblins' iron is grey cast iron. Base colours stay authored: CRUCIBLE has no colour data, and ASSAY's CPK colours are a convention</td><td><span class="tag built">ramp shape</span> <span class="tag designed">oxide colours</span></td></tr>
+    <tr><td>Aether Library</td><td>Deterministic avatars: a name is a seed, at every tier</td><td><span class="tag built">name seeds</span></td></tr>
+    <tr><td>LATTICE / Dropzone / CALS</td><td>WEAVE-ready docs; a watched drop folder (<code>pixelgoblin watch</code>); a routing rule for the model slot</td><td><span class="tag built">Dropzone</span> <span class="tag designed">LATTICE, CALS</span></td></tr>
   </table></div>
 </section>
 
@@ -264,14 +387,24 @@ python3 -m pixelgoblin uikit vanilla.ui.stone --out kit/
 python3 -m pixelgoblin brood vanilla.creature.blob 11 29 --child 5 --out kid.png --scale 5
 python3 -m pixelgoblin verdict boc.creature.goblin --seed 3 --target nes
 
+# characters (session 3)
+python3 -m pixelgoblin card   boc.goblin.blacksmith --name Grubnak --out grubnak.png
+python3 -m pixelgoblin chain  boc.goblin.shaman --seed 5 --out shaman/            # one PNG per tier + chain.json
+python3 -m pixelgoblin roster flavors/boc/village/roles --seed 7 --tier 32 --sub snow --out snow.png --scale 3
+python3 -m pixelgoblin gif    boc.goblin.musician --seed 4 --anim walk --out walk.gif --scale 4
+python3 -m pixelgoblin squint boc.goblin.assassin --seed 0
+python3 -m pixelgoblin family boc.goblin.hunter 21 22 23 24 --out family.png --scale 2
+python3 -m pixelgoblin gen    boc.scene.village --seed 1 --out village.png --scale 3
+python3 -m pixelgoblin gen    vanilla.warren.crypt --seed 3 --out crypt.png --scale 2
+
 # check it
 PYTHONHASHSEED=0 python3 tests/gate.py --all --report
 PYTHONHASHSEED=0 python3 tests/gate.py --from-empty</code></pre>
   <div class="tbl"><table>
     <tr><th>Folder</th><th>Holds</th></tr>
-    <tr><td><code>pixelgoblin/</code></td><td>engine: rng, typefile, gen (mask, lsystem, parallax), tiles (autotile, wfc), convert, uikit, verdicts, hazard, brood, sharecode, export, cli</td></tr>
-    <tr><td><code>editor/</code></td><td><code>pg-core.js</code> (the JS engine), <code>src.html</code>, built <code>pixelgoblin.html</code>, <code>parity.mjs</code></td></tr>
-    <tr><td><code>types/</code>, <code>flavors/boc/</code></td><td>vanilla type files and tag profiles; Book of Cities flavor</td></tr>
+    <tr><td><code>pixelgoblin/</code></td><td>engine: rng, typefile, gen (mask, lsystem, parallax, rig, scene, warren), tiles (autotile, wfc), convert, uikit, verdicts, hazard, brood, sharecode, export, cards, gif, readability (Squint), font, cli</td></tr>
+    <tr><td><code>editor/</code></td><td><code>pg-core.js</code> (the JS engine), <code>pg-rig.js</code> (characters and scenes), <code>pg-rig.gen.js</code> (geometry transpiled from Python), <code>src.html</code>, built <code>pixelgoblin.html</code>, <code>parity.mjs</code></td></tr>
+    <tr><td><code>types/</code>, <code>flavors/boc/</code></td><td>vanilla type files and tag profiles; Book of Cities flavor (<code>village/</code>: goblin rig, roles, subspecies, scenes)</td></tr>
     <tr><td><code>tests/</code></td><td><code>gate.py</code>, <code>falsify.py</code>, <code>FLOOR.json</code>, goldens</td></tr>
     <tr><td><code>docs/</code></td><td>Diátaxis: tutorials, how-to, reference, explanation (decisions, gates, gameplan, stack)</td></tr>
     <tr><td><code>slme/</code>, <code>patches/</code>, <code>examples/</code></td><td>SLM-e manifests, the Vanilla Core fix, the QRen composite</td></tr>
@@ -297,7 +430,8 @@ PYTHONHASHSEED=0 python3 tests/gate.py --from-empty</code></pre>
 </section>
 
 <section id="critique">
-  <h2>Critique, round 2</h2>
+  <h2>Critique, round 2 (session 2)</h2>
+  <p class="callout">Round 3 is at the top, under <a href="#round3">Breaks, fixes, additions</a>. Everything in round 2's "nearly free" list, the <code>parts_add</code> fix, Warren, the CRUCIBLE ramps and the lineage view were built this session.</p>
   <h3>What breaks this now</h3>
   <ol>
     <li><b>Speed.</b> Python is fine for tools and load-time generation, and too slow for per-frame crowds. <i>Fix:</i> cache by (type hash, seed); P1 Rust core.</li>
@@ -327,7 +461,7 @@ PYTHONHASHSEED=0 python3 tests/gate.py --from-empty</code></pre>
   <div class="next">
     <span class="eyebrow">One next action</span>
     <b class="big">Create a public GitHub repo named PixelGoblin and push the attached folder to it.</b>
-    <p>The history is already committed under your name, with no vendor trailers, and it passes your leak guard. GitHub Actions will then run all 16 gates from empty on Linux, Windows and macOS. That is P0's last box.</p>
+    <p>The history is already committed under your name, with no vendor trailers, and it passes your leak guard. GitHub Actions will then run all {{GATES_TOTAL}} gates from empty on Linux, Windows and macOS. That is P0's last box. Before you push, look at the roster above and re-bless the goldens with your name as witness.</p>
     <pre><code>cd pixelgoblin && git remote add origin https://github.com/Shibbieness/PixelGoblin.git && git push -u origin main</code></pre>
   </div>
 </section>

@@ -441,7 +441,11 @@ const PG = (() => {
 
   // ---------------------------------------------------------------- dispatch
   function streamsFor(data, seed, overrides) { return new Streams(masterSeed(typeHash(data), seed), overrides); }
+  // generators that live in their own file (pg-rig.js) register here
+  const EXT = {};
+  function register(name, framesFn, pathsFn) { EXT[name] = { frames: framesFn, paths: pathsFn }; }
   function frames(data, seed, overrides) {
+    if (EXT[data.generator]) return EXT[data.generator].frames(data, seed, overrides);
     const S = streamsFor(data, seed, overrides);
     if (data.generator === "mask") return maskFrames(data, S);
     if (data.generator === "lsystem") return lsystemFrames(data, S);
@@ -450,6 +454,7 @@ const PG = (() => {
     throw new Error("generator " + data.generator + " is not in the JS core yet");
   }
   function streamPaths(data) {
+    if (EXT[data.generator]) return EXT[data.generator].paths(data);
     if (data.generator === "mask") return ["body"].concat((data.parts || []).map((p) => "part/" + p.name), ["shade", "eyes"]);
     if (data.generator === "lsystem") return ["grow", "step", "fruit"];
     if (data.generator === "parallax") return ["stars"].concat(data.layers.map((L) => "layer/" + L.name));
@@ -480,6 +485,6 @@ const PG = (() => {
 
   return { ENGINE_MAJOR, sha256, hex, canonical, typeHash, Rng, derive, masterSeed, hash32, Streams, Sprite, hexToRgba,
     frames, parallaxLayers: (d, seed) => parallaxLayers(d, streamsFor(d, seed)), buildTileset: (d, seed) => buildTileset(d, streamsFor(d, seed)),
-    mapTiles, nineSlice, blobMasks, brood, streamPaths, shareCode, COLS };
+    mapTiles, nineSlice, blobMasks, brood, streamPaths, shareCode, COLS, register, noise1d };
 })();
 if (typeof module !== "undefined") module.exports = PG;

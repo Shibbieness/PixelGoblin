@@ -1,16 +1,16 @@
 {
  "floor": {
-  "build_gates": 16,
-  "plan_gates_covered": 24,
-  "goldens": 43,
+  "build_gates": 18,
+  "plan_gates_covered": 26,
+  "goldens": 208,
   "validator_negative_cases": 20,
-  "mutations": 23,
-  "vanilla_types": 8,
-  "flavor_types": 4,
-  "cli_commands": 14,
+  "mutations": 34,
+  "vanilla_types": 10,
+  "flavor_types": 44,
+  "cli_commands": 21,
   "flavor_capabilities": 8,
   "tag_roots": 8,
-  "doc_pages": 13
+  "doc_pages": 14
  },
  "history": [
   {
@@ -83,6 +83,54 @@
    "key": "doc_pages",
    "from": 12,
    "to": 13,
+   "kind": "raise"
+  },
+  {
+   "key": "build_gates",
+   "from": 16,
+   "to": 18,
+   "kind": "raise"
+  },
+  {
+   "key": "plan_gates_covered",
+   "from": 24,
+   "to": 26,
+   "kind": "raise"
+  },
+  {
+   "key": "goldens",
+   "from": 43,
+   "to": 208,
+   "kind": "raise"
+  },
+  {
+   "key": "mutations",
+   "from": 23,
+   "to": 34,
+   "kind": "raise"
+  },
+  {
+   "key": "vanilla_types",
+   "from": 8,
+   "to": 10,
+   "kind": "raise"
+  },
+  {
+   "key": "flavor_types",
+   "from": 4,
+   "to": 44,
+   "kind": "raise"
+  },
+  {
+   "key": "cli_commands",
+   "from": 14,
+   "to": 21,
+   "kind": "raise"
+  },
+  {
+   "key": "doc_pages",
+   "from": 13,
+   "to": 14,
    "kind": "raise"
   }
  ]

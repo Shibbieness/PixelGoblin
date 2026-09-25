@@ -7,7 +7,7 @@ PixelGoblin ports the self-checking discipline from SPIRE (Shibbieness / M MAOU 
 | SPIRE rule | Here |
 |---|---|
 | Plan gates (G) and build gates (B) are separate namespaces | `tests/gate.py`; each B declares the Gs it covers |
-| A gate must be able to fail | `tests/falsify.py`: 23 mutations, each naming the gate that must catch it |
+| A gate must be able to fail | `tests/falsify.py`: 34 mutations, each naming the gate that must catch it |
 | Restore on start (SIGKILL cannot be caught) | `falsify.py` restores `.falsify_backup/` before doing anything |
 | No assertion over an empty population | `Check.population()`; every absence check builds a control first |
 | Counts are derived, never typed | `tests/FLOOR.json` ratchet; lowering needs a witness and a reason |
@@ -44,9 +44,11 @@ PixelGoblin ports the self-checking discipline from SPIRE (Shibbieness / M MAOU 
 | B10 | falsification: every mutant killed | — |
 | B11 | Vanilla Core flavor contract | G18 |
 | B12 | scrub (vanilla has no stack terms) and leak guard | G19 |
-| B13 | JavaScript pixels match Python pixels | G20 |
+| B13 | JavaScript pixels match Python pixels: sprites, backdrops, tiles, every character at every tier (with subspecies, rim and poses), villages and family trees; the transpiled geometry is current | G20 |
 | B14 | every command has help and an example; derived CLI doc is current | G21 |
 | B15 | brood inherits from both parents; count ratchet | G24 |
+| B16 | characters: every feature is on the LOD ladder, two legs at every tier for every role (with three-leg and merged-leg controls), era colour budgets, coherence floors, the chibi rule, the rim on dark ground | G25 |
+| B17 | scenes are deterministic and keyed to their role files, every Warren room is reachable, names are seeds, `_add` appends, overlays keep the role, GIFs keep every frame, cards show six tiers | G26 |
 
 —Shibbieness
 —Claude

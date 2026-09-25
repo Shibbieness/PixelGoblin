@@ -15,6 +15,11 @@ pixelgoblin gen types/vanilla/creature.blob.toml --seed 42 --out blob.png --scal
 - `--seed` — whole number; same seed = same sprite
 - `--out` — output file
 - `--scale` — upscale the saved PNG (pixels stay square)
+- `--name` — a name instead of a seed
+- `--sub` — variant overlay, like snow
+- `--tier` — rig tier
+- `--era` — rig era: 8-bit, 16-bit, 32-bit, hd
+- `--rim` — light rim outline
 
 ## `sheet`
 
@@ -183,3 +188,118 @@ List every type file on the search path.
 pixelgoblin list
 ```
 
+
+## `card`
+
+Character card: one character at every tier, with era, colours and what each tier adds.
+
+```
+pixelgoblin card boc.goblin.village_chief --name Grubnak --out chief_card.png
+```
+
+- `type`
+- `--seed`
+- `--out`
+- `--scale`
+- `--name` — a name instead of a seed: the same name is always the same character
+- `--sub` — variant overlay, like snow or cave (or a full type id)
+- `--tier` — rig tier (8 to 256 px)
+- `--era` — era palette rule, like 8-bit or 16-bit
+- `--rim` — light rim instead of dark outline (for dark backgrounds)
+
+## `chain`
+
+Export the build chain: one PNG per tier plus chain.json for engines.
+
+```
+pixelgoblin chain boc.goblin.blacksmith --seed 3 --out smith/   (+ --sub snow, --era 8-bit)
+```
+
+- `type`
+- `--seed`
+- `--out` — output folder
+- `--name` — a name instead of a seed: the same name is always the same character
+- `--sub` — variant overlay, like snow or cave (or a full type id)
+- `--tier` — rig tier (8 to 256 px)
+- `--era` — era palette rule, like 8-bit or 16-bit
+- `--rim` — light rim instead of dark outline (for dark backgrounds)
+
+## `roster`
+
+Every rig type in a folder, one character each, on one sheet.
+
+```
+pixelgoblin roster flavors/boc/village/roles --tier 64 --seed 1 --out roster.png --sub cave
+```
+
+- `folder`
+- `--seed`
+- `--tier`
+- `--era`
+- `--sub`
+- `--cols`
+- `--out`
+- `--scale`
+
+## `gif`
+
+Animated GIF (idle or walk for characters), with the flash-hazard check.
+
+```
+pixelgoblin gif boc.goblin.musician --seed 2 --anim walk --tier 64 --out walk.gif --scale 2
+```
+
+- `type`
+- `--seed`
+- `--anim`
+- `--ms`
+- `--out`
+- `--scale`
+- `--name` — a name instead of a seed: the same name is always the same character
+- `--sub` — variant overlay, like snow or cave (or a full type id)
+- `--tier` — rig tier (8 to 256 px)
+- `--era` — era palette rule, like 8-bit or 16-bit
+- `--rim` — light rim instead of dark outline (for dark backgrounds)
+
+## `squint`
+
+Readability at 1x: edge contrast on four backgrounds, detail and mass.
+
+```
+pixelgoblin squint boc.goblin.assassin --seed 1 --tier 32
+```
+
+- `type`
+- `--seed`
+- `--name` — a name instead of a seed: the same name is always the same character
+- `--sub` — variant overlay, like snow or cave (or a full type id)
+- `--tier` — rig tier (8 to 256 px)
+- `--era` — era palette rule, like 8-bit or 16-bit
+- `--rim` — light rim instead of dark outline (for dark backgrounds)
+
+## `family`
+
+Three generations: four founders, two children, one grandchild.
+
+```
+pixelgoblin family vanilla.creature.blob 11 29 40 57 --out family.png --scale 4
+```
+
+- `type`
+- `founders`
+- `--seed`
+- `--out`
+- `--scale`
+
+## `watch`
+
+Dropzone: convert every image that arrives with a .tag file beside it.
+
+```
+pixelgoblin watch ./dropzone --once     (frog.png + frog.tag containing creature.small)
+```
+
+- `folder`
+- `--once` — scan once and exit (otherwise keep watching)
+- `--every` — seconds between scans
+- `--scale`

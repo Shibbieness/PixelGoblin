@@ -207,6 +207,14 @@
   },
   {
    "kind": "autotile",
+   "type": "vanilla.terrain.cave",
+   "seed": 1,
+   "hashes": [
+    "570fe0accded8ed7eb3d64120b815b60c430e58af4079a7dafb8d49ad2845b82"
+   ]
+  },
+  {
+   "kind": "autotile",
    "type": "vanilla.terrain.grass",
    "seed": 1,
    "hashes": [
@@ -219,6 +227,38 @@
    "seed": 1,
    "hashes": [
     "5e6a6aefb98de80d3408b520bbb8be1d2f3a306bb821c0357b9d6476896e3355"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.warren.crypt",
+   "seed": 0,
+   "hashes": [
+    "79da270ceb189859f7168462faeee2997a92eccf3efb685975b98b36ae5ef786"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.warren.crypt",
+   "seed": 1,
+   "hashes": [
+    "6a2c07934ac6328913612573f0b901ac492ec1e75cbedf3571bfed8468a8ba8e"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.warren.crypt",
+   "seed": 42,
+   "hashes": [
+    "3f1ccdc85e23afc6edcfb5b767f7ca51c0e3b1e9406cf9c5688227cf9af1155d"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "vanilla.warren.crypt",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "de6f5fefbcff54ccd4ae8de9cd39c040460a990b0fdfbd371814fbe9d627ad17"
    ]
   },
   {
@@ -258,9 +298,9 @@
    "type": "boc.creature.goblin",
    "seed": 0,
    "hashes": [
-    "95f8fba7557e640ccc7ecb27a9ae799ec9f7c5de6c826e4110741da9f6a780e9",
-    "6c7423b1ae21b39e13b040414d2782132e3662d2e3813f25fd053cb186534663",
-    "29c5b8087c37f200a7a16122c3a306e7a3f35b449c94c71165859858fe79a1fa"
+    "1442c7898c350ab2c10894f61225296adb0ae84c9637645b7f2776e6e224224f",
+    "322c8d8f0f6ab21e914ab3e6457974545e1dc8ddad5108ab79ab88a8db24b237",
+    "8ef773344415337908c8bbc8a99629c3bc1189a8436cf24b1b8e1109c658f0f7"
    ]
   },
   {
@@ -268,9 +308,9 @@
    "type": "boc.creature.goblin",
    "seed": 1,
    "hashes": [
-    "2ddf8a80494febee5c026038431a3f817ae21bf3046d089a048d850f5b677c48",
-    "75920268d56d7474d37e2697c475354cdd8d56f84fd6eba7caa2586a98b27ed4",
-    "dabc7f1bb41f6d03b394d7e145cd00e4b2b362cd6a803a3e22b55e4485ea4c86"
+    "46611082b100735c51ec31b4a4d4d233147cfd5fbef61ae3ed40be4d4822e2c4",
+    "5e8a581434f4a4d40591cf0011b4541db7397d791e192ead27e22ba097e64510",
+    "6b6bd619baa6dfb572742563d3e8bb56bccc283c7425c0b1367995b52c075568"
    ]
   },
   {
@@ -278,9 +318,9 @@
    "type": "boc.creature.goblin",
    "seed": 42,
    "hashes": [
-    "812bb84ad920f35c4eea2adf4123e64c83a7e63eb3edb048884769d5950c9d4a",
-    "42dcceacad3b37955d82f06b590c50a35597ed934d41068919353c1cbe7faf64",
-    "9a00662be3bf2e57f6df0c6101193757dafa0aed289e5ce6084137e5db8f6df7"
+    "eaf14d9adacb898b1835b8f7dff2b79842aa52ec2074684408b0b165c702092c",
+    "6b3f42b11663a280009b50b5e93a8824cb07f8e3626d85f0c732eb0a0f23cd70",
+    "b44ae723e0c51526aaf3b9c90f0d88e663292274ce866a400e14e21ede9750c4"
    ]
   },
   {
@@ -288,9 +328,9 @@
    "type": "boc.creature.goblin",
    "seed": 9223372036854775813,
    "hashes": [
-    "6090419c943a97379c6d0a0fbb0d642436db4bfa93b262385f4e2213bd468122",
-    "a6098667e0a4b3c689790554a61a63c8116f0ab1373d39246905d90f06a25016",
-    "78a9fe243a0f85a038f2b12d6c7d764dbba82cc0a708d68d5703a86a9d77cc81"
+    "3742a830daefe509aa3fbdb6be787ee074b24ea6c766f15c39d0c26350ecd0e7",
+    "b8d4b97f045a9022e0e5207757fea99f99d7f29e889d9c2da217d76dc522e5df",
+    "01ecebe2d2cfda816471cac22f68409e1242b3d3b0ded1c2971501e666a9c05f"
    ]
   },
   {
@@ -298,9 +338,9 @@
    "type": "boc.creature.goblin.aquatic",
    "seed": 0,
    "hashes": [
-    "9272567f800c8b7472ee64270cb8554013de74c4f19aea2cfb7f35f0fb5f83b1",
-    "7d0f677f955c0bf2caedec5ee9da611478e9925ece62bc52026a71ad0ae0268e",
-    "08534ab1ae6d8ee0a73b78325023eeb9f1b134e8c974c61fba1984f858efdc6d"
+    "abb9eecd78273760a1c84dea96f84928f7a785fb67ec9e25d9797ba4afee8fdd",
+    "84be3b223d5b4d4d874acfe000dbda4a545c9769cf32a118bfd76136d696cd90",
+    "3a842ea456d483fa30eee0f9ae86af1c241d84ff2b72ada32d242953710de07e"
    ]
   },
   {
@@ -308,9 +348,9 @@
    "type": "boc.creature.goblin.aquatic",
    "seed": 1,
    "hashes": [
-    "d5aa9be0ce9e6cc93c2605e918e1a0757c17dda56def354170d4bd241f33224b",
-    "ece1c3b8d5819d0fd4e4f1da931634c335e9f5fcc08e56437eb787c03df939d6",
-    "019f7959737798dec6dd9edc241f4fbefe117bdf412384ef7f51f3e747ad61f8"
+    "68d9ece9af846a1a9b737257dcd8d795e86db0b184e86c3f5f5f45f25e13f5f1",
+    "9ef9bd65055c94cf107cb66c08209e38a6f1cccdd18c9d48c7f06f63944db544",
+    "d339c0aeeb111ec83e066badba0cf407ff7107baf13221b2a12f9e7ea08b9b98"
    ]
   },
   {
@@ -318,9 +358,9 @@
    "type": "boc.creature.goblin.aquatic",
    "seed": 42,
    "hashes": [
-    "b779b503c3d8f23e2819b1262c462b39dfb1b136878f3b2d0061121b3df7ef3a",
-    "4ed6f13531b00780bb13c3b3f93a4e268e1ee994b87da5fc02dca59a895fecc8",
-    "38d50f52e47c8efba2afe4945ecfa7ebe62dbf1855704f836497749d461796de"
+    "c0d163754396a66097e2eeb0f5bd6d0660792f1e532ab00d031b2ec0021d3b58",
+    "2e03f040873d7ba5288008740f046d6ec2eb7b14d18de784034e0f601e9829b6",
+    "510097e907b93dce0df7bfc4573a0cd45698c159e0701013713a774f4b478c9d"
    ]
   },
   {
@@ -328,9 +368,9 @@
    "type": "boc.creature.goblin.aquatic",
    "seed": 9223372036854775813,
    "hashes": [
-    "b445e9478597673802353496b022e883be7ebc6856dfef92582e841850599333",
-    "0abf8a1a31510adc39f3bc848ec51af58e5cdc52a2003b0de59aa3b5c7038e28",
-    "540204cd37f1204cde96258fd337956cde7a8f670492de5355e8aa1e7affdaaa"
+    "a0808e3e2ca0fa140a50ae0c36e88f6c69590a0c8a451a862d41ae31af7867d6",
+    "513a12b540d5cce9389fc70b589bf419e14ad05ea68b0e867433fa4c272f6425",
+    "d140c64e6e5c8aa41d32b8636573ba3bdbda4e8568e6e614f6ec1dd692bcd1cd"
    ]
   },
   {
@@ -366,6 +406,1742 @@
    ]
   },
   {
+   "kind": "frames",
+   "type": "boc.goblin",
+   "seed": 0,
+   "hashes": [
+    "84371cb3a8e19b96a99caacc109e5ac6a51d3292d97c6954d21e670bed1f95fa",
+    "d8c453da6f5cfc716c944fa818afa599bea2f45b992cf89ce30c9cb52c7804a1",
+    "5af38fb90b155d68e2e57f649b5106c88a204b5e765e3c4cf0b7f411505f7e1d",
+    "84371cb3a8e19b96a99caacc109e5ac6a51d3292d97c6954d21e670bed1f95fa"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin",
+   "seed": 1,
+   "hashes": [
+    "c78d7dedb48281d18c780b1ab71c8ad9d06f6b2a3fa5f75e925dc44c777a7e55",
+    "6b088252782292b145dfe138c6dd078bfb36cd6132c22939b3542b42cadffca5",
+    "67ed508703313fbea661dad122ca8598fbfbad51f01f8e0d1e53beb7bb641e57",
+    "c78d7dedb48281d18c780b1ab71c8ad9d06f6b2a3fa5f75e925dc44c777a7e55"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin",
+   "seed": 42,
+   "hashes": [
+    "c53423205a91abe01ba70286692ecb2e747c7bcab9411c51c125b3d6e24c180a",
+    "da53fb4fa1c630c9af3d4937040a98270ca82fb81cb72c12f09fa45ee7908591",
+    "0fc07018ade8e9f846df907a1d7dbd9b6acebd2fa3297f10e471fe9939f9ffe7",
+    "c53423205a91abe01ba70286692ecb2e747c7bcab9411c51c125b3d6e24c180a"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "fc564de144915ba4e23dd5667cc574642f4b2772c38aa5e1aa04ba7d4730cbb9",
+    "13ece80ad40748ad4af390ad6aca245c502ef9ed53ce663186f377318be82a87",
+    "ec487a91c4c61d184e31ab4e5ce60e858b2dc5ee813ebdea8d149e9663ee217b",
+    "fc564de144915ba4e23dd5667cc574642f4b2772c38aa5e1aa04ba7d4730cbb9"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.arcanist",
+   "seed": 0,
+   "hashes": [
+    "5adbe58395790bb686339ffda749d73190c74f6f041863b5b625d81bc9ca8542",
+    "acdc0d0600476953ee712758de9fdd5246ac17f2db9ca2c53f0a244cd49b3133",
+    "48e46b54a946f73dd87a3b71647edfdacd4a8be6d34b5e4baf5d9d0f2e7c8c7c",
+    "5adbe58395790bb686339ffda749d73190c74f6f041863b5b625d81bc9ca8542"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.arcanist",
+   "seed": 1,
+   "hashes": [
+    "718bd86e093acbba74fa5fa1c4aed385e409285436df67eeb85c8d8051c64bb9",
+    "46b72454cdf0e1088d9bab814aa69d061e1a5d6601fdfc712f1fcdaa1500c62e",
+    "de715703b090f38c963eb9215d23980195484ba34e03122b35fffd171a551d21",
+    "718bd86e093acbba74fa5fa1c4aed385e409285436df67eeb85c8d8051c64bb9"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.arcanist",
+   "seed": 42,
+   "hashes": [
+    "e712170c08b4e27f965633fe4e21359b8edb69b8ba196579688ec2653cb9e1ce",
+    "97ce9b1629a5bc17127b2d1d9d3a47622eeae9582f6264a757b52a0cb78f4a51",
+    "6019e3320d5835904c9881156a4e133c48066b21833a8720ca8c32a3d619dc40",
+    "e712170c08b4e27f965633fe4e21359b8edb69b8ba196579688ec2653cb9e1ce"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.arcanist",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "99456637dfcdfb50dfd8af4263c25ade7ace9d3aa2dae05feb720f8b4f9c1a27",
+    "f5f904110deace0fc61544b031b4d8ae15e4f0a1406257f8c8bfbd93e152170e",
+    "b80aa911d58b8a82bd6a7f669f8d0b468ba4cea5f5ba954b37aef7601787d176",
+    "99456637dfcdfb50dfd8af4263c25ade7ace9d3aa2dae05feb720f8b4f9c1a27"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.artist",
+   "seed": 0,
+   "hashes": [
+    "af12284aaa5e1a5c1692f424b12d5a7fb3bb67002cb00fb61a433451e96b4678",
+    "3928f0f6cbd6ca40be4b1acd00b5dc3d170a7ecc4e434c05435fd28ade50c125",
+    "332d7d4faff8f832910a73b6717368b9d96d6f108dc01d4530e9884bc32ef7b9",
+    "af12284aaa5e1a5c1692f424b12d5a7fb3bb67002cb00fb61a433451e96b4678"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.artist",
+   "seed": 1,
+   "hashes": [
+    "a3c451f7d3fa8b4129353d8c1ce0b5c71a508e028e67dd4c3feb29ab66af9e47",
+    "70752b8524eed9e6e08ba70822acf82515572690837c1392cebe8268e2ff9b2e",
+    "4c71910926b51d49fa65d92b2b19ab0f7ce3b0e08ff024ce15e8d4e9bd6b3582",
+    "a3c451f7d3fa8b4129353d8c1ce0b5c71a508e028e67dd4c3feb29ab66af9e47"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.artist",
+   "seed": 42,
+   "hashes": [
+    "ce918d8de8a05879905511e795c61f075abfa8f7f8e1513fbf948b9d001b2eb8",
+    "866e02c2591e0433143d92a3daaa9850b8f043c9642b15c9ce46f34fa9f24ac1",
+    "dea064df3303802247bf00b0f84ab3eb5cc6eb3643c621ea138b0ed2946117b5",
+    "ce918d8de8a05879905511e795c61f075abfa8f7f8e1513fbf948b9d001b2eb8"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.artist",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "f7744260c63618d1bbecd4b632a62384cf4a997939052b6a99d2f30d4c4b3fbf",
+    "3190d76a9a85f45f15a8833f536394e7d26944160eff6e747b9c4ef5ae8d7d79",
+    "672123681cb69c2f34c23fce7a34b12105ba6448a0ea2f9cc7afa6c1e99bfc87",
+    "f7744260c63618d1bbecd4b632a62384cf4a997939052b6a99d2f30d4c4b3fbf"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.assassin",
+   "seed": 0,
+   "hashes": [
+    "af9b7450ef7d02fbf54b3a4b2ddb3efeaa2306124057d08e12a7e1485e37cc3d",
+    "cb8c1a59f6f50ef66b9ecd4c6dc8a4f3ea7e0f258795a06000703d2cebf49d80",
+    "a6e4cb4cd44272784323fbc2cfaa8f16e27fc0e97b521b2566bb3dea8951e1f6",
+    "af9b7450ef7d02fbf54b3a4b2ddb3efeaa2306124057d08e12a7e1485e37cc3d"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.assassin",
+   "seed": 1,
+   "hashes": [
+    "9f86351d90fa11aebc98194ffdb8b125f9da3d7662c630026ab3c6e5f44cf4ff",
+    "83d0bec292ab85a1cfadcb0a95ae1d957702686eedf3ef23a9feb44dc46632c4",
+    "3170d121fe7a9899c7cdea86d0073111d66ea4157ef34406c7a434ed554f8f92",
+    "9f86351d90fa11aebc98194ffdb8b125f9da3d7662c630026ab3c6e5f44cf4ff"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.assassin",
+   "seed": 42,
+   "hashes": [
+    "ce76501645deceba66f6686eb08e84d1356f148cc93c67d1e32c708a04cb80c5",
+    "87fd6105cfc963419ae6ea044f22d55cfe11dd8062d9aaeaf44d0bf5c8c816b0",
+    "4d95c9cb9da54c4ac550641c946f5e9c26ad30a6d30fb4eadc60c88793bd4924",
+    "ce76501645deceba66f6686eb08e84d1356f148cc93c67d1e32c708a04cb80c5"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.assassin",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "dda5fb52ec2eb20d7d7fe4d7ca11cc664269b8e268609abdbcffd8b1ffc11a53",
+    "379bb397065e1486029b9651804bb5670947a132b4d744421855f72d1fc6f0a2",
+    "3bf01792ff6cd12cd67a3dfc5b053d2f71f73c50b3076e554c9fe4cbdaadd39e",
+    "dda5fb52ec2eb20d7d7fe4d7ca11cc664269b8e268609abdbcffd8b1ffc11a53"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.blacksmith",
+   "seed": 0,
+   "hashes": [
+    "cf6645dc2e92ad1c15f40db675aa4f38d64c28adcff0deb46b151fb052531dcd",
+    "5acd9237e37f5bbdc685ca2b850095bd50fac4b91bc751729824e064499e3502",
+    "2e6abb11b61198203035f4e272b16aa138bfbed5c9d33656c73a343dfaa0209b",
+    "cf6645dc2e92ad1c15f40db675aa4f38d64c28adcff0deb46b151fb052531dcd"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.blacksmith",
+   "seed": 1,
+   "hashes": [
+    "a85f62a89faa9d8d2c4f070d40a69af7f6f15646f3c2b5fef5fa4dc9d10f39ba",
+    "5c93ae13a857f41fe88a30ab9ab573a04b8e35df1b7a3d4ffe2c43756f6c4606",
+    "50558a4bc38bddd56121fc0056729663b5b748035058afc574099d1d6a248700",
+    "a85f62a89faa9d8d2c4f070d40a69af7f6f15646f3c2b5fef5fa4dc9d10f39ba"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.blacksmith",
+   "seed": 42,
+   "hashes": [
+    "706d025aef57ec0a71293498f629fb7acb0cc5a98d86607f2afb972a04cf66d9",
+    "0d2b9154769bee8fe025906363830ef2754de75178914b7d630c388f15a73fda",
+    "844699e2a4e1fde69769cd984acc3b1979b50acb8a7833f2186ca042d4307ae2",
+    "706d025aef57ec0a71293498f629fb7acb0cc5a98d86607f2afb972a04cf66d9"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.blacksmith",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "68fc9a00bddfc08a029bc8b76c57031aa1a7cd349a13f933c59a50cf55a976ae",
+    "e8f15f482bff1d000198e91d231daa12ad5f216a391618aae2076cd749176fa7",
+    "a00c3925c751332cd174ad7989480f7df4605d9eb6f586a1c4a1e594e0a4ef4f",
+    "68fc9a00bddfc08a029bc8b76c57031aa1a7cd349a13f933c59a50cf55a976ae"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.brewer",
+   "seed": 0,
+   "hashes": [
+    "0573d4280c7237296df50d0d99718735508aff12c960ee0f4ecfc872b71c9dbb",
+    "9176244fb0e10444bd0df863efdfd8623b07e924213b1ba24e97eb3d517375ea",
+    "5e57cb059ed75006aced4e9b1931c0053969115f710870390efd390fe9722e74",
+    "0573d4280c7237296df50d0d99718735508aff12c960ee0f4ecfc872b71c9dbb"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.brewer",
+   "seed": 1,
+   "hashes": [
+    "a303d1145fd6fbe1edc1f3ed15b30d90e10d4a8ce71f033059571d4ebd2b94ea",
+    "5cf7dfd8a493e0261a90d2d07ad6764ef7d64ee9a68e86b2f9aaee76acf4730d",
+    "84f8e089453cb5016efd16525b4f1bf95455b441301b61a18c068e664a90455f",
+    "a303d1145fd6fbe1edc1f3ed15b30d90e10d4a8ce71f033059571d4ebd2b94ea"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.brewer",
+   "seed": 42,
+   "hashes": [
+    "04e31cf8739fc6d45cae1eb74f9051eea4650d4f865c7315380b2c5d0482e672",
+    "eef073cf528177aa1e45d26a3912463fd43c9857a015a99b152301185b49c213",
+    "f8616e4b1e9695eb61c7e52eb12ee0f8f901e2bc64d434dba9a371fce47342e0",
+    "04e31cf8739fc6d45cae1eb74f9051eea4650d4f865c7315380b2c5d0482e672"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.brewer",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "afc0fcef4478e75b7aca916772f4d36be31d870c03211a555a9a30860b548283",
+    "9e279a2f8db6e3abf794c4b8de64a59ddd7e7420732dfc600247799ccfe2fcd7",
+    "428de3049e8f3480944bd4980d80a62a0d4265546007ec974c52718ad5ad52c5",
+    "afc0fcef4478e75b7aca916772f4d36be31d870c03211a555a9a30860b548283"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.chiefs_consort",
+   "seed": 0,
+   "hashes": [
+    "310050688bbe50567b76fd709d9a5900289951c1ea849e1a239d9f8f33dffa2a",
+    "681b33f996c709093962bb42ec02fb56470b8b325609a8d704a0a1d18d8a51d4",
+    "1a4ccfc99e178f0079d995fb0c5fbac1af1717ae4b6976263dfef15e64374d84",
+    "310050688bbe50567b76fd709d9a5900289951c1ea849e1a239d9f8f33dffa2a"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.chiefs_consort",
+   "seed": 1,
+   "hashes": [
+    "d5c3ba1a3bfe158aed4dc9009c9464bc01a007de541c07806f4fbc7aa644b1bd",
+    "94c8e8f9ff0401e4c6d36b0654087ecde126f75865ee8b071ca1a1dc8390f01e",
+    "c67d12442f91ef2284db24cdc10bffc6d3026da801b6e174936f0baa8cf9e519",
+    "d5c3ba1a3bfe158aed4dc9009c9464bc01a007de541c07806f4fbc7aa644b1bd"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.chiefs_consort",
+   "seed": 42,
+   "hashes": [
+    "de757accf1b504b069aca305b146209bb7a31baa03447b9a91f3d4669a8ce8c8",
+    "ccecc7a0c08442736c1e2c2f241e55c4c62c5527d8d319cf5ebeb2c57ac0d03e",
+    "ed6cf74ae618431c5f983cf5dab2be4d8f1e009239fa2cc9fe75ddc31a853309",
+    "de757accf1b504b069aca305b146209bb7a31baa03447b9a91f3d4669a8ce8c8"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.chiefs_consort",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "30ad2f4d6685cb1d731eb9eb6ed2b751bc1869b3da7d52bc94cbd3c31519ac8c",
+    "954a67c3d6755bf154c836548e9ce36c228ae5c09a50c868ea4fa80d976db02c",
+    "67b938e79dbcf092ce271ca2cdfe863ed0e51b7a6fd96baf4289de088e1e7523",
+    "30ad2f4d6685cb1d731eb9eb6ed2b751bc1869b3da7d52bc94cbd3c31519ac8c"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.child_boy",
+   "seed": 0,
+   "hashes": [
+    "ca1f8828b39d4f507ff3c4f25a0cc215bcfff3fa37ffda783e102fe55be33280",
+    "94b0563a946a2af048209776cc7076e14525c7b6e0fd1efcf90183e1d8e9245d",
+    "3fed5df2b72e813724620dc65a268c3251128f2c182d690d7786038721774788",
+    "ca1f8828b39d4f507ff3c4f25a0cc215bcfff3fa37ffda783e102fe55be33280"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.child_boy",
+   "seed": 1,
+   "hashes": [
+    "61fd4ff8058fd5adcdb9a9ec556b9a32b03f325d868850023922bbae61bf1e5b",
+    "7d5f279963faa146359663a404c272ae5dd543babdda1a5f5e8557de23b8ea6f",
+    "8e150b3737387d93a91385c5475ec9f656f8a40a1f42477388defdd902976fa2",
+    "61fd4ff8058fd5adcdb9a9ec556b9a32b03f325d868850023922bbae61bf1e5b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.child_boy",
+   "seed": 42,
+   "hashes": [
+    "7d1891f5ef1402612de409c3351a84e89e72683a8452c58a4c68781d41ffa8f5",
+    "625c847970bfff3172ef3c0650169226b6f26d2b36be7dec21be61cd8bd7e637",
+    "c4682ebbc36c0a8001cd96586d47536953b34df7503748da0e0e8124aeac7a1a",
+    "7d1891f5ef1402612de409c3351a84e89e72683a8452c58a4c68781d41ffa8f5"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.child_boy",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "0c888d49dcfd6ecb621f9da6845afd9e71ea4b08e7d4515e532b48fa71eea6d9",
+    "9d3b4051e45184911276ab2a85cb4d65392b2c072a533a303974e0ba4aaacac5",
+    "4d8ff72864367e030ac1c1538df2b47e93eeb21c0c69854b91674d756fc8cde5",
+    "0c888d49dcfd6ecb621f9da6845afd9e71ea4b08e7d4515e532b48fa71eea6d9"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.child_girl",
+   "seed": 0,
+   "hashes": [
+    "fcf201d781a0acf507ede57a245a482151e1ba6ddf01c98500e024fe66dca1ff",
+    "ca8f0f6db5cfe6ae83cda8704a37efd5c60218219560b4c0d07e5061e38b1391",
+    "ca57ea827c15bfee47b8b6d26c928a2cfb6baa6f90be46d63202a2e4cf3d0825",
+    "fcf201d781a0acf507ede57a245a482151e1ba6ddf01c98500e024fe66dca1ff"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.child_girl",
+   "seed": 1,
+   "hashes": [
+    "9434bff32316e2eef1d393c90b1a58bf10b8d07d1b5493b3672e2529dc4f518c",
+    "f062286075849a24c2ad70ce3c3acf33825f4870fd67086add3f4d615307d3aa",
+    "a612c6b10f0f51583f71f286600a1e163bfc85783245f29fa80703e289515763",
+    "9434bff32316e2eef1d393c90b1a58bf10b8d07d1b5493b3672e2529dc4f518c"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.child_girl",
+   "seed": 42,
+   "hashes": [
+    "bb83edfbed579e18fdf30ea103fb1d0d8a71b6da0ec1a3812e026ef5f6b04dac",
+    "756e4a72e92226ef7e6b94f48db9680722f83e3e3054bd5ac560f4fa9c766a23",
+    "966154da2a7063e2283d2e768a2e774c7d65f71ec24350ab5688b1d4baaf8707",
+    "bb83edfbed579e18fdf30ea103fb1d0d8a71b6da0ec1a3812e026ef5f6b04dac"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.child_girl",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "3529b8c1970cd158b684a4040961847885242112dbb5f206271f47ad20e16bc1",
+    "898f6ef6193abc638642e98f074b028b1a48d4bcab517c49b80a115e04cca8a6",
+    "8e3807ba7fb525b6cac31e572016ce55f0ca42d3c8c9501449e22a370440733b",
+    "3529b8c1970cd158b684a4040961847885242112dbb5f206271f47ad20e16bc1"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.cook",
+   "seed": 0,
+   "hashes": [
+    "c8d3898393a8ee725161f667eee1bfc3c0bdb9a49096b5539c74e54ac650678b",
+    "dc208f3c13239336bd8b49850bbec2ae100f8753db7470d17b77b66c131bed4c",
+    "552538f9c386c764d647a62f8b5c8e2699cce32a9fb43c6ede81f681fe3a4c10",
+    "c8d3898393a8ee725161f667eee1bfc3c0bdb9a49096b5539c74e54ac650678b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.cook",
+   "seed": 1,
+   "hashes": [
+    "e26b8f98eb6d291f63f4bcdfde6eff1e5332adf5eb31af44cda7d96ade834543",
+    "a609483a463bc557ba43e3dfb7b8fe25d519df0ac6a092db8f887f85609b2212",
+    "bac1107c4089c35a4712044f24ec3f7675e9ff28d00f9ddb38d9246b3179dcaf",
+    "e26b8f98eb6d291f63f4bcdfde6eff1e5332adf5eb31af44cda7d96ade834543"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.cook",
+   "seed": 42,
+   "hashes": [
+    "4ddc1e7ba788b2f159d6df349c3d85a5748a91a39f06fd40b9b44ea979dfaf23",
+    "adaf1799b0e725e33486628c06f061fad1e615f341c3619e082ca11ccc142ffb",
+    "f135f1256e11252fe43bc1a4715664a660e0f680f007a8eec2e7d5cbb83740fc",
+    "4ddc1e7ba788b2f159d6df349c3d85a5748a91a39f06fd40b9b44ea979dfaf23"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.cook",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "52a82a844fc9aa1ec74bcebd54fd4dd5bca8062f1fe2baefa09f3a859097f3ad",
+    "45460ea54e7f61a10aa59c0b2f24fc7a9fc554b408e684c5832ae921c4c46f9a",
+    "f99b5a3eb7a00e8c603c7b92a0809cce61ff2b75526158cd72f308231a4d4b3d",
+    "52a82a844fc9aa1ec74bcebd54fd4dd5bca8062f1fe2baefa09f3a859097f3ad"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.craftswoman",
+   "seed": 0,
+   "hashes": [
+    "4439a250aabaad08cbd4aca93e2fc50bbff783decd8269c51a9c15326683cce6",
+    "c63513c93f00d9adf651b48cce69f779c9a86f570fc02235c4542fc34f04417f",
+    "2a34222c4adea820153753bbbd6ec76cef158d133de09acb81319db3620d2723",
+    "4439a250aabaad08cbd4aca93e2fc50bbff783decd8269c51a9c15326683cce6"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.craftswoman",
+   "seed": 1,
+   "hashes": [
+    "66e44f50d8488dd9e51bc13e808f0237a98600ae493a67ae7935365c4f666eb4",
+    "87a85400b06231ebaf88eaf8dfc73085f51ec705c00699e3346923a761317be5",
+    "3a0b8b37d3ed0ec5cade1b6e56d8140bcac9f8f1594ab6084dd5556235193d8a",
+    "66e44f50d8488dd9e51bc13e808f0237a98600ae493a67ae7935365c4f666eb4"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.craftswoman",
+   "seed": 42,
+   "hashes": [
+    "56f0122572b7bb89f20942931652b9a0b65cd9196ba45479ac3aee2414704a9a",
+    "23d016759c5af6ab3999e5b8894bd825a189e731cc489ee254df8c873e447efe",
+    "f065ebd4f45bbe95aa0101e571d2dfc09ddcbb51d7534bded77a27ed9bc8bbd8",
+    "56f0122572b7bb89f20942931652b9a0b65cd9196ba45479ac3aee2414704a9a"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.craftswoman",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "14a09ca43286d1c541f2a650e4e3a2be67a38b5c9f44ff23f0ccaac1c0767d0b",
+    "3a47f67e8a03be747d1e1ef7449f27d342375e3a7b44832fe194db738f5effb1",
+    "1cad62125db06456af27fae9102c14df68c92bf2b23f0f38ea7424e869c61f44",
+    "14a09ca43286d1c541f2a650e4e3a2be67a38b5c9f44ff23f0ccaac1c0767d0b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.elder",
+   "seed": 0,
+   "hashes": [
+    "2c49f62f84851a74f374e98067dbc14fb8523bc6b88f49314a67305e0c1daf36",
+    "1191f257fc33a699c234e18113b6d35cec3c337bcdc051a54ff6e038a13b0238",
+    "21d6cf5c9f9bf049439347b23874816dd26ac8d6c744cfbcabf1d12b14845fc1",
+    "2c49f62f84851a74f374e98067dbc14fb8523bc6b88f49314a67305e0c1daf36"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.elder",
+   "seed": 1,
+   "hashes": [
+    "0ba91932ddc6b5ff857966a7d73e8097b3400f455dd69ea3aee94ed897a64241",
+    "3ae30275d0159539b15eb66fb6de8323ad4365bb7f19282156fff799e29eb3d7",
+    "b57afa235c7457f14d20e974a6603398dc345a075b5b83f979880c947aca0db9",
+    "0ba91932ddc6b5ff857966a7d73e8097b3400f455dd69ea3aee94ed897a64241"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.elder",
+   "seed": 42,
+   "hashes": [
+    "d2fd5ad0d2ccf51cf408ad70dd366695c18cec98550a962760ceb9082281bd02",
+    "bfda68dd4d6311d189127aba8d1225953b2aabab6bad1c05486d896e4950b685",
+    "2bcdad58bbf9ff212373e77c1be9dd687128d28878a670e4bc92487accd3d5d9",
+    "d2fd5ad0d2ccf51cf408ad70dd366695c18cec98550a962760ceb9082281bd02"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.elder",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "1de26df7410ddf8fc9506ef4243a61d56019f036babf5b5b61ccf1f5651523cf",
+    "780a15f06d78b41118c041031c065eb4cfd83924ae9e8eb735d8fde529040774",
+    "a21694cd5a58902022d14cb3cede2fda4d279c4af50e505690047f293fdff5ab",
+    "1de26df7410ddf8fc9506ef4243a61d56019f036babf5b5b61ccf1f5651523cf"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.elder_scholar",
+   "seed": 0,
+   "hashes": [
+    "f1cff00c2be0f70f81f0be36cb3a658e6d69827188cf3b5a26ed5ec2aec7018a",
+    "9ac0cfb38b6981e19894de35d177179e59276c07b97be3bb66ff149641476fd2",
+    "01a027bc0abe8798b3fe5d8c64e30c313a7355f5b6f9c17345e1067bf056f179",
+    "f1cff00c2be0f70f81f0be36cb3a658e6d69827188cf3b5a26ed5ec2aec7018a"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.elder_scholar",
+   "seed": 1,
+   "hashes": [
+    "e068004b96b35ad359ef25038c342cf98f169e2ef793909b3572d95202cd85d9",
+    "be8f9307f0e2354bdb17ffeb9d77cd4a77379f68e690d8c925fff062c3832bd0",
+    "e0c43cd1143aeab34cefde1d1a55db6cb0f340314aa98387301062b120cdd6f1",
+    "e068004b96b35ad359ef25038c342cf98f169e2ef793909b3572d95202cd85d9"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.elder_scholar",
+   "seed": 42,
+   "hashes": [
+    "a306a7bc7c0b95d8e089e93f453f447c60780afc09ee860b5d565e6d194a1f89",
+    "1e0182b89f1baba80010d452fddd1d88be2c1733ce2297c4e29a284da5aa9099",
+    "d004a9bafc591ee906f2a9b7fb84b6d6eeefe6c6df05be0b03219be58537668a",
+    "a306a7bc7c0b95d8e089e93f453f447c60780afc09ee860b5d565e6d194a1f89"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.elder_scholar",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "23220c6fea18c77263527a0cec9da4ba2d10451445e7b15f71fefb3329244f41",
+    "507bd8ac5c0a0f8a528143386d5d9321c55ab35856145c240258e0a32ea37bd9",
+    "102c8bc58bbd255ce0f687043278da84219bfa00caeab00009dcdab533b7301d",
+    "23220c6fea18c77263527a0cec9da4ba2d10451445e7b15f71fefb3329244f41"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.father",
+   "seed": 0,
+   "hashes": [
+    "505b5eb11213d511955b0e3b8bb84821925dc8303325d0e69928b06e5a30451b",
+    "6b9b4e8c302954af68bab7d824246730a7e8da6f7a5224a5c9e62cce6daaafd8",
+    "b42a7fd71fc50d57e0ef4e0509b6ddb0411c3baa9551ec9e5acdc00a669bf30c",
+    "505b5eb11213d511955b0e3b8bb84821925dc8303325d0e69928b06e5a30451b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.father",
+   "seed": 1,
+   "hashes": [
+    "60e7eeae543e8ac1fac7dc2b6f6760a5579baa1173f68622a1bd81bd2880708b",
+    "ff4076afaf0b2c0376cc8731b38b69574252f4a9fc66e9f71b212194257354b6",
+    "661f9aa9249642428a6213bcd66e92defc9d87b9a54bfdfe9dbc4b16f9f76214",
+    "60e7eeae543e8ac1fac7dc2b6f6760a5579baa1173f68622a1bd81bd2880708b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.father",
+   "seed": 42,
+   "hashes": [
+    "0c359f9081c31c53e8e7e8afadb55d7f29f54f71abe1f252726a5ba74429f5c1",
+    "88027136d7927ad013cefde47cfbfec6135eeec849ab053f59a24ddd927ff610",
+    "2129f12144657ffa844f6d6f7fc3c580a945f5001ca0be178359f40581fe6213",
+    "0c359f9081c31c53e8e7e8afadb55d7f29f54f71abe1f252726a5ba74429f5c1"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.father",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "ea1b63d2354c1b49a4fd367c789bc8523373db637378d27820d45744b2cb2b82",
+    "baee5007cd72f81f91e0f90e20c0317c78d3ff691877e91edaab39775503a08d",
+    "4be3e730baf9216f32f87ad5bc67809d5e780469b4f190b9f506e56d43150f34",
+    "ea1b63d2354c1b49a4fd367c789bc8523373db637378d27820d45744b2cb2b82"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.gatherer",
+   "seed": 0,
+   "hashes": [
+    "36f1e7f0a4d0cc61c006d9b8bcd7fa12923a508fe3fa406c93adf322ee1940ee",
+    "b8ba0f2e6e6a1f698544894dead080258e4547362a2c047ba0c213ce57ab9dd6",
+    "9d67ef84cbaa9eae0e52329a53ce667e9fdf2ae6a7337cf1677e0838c564f66e",
+    "36f1e7f0a4d0cc61c006d9b8bcd7fa12923a508fe3fa406c93adf322ee1940ee"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.gatherer",
+   "seed": 1,
+   "hashes": [
+    "9ab0aae770da46e0d03bd3d1a28a98a5bf46c338b16c62f70f34e125a3947fab",
+    "1f5c3207b927791aa489521d4ecff69291060b4d50f24372268ea5cd6059a968",
+    "d570387d06319eabe56717ea11a8b854355be3a883165a6672625e657a834d84",
+    "9ab0aae770da46e0d03bd3d1a28a98a5bf46c338b16c62f70f34e125a3947fab"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.gatherer",
+   "seed": 42,
+   "hashes": [
+    "57f189cb67f42f58c07b4d9ff22758b0ea0d332253eff4efe1d7d6b83c7f66f4",
+    "2ba54a1b09cd470eca2354b7c9f137accc842d11e9dcb1b61f3a5d7a82ca62f6",
+    "be13fdecaaed5c78bbeec6e34add6ac77d0ead5a06c91559758dc5d536072c8e",
+    "57f189cb67f42f58c07b4d9ff22758b0ea0d332253eff4efe1d7d6b83c7f66f4"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.gatherer",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "54be3ba0398d988971386859797355027fc9bc43559945984eb687bed63fe8eb",
+    "7966770bfffcf890a7829d2034086a9710a669ecaa6eb2fe423c262d8e31a0c3",
+    "d9514cc73b0a833f9d138cf10460389f3eddba2993925fb9f0e8b7c2e784cc54",
+    "54be3ba0398d988971386859797355027fc9bc43559945984eb687bed63fe8eb"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.guard",
+   "seed": 0,
+   "hashes": [
+    "39c716f32f19b14d2fc1703e9c27ce6d996d2c35285da3d0f0088e5e31ed6abd",
+    "91b7471175f2d16f5298dfc3d4dba8a5a9bc2d46ab4fa546ea01da2b5fa77500",
+    "ee3ad2024af5ea293b08e08cd82a289fb506e84ed1a6fa5a4a0d382b7695dd59",
+    "39c716f32f19b14d2fc1703e9c27ce6d996d2c35285da3d0f0088e5e31ed6abd"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.guard",
+   "seed": 1,
+   "hashes": [
+    "ba4fd559557a53a0b78210f75f47c49fc54b7b5ea9951d2f64b5f2bb40ec3a65",
+    "1c18c4a24b118513c7374502413061dbaea4f9b1bdd9a9c8ee4e8b51ff78b7f7",
+    "4e09e4dff47d5ca904f3b991954240825854c8e732861f0e863656efda5b25da",
+    "ba4fd559557a53a0b78210f75f47c49fc54b7b5ea9951d2f64b5f2bb40ec3a65"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.guard",
+   "seed": 42,
+   "hashes": [
+    "609d4a3950c315e21cca57cea86cf2f91efc674741dd6b39707912f8ce39957b",
+    "73fc6fcecdd99b446648a1fce0e0fb47fa0625c88b3f551abbbbfe09352d1d8e",
+    "f71afd2b49fd80cf4adfca189a128236afc1e01d72620b12778e6fa2ecb6f78b",
+    "609d4a3950c315e21cca57cea86cf2f91efc674741dd6b39707912f8ce39957b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.guard",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "033d23ace08daa29719ed3dfb7c6746031327052c30bf52eb2587291f6d304c0",
+    "b4bfc5aa995be289f06d6dd39954f67d4cbcdb2ca102bfa2df5f390956005f5c",
+    "3666b99fa95c144d20284f81ecb7413614b321f9042c2f4e11d032137e2feb8a",
+    "033d23ace08daa29719ed3dfb7c6746031327052c30bf52eb2587291f6d304c0"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.hunter",
+   "seed": 0,
+   "hashes": [
+    "071f53959ca08cd9512b649abb1f6fd0ab7161d385c2e218c66604034158074c",
+    "f14ad63f04c43b6230ab238aa4e0a55501ca63721cd33e799852f6ff93d17300",
+    "46eb477413559d0432907d02464b443b9bb484a02a22b36e9e331e6861bc9bca",
+    "071f53959ca08cd9512b649abb1f6fd0ab7161d385c2e218c66604034158074c"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.hunter",
+   "seed": 1,
+   "hashes": [
+    "9d27c48a0b78ec951f58c63a32e979935c173de4ac9605359e62d2d37d98bce2",
+    "5f1ffc3789d0c8f21b774b98cdb7179c648aeb9156929db193ad8b5d8cb3deab",
+    "c6602220588c88eeee5bce9c808941d612e5817a1d5d38d571b255cb5b9aaae0",
+    "9d27c48a0b78ec951f58c63a32e979935c173de4ac9605359e62d2d37d98bce2"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.hunter",
+   "seed": 42,
+   "hashes": [
+    "9160d4f016475b0d4b1b632546e352e6f0cc13a32546342563f15deb5763ed4d",
+    "3390bd9bbf23854389b4700de3559411917222188adc93f55c976ecce453cea8",
+    "a8d6f86dbfb9ed528c47dc9615ed54a9111d5fafee04769c70f1be0abd4826e0",
+    "9160d4f016475b0d4b1b632546e352e6f0cc13a32546342563f15deb5763ed4d"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.hunter",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "26a9642a1122059133bb3cf5af2b7a951e641ff05c0f976761d2ce8130348d45",
+    "3d562b2e6443712a70e68d93ebe648a3bc15fe9a0e9af799c6e1318e85428e40",
+    "67f93b3fa49308d7e36829c829ee06d9ad6d2b8a4b1746b8814b86e65878ca6c",
+    "26a9642a1122059133bb3cf5af2b7a951e641ff05c0f976761d2ce8130348d45"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.mother",
+   "seed": 0,
+   "hashes": [
+    "61f2e131eca7286fed8d465826ed0056fe4596a3d48b4eb16e4648d2e2c2e289",
+    "d0bc981b57b35c4296d93a31ea5a4cb11b62c4445f012a7407916ca8b4833c3b",
+    "5093c92fcacbdc787354fbed4498aabfa88b123c5d570de3b837ed38cf3b6e5e",
+    "61f2e131eca7286fed8d465826ed0056fe4596a3d48b4eb16e4648d2e2c2e289"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.mother",
+   "seed": 1,
+   "hashes": [
+    "28d7f7d763a8d02faf9b9b896a61e569f6b9ead1b6cff1be67850d1977e544a7",
+    "33571b231530454a3db92e33b66329c1aac0eee4921d58cf6f922704aeb9f978",
+    "040edd6881f23c4cf364c1b0ec7df22c9eef861776b5c1a1310c59c674ad8c36",
+    "28d7f7d763a8d02faf9b9b896a61e569f6b9ead1b6cff1be67850d1977e544a7"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.mother",
+   "seed": 42,
+   "hashes": [
+    "061ff0b8a780fe1c976e9a45a8991bfd782acceba0a4b5df278cb94e46a28e00",
+    "461ab574ff3eaa0f16c348b46177339b8f8a3ca1cef9c90611dcd3f7bef4285c",
+    "0c303c40d7e7755b23f25ef48ec30d1361a3ba6e94a10ada15e71f1fa73ecf37",
+    "061ff0b8a780fe1c976e9a45a8991bfd782acceba0a4b5df278cb94e46a28e00"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.mother",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "b045d9be08f5e3d788f0f5ee805303d6c859fe5f9bf9b5aa6ac20189a5efcd2d",
+    "0ed92999b7d89caef41c9a2c9664204ec3a836a4a7584e0c354ac1d2b39c6b92",
+    "75da9e7e64eb09f0f0388282d39c3835704f1d4959dff137b389351ebd4b319b",
+    "b045d9be08f5e3d788f0f5ee805303d6c859fe5f9bf9b5aa6ac20189a5efcd2d"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.musician",
+   "seed": 0,
+   "hashes": [
+    "5537cf63b92ec3ea5c77bcde7c6cf305e7225d5f3d55f9fee6da8a3cd7cd7373",
+    "ccca6f32e28d8bced77dc8d0a120e9af164194202ad209e1c66265294147ecaa",
+    "3708e29413c59a68367bdc097edba7b234452e9159fedda488cb81d18a10f5dd",
+    "5537cf63b92ec3ea5c77bcde7c6cf305e7225d5f3d55f9fee6da8a3cd7cd7373"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.musician",
+   "seed": 1,
+   "hashes": [
+    "9df184effed3ed8d3df1618adadaa46197d3aed87c713cb30221e704d96864c2",
+    "ad50a0d5a558d66531ca3f493b788cf2cdf75d5e3361df1dabbd9fc82af85225",
+    "0c8758cad6d381669031e9aef1a694c16f773629d7e19ea3075ed685b1bd9165",
+    "9df184effed3ed8d3df1618adadaa46197d3aed87c713cb30221e704d96864c2"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.musician",
+   "seed": 42,
+   "hashes": [
+    "ccb75c4e48e37b9f28dfad4265856c7ec214a11e74bb725dd583a9535d5fe8f5",
+    "98c3c4dbd029f5cc0864c2e6f45bbe49b6f9da7baebdd9509d446dc40beb7509",
+    "0bacb0482f02aa650d115a00eb0851128178c8d162e9c680c848f931803e2bc5",
+    "ccb75c4e48e37b9f28dfad4265856c7ec214a11e74bb725dd583a9535d5fe8f5"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.musician",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "2d9aa7d7314e160796b160b2fde5c2fd0aa5b3586ddbc3ee43df6975c85c4d1d",
+    "c4440b213a387247b5987a2284efbcdb6d6a5bbdc7ba9e8978fd1a16601e499b",
+    "8782a47cd017514b657c34256548ec2149bb89505bd702e0fdee120da5433e2d",
+    "2d9aa7d7314e160796b160b2fde5c2fd0aa5b3586ddbc3ee43df6975c85c4d1d"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.rider",
+   "seed": 0,
+   "hashes": [
+    "dc04544aede42131adc88f3c02ab90735575783e7eff99354a7386bee6334c45",
+    "d294489b143ca25ef58355911819194e188d0448ccb40b842ddebde53c721296",
+    "828b42f82d9a891641634a1a62453e38b9d42127c51b739397ca63f1e599959b",
+    "dc04544aede42131adc88f3c02ab90735575783e7eff99354a7386bee6334c45"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.rider",
+   "seed": 1,
+   "hashes": [
+    "a845c48d45b17106b4a8af2880d82985b9cbd0278d5cd6bf8c5cf0d3f4359a78",
+    "22a9d044e8117739848d4644689051f355ac14c4da38b385ac0d8508c489ec83",
+    "0ae2f5044a09f6dca920a61b664c1dd88881192f8382ead372ae14b85d2e6fc3",
+    "a845c48d45b17106b4a8af2880d82985b9cbd0278d5cd6bf8c5cf0d3f4359a78"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.rider",
+   "seed": 42,
+   "hashes": [
+    "9ff385c7149f15abae07b2ceb4a0d3bc58e756654e698a6496d5a551602c8d76",
+    "6468519cafea7638bf65d30dc73f030b741f37db8a292a15e7ed4ba09be49548",
+    "758d126e30bc79c8122ba86493cee0e6b9748798bcf31f711168e8047e3645c1",
+    "9ff385c7149f15abae07b2ceb4a0d3bc58e756654e698a6496d5a551602c8d76"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.rider",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "d9397b2b8bd6a8d40a3d84eec6007e556b3bb6440b7ac82b6d715ce376961c58",
+    "872d5104f55e55c162599fad2f5341dddee5e0b3fea79cd272c0dd658be9d4b3",
+    "1586c317ca1b749284a8c759d5db05fb14ba54c808fdcb7fc56bee123b606387",
+    "d9397b2b8bd6a8d40a3d84eec6007e556b3bb6440b7ac82b6d715ce376961c58"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.scout",
+   "seed": 0,
+   "hashes": [
+    "0a643b8576cc175d3abc959c8b70a4247bc96bfc128e22aeed9b57873de53842",
+    "f5aca70855e8732a41b240c9ff20d08725a105ce2bfd6f4b807b004ca3835e21",
+    "95e63c6f1253682662d52aab145ea94c9f133852b6c92e9d0c2916beffcc5069",
+    "0a643b8576cc175d3abc959c8b70a4247bc96bfc128e22aeed9b57873de53842"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.scout",
+   "seed": 1,
+   "hashes": [
+    "4b7c2423deba1718e9a6c0c2ca9febaed65ba961a02f887334be89eecd0a7f2e",
+    "1249de1d3558ed273fd31ed574963b9091e367b48654d725d898e67031eaf98f",
+    "ecd629ce7364f89abbb6dde1d8ae0cd59cb619089917347dc6d85216fa881aa0",
+    "4b7c2423deba1718e9a6c0c2ca9febaed65ba961a02f887334be89eecd0a7f2e"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.scout",
+   "seed": 42,
+   "hashes": [
+    "05efe42a2a5e7830b5bb6bd7ddf8aa1eb5c756be78e03d6e70deb245334b7bf3",
+    "288aa14c7a8f03b40fa1676fdf5a5b38cde071734d3bd65b61b6e5d69d7b69a0",
+    "38bbb09374d3ccfeede36f02d2f404bada5d04a3bbf733c18318a53517d64cc4",
+    "05efe42a2a5e7830b5bb6bd7ddf8aa1eb5c756be78e03d6e70deb245334b7bf3"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.scout",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "e2275669c0b8dba00447dfe7c5746e613561c85f149f1f3bb6fc1de3f0864530",
+    "1dda74b0666dd061f4b81ce20211cd9e6756fecea196a3b4267c701f3df61731",
+    "9aeb95a95bfa528330c2064e125e37c32ccf2a6d990ed11dd1766ad23fba7a1a",
+    "e2275669c0b8dba00447dfe7c5746e613561c85f149f1f3bb6fc1de3f0864530"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.shaman",
+   "seed": 0,
+   "hashes": [
+    "57843a3e6f6e613d6e657ee6f6651d3305802fb9e6c40a5e5d6e5fff5d4a2022",
+    "8a891cf4beb6e91160331fbdc9a9b6fb31aca16903fc05db5d7a86551980f27f",
+    "10087813aa4a3b375f02211bcc29ea1e057273231e027ea2ec477646df62c8d2",
+    "57843a3e6f6e613d6e657ee6f6651d3305802fb9e6c40a5e5d6e5fff5d4a2022"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.shaman",
+   "seed": 1,
+   "hashes": [
+    "a861bd822adc61bc086e69dee03a1877767428fd52a515bf681ec8688685bc29",
+    "78485910e3a8913416998ec31f2a4db5550c2545436f7d9c04fa6a660fde54a2",
+    "c84acdef26a35a48b12009618570b20963cc7c7a33acb407e5627e7252741d11",
+    "a861bd822adc61bc086e69dee03a1877767428fd52a515bf681ec8688685bc29"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.shaman",
+   "seed": 42,
+   "hashes": [
+    "fab5275fb6770273f5b26de02c604a0c732427a2c074039492e58bd96159c65c",
+    "e37cfcd5c47fe77c025e69265fadfc17f2b1105ff9d2850b6cf0f1b4a6a2930c",
+    "079514e353786d0b9587f18e0255b883dafb5a694b418df8900fcd67b16f6544",
+    "fab5275fb6770273f5b26de02c604a0c732427a2c074039492e58bd96159c65c"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.shaman",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "86ca769a7f739d7c568dea58a055fac18e3e31fc9cd42d39145514be1f664e6b",
+    "5d844176a151c4818483d2218a31a8b4b3907c229a0269a8053e6c65be9836f2",
+    "83a631400e1c7f6c3e9d26dd6a8b744940717b53554dec57d839dbab2c071a45",
+    "86ca769a7f739d7c568dea58a055fac18e3e31fc9cd42d39145514be1f664e6b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.teenager",
+   "seed": 0,
+   "hashes": [
+    "3e4b8bf79af0059b615de6c6c684dec3dae5268ff3b60e56a1a22282afc4ac91",
+    "5fc1325eb2df71c0ec2744f1fb93ae8511d07223024040b55d90da120ce648f1",
+    "af42954f2b7d904894de8e41cc4deb1ab3c7c970623d6225b3c53460fdbb9072",
+    "3e4b8bf79af0059b615de6c6c684dec3dae5268ff3b60e56a1a22282afc4ac91"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.teenager",
+   "seed": 1,
+   "hashes": [
+    "e41e7b9863870cbcde71a61427fc3741398fbebf80a7948946d36c929f0b28c6",
+    "9b403aa3cd4aa7a0c613900b5445b7810d55401f812f177c4f33eab6c8735794",
+    "bb256986b1d5b3b05cecf60126d0ad44c2d8dc157d8c747a8f029039329ebb57",
+    "e41e7b9863870cbcde71a61427fc3741398fbebf80a7948946d36c929f0b28c6"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.teenager",
+   "seed": 42,
+   "hashes": [
+    "232329145661c2192027e9537213296f6c04e2b0b741e3d47799940ab8a1b6d7",
+    "e86ae53a29c38257cec43ab9b197199aa9157cf4729602c63d2a312856b01b98",
+    "a27c049c0d4c26df862215d3474b7f6b46859cfee80b5327c5ff76421f7ecd5d",
+    "232329145661c2192027e9537213296f6c04e2b0b741e3d47799940ab8a1b6d7"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.teenager",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "94f1d2145eb93edc7a2d72261b357a8d524e83c851bc2d44b258f3af59e376e7",
+    "ff7975b0bc68353af05e92ca8e3401d4d47cae0cabb0a55c1290e118db7d6342",
+    "6f85fbe5cbd1abaa8850cc9ffb2f8ba50667e5facb9424ece7f36ff842d4261e",
+    "94f1d2145eb93edc7a2d72261b357a8d524e83c851bc2d44b258f3af59e376e7"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.tinkerer",
+   "seed": 0,
+   "hashes": [
+    "536f6fb55616120ddf3f20512a8cd259fb69373a889cb582ba20e67c1547d362",
+    "fbab1d6703d8e4396801887e920c5a02d793aed45f9dee5484924d7b8152c9d1",
+    "d890ceba3eb8c8822716559f353ed2a7b8d351054f976e5f69e0830dc5ce9960",
+    "536f6fb55616120ddf3f20512a8cd259fb69373a889cb582ba20e67c1547d362"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.tinkerer",
+   "seed": 1,
+   "hashes": [
+    "33710a86f2db2bd689ae9a6b47515438d750f84b5bf5a511a6ca58dfa40f402e",
+    "aed80ea3b8fee41fa025e33c4499df7c5ec3cfa44081fc7c2eff0fb857e4a888",
+    "cb6e6d155a401447d7bc39a83f3e3415a73d71de9bfcf940ed57732df3884eda",
+    "33710a86f2db2bd689ae9a6b47515438d750f84b5bf5a511a6ca58dfa40f402e"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.tinkerer",
+   "seed": 42,
+   "hashes": [
+    "ded3af1e104c079cd75799692504906921e1cacf777847474367e1a145f2b223",
+    "a6570aa8518fadcf0f7db0396d1a9fbe7fd6cb06432b4300956e870f12bdb789",
+    "113b3e7bbc89beb39c374abdbe483c9fdb405363f9d5f19b618bbb4c5aedec8b",
+    "ded3af1e104c079cd75799692504906921e1cacf777847474367e1a145f2b223"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.tinkerer",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "6c4f23162cc166db418391b6456393a63578e7b01db32843820b33525c6403c6",
+    "6e8e81b090e15d4e1fb19d6e9723b900b5ca025d81aad421ce11357f8b7cedc4",
+    "7cc0da69bf7060e8075138a2ba2294762f663ea9d1e90617594f03003ff5d672",
+    "6c4f23162cc166db418391b6456393a63578e7b01db32843820b33525c6403c6"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.trader",
+   "seed": 0,
+   "hashes": [
+    "4d4220132918ba78186859ead89b0eb6bcf5d7bb8e3b752bc0ff72d348f57a2a",
+    "8bf671b6746030c6ecb317496fd9cb6edf29ff76cf1e14a5b0b8560ddc329e89",
+    "cb0dbb6c2d733065c9d7f571cd25a23cb1213de96bbba77b3ae46dd54cbd82f3",
+    "4d4220132918ba78186859ead89b0eb6bcf5d7bb8e3b752bc0ff72d348f57a2a"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.trader",
+   "seed": 1,
+   "hashes": [
+    "0c7145b0ebbf76cc5417f96ac038f3b73cbeccb1ef8716abe5e68a399ee089d8",
+    "1ccf60522011175108cba944f0028d7165e0669880fdea8f408f106c359b4df8",
+    "f18aa67c5b6f6b28d72d4e3e7aed69a05942238c67e854918e115b201a69ed3c",
+    "0c7145b0ebbf76cc5417f96ac038f3b73cbeccb1ef8716abe5e68a399ee089d8"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.trader",
+   "seed": 42,
+   "hashes": [
+    "48689188d97e79dea5488ba1afb6dc71cda89c2fdbc81929f8c9a75eea0b8a91",
+    "a2512f2d0f7116a695190f6958ccf4433027be19aa02998a77bcabc92e3887b6",
+    "cb10d7ed99f4e0f2f2fc387c60ea06114c6dcf9bc444a3122a893e775f7938f6",
+    "48689188d97e79dea5488ba1afb6dc71cda89c2fdbc81929f8c9a75eea0b8a91"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.trader",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "7555d64a71da7545f5b6114d83408a579e3f540de54e145af4de2ebaa39f7c6e",
+    "ed535393c08a2b57ea148347c6df1d28b746646c955884a7aa14170f3e26e975",
+    "7e71f666c4b98cf045b84dea47779e504cdf487776fb0b215e32b6f756c372d7",
+    "7555d64a71da7545f5b6114d83408a579e3f540de54e145af4de2ebaa39f7c6e"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.village_chief",
+   "seed": 0,
+   "hashes": [
+    "68738703b10b27bd0c0fd2694e267fd8655a58b3c46c44c47568d11659f26fb6",
+    "b720575ca96f227d281267558d28952e04eb1c1f62042af9c97dc26529895c92",
+    "1bfe080a0feef4568605d46a5a1536f69977841e5ae3a8722658526234e35be3",
+    "68738703b10b27bd0c0fd2694e267fd8655a58b3c46c44c47568d11659f26fb6"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.village_chief",
+   "seed": 1,
+   "hashes": [
+    "1dade4393c7d621f686c7d4c853b8734fa4c0f83f83f7df5accf8cd21fac32ca",
+    "2c40edd5ba2e965cfe48b30edc5e4f6f2c1215605567c183d5c79fcecd27b1e0",
+    "b0adc491a31e28cb499e54b0135ef9fb7d6f7c46aab59e251d3f7da26752a627",
+    "1dade4393c7d621f686c7d4c853b8734fa4c0f83f83f7df5accf8cd21fac32ca"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.village_chief",
+   "seed": 42,
+   "hashes": [
+    "cffde3583f0dcb04079b4875e4f1eb11449927b9d803d3d019b115470a68fed8",
+    "03d786f31b6b07a28988a29eddbc053c10f2385e1beaac9cce30b02496fa2c6b",
+    "cef0d1af0be3bd68679cb50c1af0135eeb4ff86b03f6623180a548ccdc3f12d7",
+    "cffde3583f0dcb04079b4875e4f1eb11449927b9d803d3d019b115470a68fed8"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.village_chief",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "9312f8a49e528be21809a229612972654677e408865a84dcddc2617b2fd9a547",
+    "2818532ed4ffd234828931593659970107e6c9e0b262f0c081a8bf143f57588f",
+    "74f4d6043353ff139ea0ff7a8feaa7515d07d5047023b3fddd34eefd97a47dec",
+    "9312f8a49e528be21809a229612972654677e408865a84dcddc2617b2fd9a547"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.warrior_heavy",
+   "seed": 0,
+   "hashes": [
+    "feb81ba670ab56be53f92c7309500403cbc64ffef840fe97a594f4eea3f7ae3e",
+    "4ec4392e52caa1538537d7f4d72889e7ef134eca713602ce3d4d2dd68fd1d6f4",
+    "f1c288b00f4a00ab53a08ba5a24af855a1d0a43ab0ffdcad1e2c1819dcfa4358",
+    "feb81ba670ab56be53f92c7309500403cbc64ffef840fe97a594f4eea3f7ae3e"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.warrior_heavy",
+   "seed": 1,
+   "hashes": [
+    "53a88770329e9f7a3c9aef971e0b652c5e793d7e823e8f5b77822712451271bf",
+    "47555413dcc18242f897aae05e996e168b1d0caf0285b1b3a9a3d6db7562c4e3",
+    "af44b905708764537060bd82eec01442e2b491619f2ec8bd902e4282f4af732f",
+    "53a88770329e9f7a3c9aef971e0b652c5e793d7e823e8f5b77822712451271bf"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.warrior_heavy",
+   "seed": 42,
+   "hashes": [
+    "71b9bc5d2642811ed307561691a24af2ec72126b23d79722bf6dab8aafd78626",
+    "3eba3edc67e30f0eaf76cd31aa1e67af1b7402847c93adb0b0cff69cbe632205",
+    "9cc8bbad93fdbec8337cb725a1232b4c7927d69eb6adba0570b7bae0c035173a",
+    "71b9bc5d2642811ed307561691a24af2ec72126b23d79722bf6dab8aafd78626"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.warrior_heavy",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "6b0bbe1cd22af6e8306a957c38cc076cd76938d9cc999dafd62b8c666f993bce",
+    "b139231cb5d3ca22063d0fa165e7d92445d1a72958d71a7ca043483ab1ff67c6",
+    "495cb0c147586ad72356958803fd28634ba98eb215bb864a2b79fbbaff98af08",
+    "6b0bbe1cd22af6e8306a957c38cc076cd76938d9cc999dafd62b8c666f993bce"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.warrior_light",
+   "seed": 0,
+   "hashes": [
+    "4967e610ad31b28fd6d68602588e8185d0ec3c6db3f04fca73d98c6f6f512605",
+    "0a49aacc6294be554720299585a0ffc5b66be488e719a161757d80a2fd42c243",
+    "171c1b07b9a9db993dd39d309c63bea24d32fb6ae996dc200cecafdde1febd5b",
+    "4967e610ad31b28fd6d68602588e8185d0ec3c6db3f04fca73d98c6f6f512605"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.warrior_light",
+   "seed": 1,
+   "hashes": [
+    "5a1d9f0af2b44a8224aee5149cc6eeb28856230a07e068634a5df7bbb87c146c",
+    "be007e918672eacae77adb6efdc26626e860e375226982737687f0520fbd7e50",
+    "79427f0e4c1236bcb7164392f66b9c8eb4afed359084428a7b2a1ae71ac77412",
+    "5a1d9f0af2b44a8224aee5149cc6eeb28856230a07e068634a5df7bbb87c146c"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.warrior_light",
+   "seed": 42,
+   "hashes": [
+    "c2a34a78c4ae4c28df4c9ad9f9f332a11719a4379bf54021fc1b9dbe1cca148c",
+    "8a8be537a77755db4a0672d0189434a50066aa544549cea361640b273d4ffdf6",
+    "61e26b5623fa422db613931a06bfa635617ca873fdc2cfe67c39a3c113eb6fd9",
+    "c2a34a78c4ae4c28df4c9ad9f9f332a11719a4379bf54021fc1b9dbe1cca148c"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.warrior_light",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "fe0c95041f034c7ae417ddcecd546ad03ac430673c34d3baeccd1bb44ffe5e22",
+    "f08671522ded0d120788cd7c6f62366e9aa53ffac007f80148ba446c1b8ab150",
+    "1b7c7b7f94fa9da9a9e74fa33966621fc3a9761c4f482216fd7a8bbec2313fba",
+    "fe0c95041f034c7ae417ddcecd546ad03ac430673c34d3baeccd1bb44ffe5e22"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.cave",
+   "seed": 0,
+   "hashes": [
+    "9689feb61b5ae8a840450d6e0fa3d33a56c2256cb128bf2cb4961d7d9e248b4a",
+    "4aaf72101d31fc7cbf73742735701ee5d7dd61dee4b40638fef5a43bb1190f29",
+    "d518498f21cc37364eaa65942a108555d2cca1986c21052bdbabeb45b22aea58",
+    "9689feb61b5ae8a840450d6e0fa3d33a56c2256cb128bf2cb4961d7d9e248b4a"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.cave",
+   "seed": 1,
+   "hashes": [
+    "062ecba72cbe537bf018e1987fbb33f944c8fad9a10a7471ab85841ce69c8545",
+    "ca88e41b7c6e24ff4ee33ed77388dfed4c294ea559dadb23a7a73fb37be7cd44",
+    "1b9842196e4d29223b6824c3af3a852f4c809f2c60a4c2112d5c80c0c62bde95",
+    "062ecba72cbe537bf018e1987fbb33f944c8fad9a10a7471ab85841ce69c8545"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.cave",
+   "seed": 42,
+   "hashes": [
+    "1aea7ac43bac951d094b6f5140d53a28a87050ebcf04a34312970f3be9468b62",
+    "40847496f7ac9c9f4dca56daac957c15f755ffa709596362aabed53102766011",
+    "96d70a068c4a5821b7c9a84e0f523d679cc65d042158d7716e797a7d9dc2a32f",
+    "1aea7ac43bac951d094b6f5140d53a28a87050ebcf04a34312970f3be9468b62"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.cave",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "ac24c1995a4b66eea1619f5d462768e7fb7dc97cde1e06ff286b5284d08d4040",
+    "c8e3f1642973a5fa9a537e1836093361759bdc738c29c1bd8090f767f6fe0efe",
+    "b2eb948203b7938023bc01e4dcdede428a6d0be95719242bc5d3c923d581079d",
+    "ac24c1995a4b66eea1619f5d462768e7fb7dc97cde1e06ff286b5284d08d4040"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.common",
+   "seed": 0,
+   "hashes": [
+    "05cc820684c233b41f07b54e10136df01f337d75bbcae3ddeecef45c81f42db6",
+    "0db13e459a0b336983d00c175590e97cff2ae328c32bed8ebc7c53113151da16",
+    "396ba94b89409ebc3db5595989593076ed7b37b432d34c212ae0ab183409301d",
+    "05cc820684c233b41f07b54e10136df01f337d75bbcae3ddeecef45c81f42db6"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.common",
+   "seed": 1,
+   "hashes": [
+    "27ac2c500077ba574fc3cc1250d02f7f22ac076d6c754a5b34321f9f80e2c649",
+    "be5ac2f9ce0c79db41efd038a1e9abbb716eeaea9e19f02b80754c5283f7520b",
+    "364597ceaa2b45a7b998404b1c7ae4dc1734a0753f0171170d27ed5706b07967",
+    "27ac2c500077ba574fc3cc1250d02f7f22ac076d6c754a5b34321f9f80e2c649"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.common",
+   "seed": 42,
+   "hashes": [
+    "f97f9add089b50c318953b3a802a8ecf5bfda91358e1bc56ed30cfb89a52381f",
+    "bf5a89bf1b36e92b9ace7550e585487d01f1f0fb646f23c86514fff155c98dc7",
+    "68a140547c435a2177a2abc208b6e1166392fe8a37a508a62cf7614d427bd529",
+    "f97f9add089b50c318953b3a802a8ecf5bfda91358e1bc56ed30cfb89a52381f"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.common",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "9965c008ba5ffee8e571ca294a2c6e72aed1f8bcfc584210af356ab5a678a6da",
+    "694aac539ef3b7b8d6fedcbb9e16e554558f6b087f86e831d024451b7c151332",
+    "07e787cc00ccc3ad84aa345412efd620025c5d55ba5f4cc244ef751a562a5afe",
+    "9965c008ba5ffee8e571ca294a2c6e72aed1f8bcfc584210af356ab5a678a6da"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.desert",
+   "seed": 0,
+   "hashes": [
+    "c60719ea36788fffa38dfd9f422b09af86339cb77032bc1c41b378a01dbce10c",
+    "c57292aba0f5658695bcefe7a3b56eaa23dc1619a5578aa6dc7deda3b25cf8b5",
+    "728416f881ce1b48da155963ca6ef7d88daab594c361b4d79d29abac9b412e07",
+    "c60719ea36788fffa38dfd9f422b09af86339cb77032bc1c41b378a01dbce10c"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.desert",
+   "seed": 1,
+   "hashes": [
+    "439cc93f86ec2c45f1456cd2c4461d202f4ca556ce78d6e653d6029a84fba97b",
+    "24356ec5b0a77047b19b154712cd886ec79f71abac29878e527aabfc0463001c",
+    "0f239053d624cd1b5a94c51e4fceff48081709e4a2aa6cb40bedcf4873616554",
+    "439cc93f86ec2c45f1456cd2c4461d202f4ca556ce78d6e653d6029a84fba97b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.desert",
+   "seed": 42,
+   "hashes": [
+    "5a4fe9ee66b309dbb067fa88111fb64ae237cfaa3e294861b583de6fba51fd66",
+    "c0e5d7f68b92d22a1dcc02893871b160d95eb70230022bc4a43235e57c69b438",
+    "139e42cdcada79cb76fcba315a10f50e280387f5b9d15a6d4b6595416a905d93",
+    "5a4fe9ee66b309dbb067fa88111fb64ae237cfaa3e294861b583de6fba51fd66"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.desert",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "9f455344bfdeda452a442c5a39d316073416d40bf94925d0d70a81970017d486",
+    "163e49dc5c29fd9367ab1b9a2309ba341bfec4aa6d9eae86158208dbaae4b506",
+    "336c9e7213c3b6cc36a255e42ebd08dea33b6a543e0971b5be6eac61943c8f71",
+    "9f455344bfdeda452a442c5a39d316073416d40bf94925d0d70a81970017d486"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.forest",
+   "seed": 0,
+   "hashes": [
+    "fe6ee57a4745d2b50f107fed154729008e51978fb4274b2dfc4205ec9b4b6346",
+    "f103a3034e462a5b95e8e6bc93a680eef11861846bb757abd3af50d3e6a8c507",
+    "f10489c1c200cf99bbace06be5a061ddea4d220c9bb3095f67b688cfc13dd683",
+    "fe6ee57a4745d2b50f107fed154729008e51978fb4274b2dfc4205ec9b4b6346"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.forest",
+   "seed": 1,
+   "hashes": [
+    "5af36ea018e845b493844c1bdca877138d7dddc1a07cfd1f600896d628501c93",
+    "4c53df635920bf4ccabdf76ca429254cd80a381b21f1b0d5f04a5e52919317be",
+    "78b7a6f96a8a28a2e1e43b8bd12c3e42df1d9f6ea519431f830004fa71c0b4d2",
+    "5af36ea018e845b493844c1bdca877138d7dddc1a07cfd1f600896d628501c93"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.forest",
+   "seed": 42,
+   "hashes": [
+    "ffc6bb31dc4dcd312e2d6efb5769471da17a944e95f2c95c96e16498298d0a4f",
+    "d9ce7956c85dedd5f9f4967d6d2d84616deada90bfccb1d7b0f7b00cdeddd1b2",
+    "e43408b47fac8a7d0166a46c91bb9a4429e2d6f8dd3a1fac2e9e597fd478f400",
+    "ffc6bb31dc4dcd312e2d6efb5769471da17a944e95f2c95c96e16498298d0a4f"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.forest",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "355aa40d41185df629d2f7264270fb0fd23274d5631bb2a12e97aa3f1dac710d",
+    "53ed7dcb856fde60474669ed7beff746c4f3cbe8a1327c962737e683274d5e98",
+    "58a1c0da453964c2bc811caafc1c3c1f7835dc2edb3f18b53225f453101737fc",
+    "355aa40d41185df629d2f7264270fb0fd23274d5631bb2a12e97aa3f1dac710d"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.mountain",
+   "seed": 0,
+   "hashes": [
+    "9952ad92a52bad2f10f47a65f7028a53c5d230f79a15c1bdf34e88f59790e175",
+    "c30c1ac495b084bc220d149adb06b15822d9cc02289b92fda498c24b1b4c0752",
+    "2fe0c06f30b2f6d2b30cca577cb714ab5e92a0231f191bdd24ee44ac0637c100",
+    "9952ad92a52bad2f10f47a65f7028a53c5d230f79a15c1bdf34e88f59790e175"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.mountain",
+   "seed": 1,
+   "hashes": [
+    "cea6e6e644fc9291469b4643aa96200b689d6bcdb62f85311416801bf048d46f",
+    "9cf44eae0b2ac6ec42fc4bae613a4e9b7d609c4744a57823e51ca27484b5c9a2",
+    "e2dbcf160dcf520ffcc6a9d7db7f1009e5b005c12413c1bf340335d94dcf78b2",
+    "cea6e6e644fc9291469b4643aa96200b689d6bcdb62f85311416801bf048d46f"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.mountain",
+   "seed": 42,
+   "hashes": [
+    "12ad3d3a1c3c2c211026619f9ab1e6810c1a49ed0977d2f3f6ae665160e20c24",
+    "2a5778bc09b846902b153986261ade8ce49b06ab3f2a6092ecd312bf6a75a351",
+    "eb0a309a9d5a4d9ed45ff87181973f6bd67b49ddac0b93f60e22028254cd715a",
+    "12ad3d3a1c3c2c211026619f9ab1e6810c1a49ed0977d2f3f6ae665160e20c24"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.mountain",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "faa7c945f6f2ed91baa57733dfed2938186a600407bc71326399a645f1f290df",
+    "0973512277761a1ff2b0c1debb2587ea34dd51797f9e3e2791b5a1c086bede53",
+    "b24de536b303427352b0821b06a61c4d4770b311f1b99c675cf47b0fb2dc1c58",
+    "faa7c945f6f2ed91baa57733dfed2938186a600407bc71326399a645f1f290df"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.plains",
+   "seed": 0,
+   "hashes": [
+    "fae14eef1e76e07c6fc1f95d40037b585bdbac0e5bf7cfa6eadf20c1c030ba03",
+    "ceefa43697b992d4c2e9cd668aaf56b2eef82df694869124f13212b8c4158d13",
+    "ca3208ad843070dd20dd677566c5713c032f2ed694f37934f73d8ffc5c0bbefc",
+    "fae14eef1e76e07c6fc1f95d40037b585bdbac0e5bf7cfa6eadf20c1c030ba03"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.plains",
+   "seed": 1,
+   "hashes": [
+    "afdcbbe90490c349cba2db2b47ad8f483fa492a39b77ecd0533ff19b259b156a",
+    "84386db291f6b08d0716014c95003eaabfdc40655c77b8a368458bd2c7eb15c3",
+    "a2c4e30bcb7f487524010f446fa8cd9fab71ed9cd384418532fc53c17700bcea",
+    "afdcbbe90490c349cba2db2b47ad8f483fa492a39b77ecd0533ff19b259b156a"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.plains",
+   "seed": 42,
+   "hashes": [
+    "b7b561796d092911eba0290492074033aa85922276405612b5bd431bb8cfb531",
+    "e8ea70288b86d3e26f4ad60abe74150120340008f8b5c87b492fc47fe0cb081b",
+    "d563a34d1da2d43268ff1b3fd4dedeeffe3954e89349d262dd5eea9ca1dbe5cb",
+    "b7b561796d092911eba0290492074033aa85922276405612b5bd431bb8cfb531"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.plains",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "db5bfcff2ac9a7ac5e4b070d4c6cfb0062503d91f0661a9761472481cbb899e7",
+    "d40ff090386505d8eab5a865e1a6493832ea61b1c383f847e1f85a2793e3a073",
+    "6dd4bb8d970a31b03c5996d545fda008bb56013dca5184155b883ac79976fd13",
+    "db5bfcff2ac9a7ac5e4b070d4c6cfb0062503d91f0661a9761472481cbb899e7"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.river",
+   "seed": 0,
+   "hashes": [
+    "1987e5433e1b52a0c5baae2e710ccb3965364eb984a3b2c0430666a11dbb91d3",
+    "ad9331384ebc7adb4d41a1f04686d51d34551cb4e24849ee2381ad10bbd4a81f",
+    "060fddd9e6f3a0e81117241c05529befd3c129fe0200b993d148cbf12b9d5de5",
+    "1987e5433e1b52a0c5baae2e710ccb3965364eb984a3b2c0430666a11dbb91d3"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.river",
+   "seed": 1,
+   "hashes": [
+    "d91d31144b6fc0a847cff4a9e88fe73022c2ebb97d456a66c163633a08558282",
+    "f3e2009eac7a4e7f1009df4eff85db1d2d721a62c4b6676c69a61383d75c2ef2",
+    "6e8202ef6f7ae12632f22f0cf03593c3dea9e977e0aac6ec78d92623f9f04efa",
+    "d91d31144b6fc0a847cff4a9e88fe73022c2ebb97d456a66c163633a08558282"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.river",
+   "seed": 42,
+   "hashes": [
+    "61dd425c63b6bd2f27f7bd0de08f60f0ddd857239ced05ec8c674f99863f76c9",
+    "fb5968c2581e9ba61633588e5f4c17ab9a60da74920ee86878c9ec0d679e96f9",
+    "9ac3cc005e6cd444a6b182c7af397e1933e4bed45e59e1444e7f8ae04c77e05d",
+    "61dd425c63b6bd2f27f7bd0de08f60f0ddd857239ced05ec8c674f99863f76c9"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.river",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "69e1572a0d4a13ce377a048912e3b586098dd12fe038c7135eb88378686ee08f",
+    "f4cd14f70fa9fa5c90446c35a81267f00dbac90fe519ac9bab24ee1b062cc682",
+    "ea213be4668e0894bc22e8fe4fb832b43b8c2cda9f26ffc4d069fa66fe7062a9",
+    "69e1572a0d4a13ce377a048912e3b586098dd12fe038c7135eb88378686ee08f"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.snow",
+   "seed": 0,
+   "hashes": [
+    "6ffe92b2aea530d35138c6ecd830d3d9eab185bbbcb99097fdbc76adafc88ec2",
+    "136db0f67d66b6ca83b3ada35a85cb00fa0c053153efee34e9fc7338bb1706ac",
+    "479f98323adef8e4af2cea9aa43573548ff24588888b5fb8b4299fad1958f5f9",
+    "6ffe92b2aea530d35138c6ecd830d3d9eab185bbbcb99097fdbc76adafc88ec2"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.snow",
+   "seed": 1,
+   "hashes": [
+    "70bd810a08aa0a63dbd326a7b75f4848ab9a1154ce6ccbd125a228ce844f6d84",
+    "90a3ae1b889bc6f4ddb80f2934bb304fda8dbb6aee91ee1237f9ef1544930cd4",
+    "c6882e8c72b1524bccbc2c250ce319084ba46a1030e1bf1a871035a6284e70b3",
+    "70bd810a08aa0a63dbd326a7b75f4848ab9a1154ce6ccbd125a228ce844f6d84"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.snow",
+   "seed": 42,
+   "hashes": [
+    "9e3a02c399a580b39b53a2d05ad7d4ac41bbecd5d960d1cbd8bb04da34c90d72",
+    "a3679e21a19afa0e5ccc43cd9943081a5671f4efc1fe618e01e84f2a236246d6",
+    "33022ed18554e1e511e76bd9b88e7363eb4c4078a551a8ca55f57cd2c2042c9f",
+    "9e3a02c399a580b39b53a2d05ad7d4ac41bbecd5d960d1cbd8bb04da34c90d72"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.snow",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "98fe641d456145057737f69ac6d67412337782a2450780b44f1b38f91ecacb07",
+    "0fa61690cb0e5c30168fc509b84460ccab91051273e6bf0651f6df3122e71eac",
+    "662e266df50c768699a6a4dcf5de04f90528d590c87445b4939d8c5bb462dd92",
+    "98fe641d456145057737f69ac6d67412337782a2450780b44f1b38f91ecacb07"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.swamp",
+   "seed": 0,
+   "hashes": [
+    "c2e661a5e9458fc5011d21cb45a1512c9e660d8c942d2f10cc578e7e3430212e",
+    "dbe7ecb6f0989c4e209f08a4ee3a019e537434788dfad788a8f8f57ad2f0c01a",
+    "0147faaadb6aca0d1d85dcb1dd0f91b0ff6009495285896ed9acb64ab860e350",
+    "c2e661a5e9458fc5011d21cb45a1512c9e660d8c942d2f10cc578e7e3430212e"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.swamp",
+   "seed": 1,
+   "hashes": [
+    "b2a396900ef3eea5f0ba387d744a3f6e58010e34ef701b938b0dc7df7ca346fc",
+    "482a55e9045bdb25dc3683317ff9aacd15170ffc04d81683d196f06fc54145d0",
+    "da51f8614d4c69fd1ffba8d4d90f853b816a3b99d0091927173576a2ebd908ec",
+    "b2a396900ef3eea5f0ba387d744a3f6e58010e34ef701b938b0dc7df7ca346fc"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.swamp",
+   "seed": 42,
+   "hashes": [
+    "134edc6dcc50fa4695bad2d96be9edc960a7b77e88ea65fdff944f16e0184bea",
+    "c15593d1a5da8a7507995652030d48d0db44608add8856791ab304c56f460e42",
+    "12f25a0a2d792c4a5d54329385f221d2364cb304828763458efed953fe556ab2",
+    "134edc6dcc50fa4695bad2d96be9edc960a7b77e88ea65fdff944f16e0184bea"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.swamp",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "9542bf939f0e2a6bd3241bae7af8aaf8a046fc8a8cfbddb74592fd4bc42da0ee",
+    "89e65b06b250755f29410d562a2c2dc801cb5ad920123e77986ed653bf6e0abd",
+    "f4163ea6df0f743c3e327c2cd3bb62e555b9c2c8fce44a2f19a6943a0204d811",
+    "9542bf939f0e2a6bd3241bae7af8aaf8a046fc8a8cfbddb74592fd4bc42da0ee"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.tide",
+   "seed": 0,
+   "hashes": [
+    "726635659686c3a5666d61451ac532fdd06118e365ccb772c016791c5add5e1b",
+    "6809afa16e5f1c0c614e7af32604e7ea2a35c4f7150e1cf949f4a947a87629ab",
+    "7894e4680284d4b02ad1c44db9c23388022f4cdba2e19e35384e924f19220be1",
+    "726635659686c3a5666d61451ac532fdd06118e365ccb772c016791c5add5e1b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.tide",
+   "seed": 1,
+   "hashes": [
+    "9e5e98782e0d42ae0f1c6eabc61bd34798b600ae28f104dd1c650ced03d2f521",
+    "d88f8bd10e5daefbc48b7fc87b7eb31ae39ac133fee529c89e23835b1e448e8b",
+    "db4147e26fc9f9f82bc32b7178159da9c707c31891ff0dac870ea0b93c31fe4b",
+    "9e5e98782e0d42ae0f1c6eabc61bd34798b600ae28f104dd1c650ced03d2f521"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.tide",
+   "seed": 42,
+   "hashes": [
+    "acae284d12e8298a89e0b299a9c81d462347483c7859fcbf03c89f6a5b62da1c",
+    "04e83f2dcf174bf2c084110b70b38861697ee945cbb0f2fbc574b684c341b23a",
+    "c05678bf301eeccd2296c7a4bef380b14d16f111905741b6b304a745892cb04c",
+    "acae284d12e8298a89e0b299a9c81d462347483c7859fcbf03c89f6a5b62da1c"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.goblin.sub.tide",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "86cafe239b11feeb3217592c3e3cab319d49e425107bfe259dcb6cb28eca5018",
+    "a4aad206e456944ac70b37a3d2cea2b4f0b544fc16c4aaee65f00aeaf58b3860",
+    "1988369aa1342203c345724d89b29ec48b19b2fab97fa8584a9960e871943ee2",
+    "86cafe239b11feeb3217592c3e3cab319d49e425107bfe259dcb6cb28eca5018"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.scene.village",
+   "seed": 0,
+   "hashes": [
+    "e22e72403f8546d42f76d0c1448411ae0b03f71abefd3c41f846149e6ccf08ff"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.scene.village",
+   "seed": 1,
+   "hashes": [
+    "10ac21b6b6ad72b4a77597778c457dd3f55f95023ba404a2ea0787a772260e57"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.scene.village",
+   "seed": 42,
+   "hashes": [
+    "529be042610e9ff0df090e58d083ff451a797dc790528e7a4fd5f64126606442"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.scene.village",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "c19c2b0b3eeb77cb09452d30ef307097cca4715b758af6a737951ea497b9e14f"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.scene.village.hd",
+   "seed": 0,
+   "hashes": [
+    "2228c9309e524e3cd5ad310f9f1e6b5558f8d6c97b7154cdf7d9869e57595db2"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.scene.village.hd",
+   "seed": 1,
+   "hashes": [
+    "b4f723c4eddb43471539afb0682d084aff335fa8141b1089c1c295faa46af6f5"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.scene.village.hd",
+   "seed": 42,
+   "hashes": [
+    "d201d42172ee93c9b0d888ccc557bdbd20f176a703a44cb58d3c544934fc864b"
+   ]
+  },
+  {
+   "kind": "frames",
+   "type": "boc.scene.village.hd",
+   "seed": 9223372036854775813,
+   "hashes": [
+    "01ca56517da0d00b60e640aec5909cc594f0df6cfa7976445b4769e8468a4f92"
+   ]
+  },
+  {
    "kind": "wfc",
    "type": "builtin.cave",
    "seed": 3,
@@ -382,6 +2158,23 @@
    "removed": [],
    "witness": "initial",
    "reason": "first blessing"
+  },
+  {
+   "engine_major": 0,
+   "cases": 208,
+   "changed": [
+    "frames boc.creature.goblin 0",
+    "frames boc.creature.goblin 1",
+    "frames boc.creature.goblin 42",
+    "frames boc.creature.goblin 9223372036854775813",
+    "frames boc.creature.goblin.aquatic 0",
+    "frames boc.creature.goblin.aquatic 1",
+    "frames boc.creature.goblin.aquatic 42",
+    "frames boc.creature.goblin.aquatic 9223372036854775813"
+   ],
+   "removed": [],
+   "witness": "Claude, session 3 (for Shibbieness to confirm)",
+   "reason": "session 3: goblin leg template fixed (three-leg bug), CRUCIBLE iron ramp, feet on the 8 px LOD rung; new rig, scene and warren types join the golden set"
   }
  ]
 }
