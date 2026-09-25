@@ -1,0 +1,24 @@
+# Trader: Merchant, bargainer, traveller, connector.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.trader"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.trader"
+license = "Proprietary"
+label = "Trader"
+
+[role]
+age = ["adult"]
+build = ["average", "slim"]
+top = ["vest"]
+bottom = ["trousers"]
+cloth_a = ["teal", "gold", "red"]
+cloth_b = ["cream"]
+headwear = ["headscarf", "none"]
+hair = ["ponytail", "long"]
+hair_color = ["black"]
+held = ["lantern"]
+offhand = ["bag"]
+back = ["big_pack"]
+expression = ["happy", "confident"]
+accessories = [{ item = "necklace", chance = 70 }, { item = "pouches", chance = 100 }]

@@ -1,0 +1,23 @@
+# Hunter: Tracker, scout, provider, ranger.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.hunter"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.hunter"
+license = "Proprietary"
+label = "Hunter"
+
+[role]
+age = ["adult"]
+build = ["average"]
+top = ["armor_light"]
+bottom = ["trousers"]
+cloth_a = ["green", "leather"]
+cloth_b = ["leather"]
+headwear = ["none"]
+hair = ["long", "wild"]
+hair_color = ["black", "brown"]
+held = ["bow"]
+back = ["quiver"]
+expression = ["confident", "thoughtful"]
+accessories = [{ item = "bracers", chance = 100 }]

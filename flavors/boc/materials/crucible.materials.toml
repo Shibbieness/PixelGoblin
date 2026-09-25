@@ -1,0 +1,22 @@
+# Material ramps grounded in CRUCIBLE (tools/crucible_ramps.py).
+# Shape (contrast, specular glint) is DERIVED from each material's class and
+# electrical resistivity in crucible.db; the base colour is AUTHORED.
+schema = "pixelgoblin/palette@1"
+id = "boc.materials.crucible"
+
+[palette.materials_crucible]
+steel = ["#1d1f23", "#494d55", "#7a808a", "#acb1b9", "#dbdde2"]  # crucible #1 Structural steel (A36): metal, resistivity 1.7e-07 ohm-m -> metallic glint; base #7a808a authored
+copper = ["#331705", "#753b16", "#b86a3a", "#e0a27f", "#fad7c3"]  # crucible #5 Copper (annealed): metal, resistivity 1.68e-08 ohm-m -> metallic glint; base #b86a3a authored
+iron = ["#201f1d", "#504c49", "#5e5a56", "#8c8885", "#b6b4b2"]  # crucible #6 Gray cast iron: metal, resistivity 1e-06 ohm-m -> metallic glint; base #5e5a56 authored
+silver = ["#1e1f21", "#4b4d51", "#c4c8ce", "#ced1d6", "#eaebee"]  # crucible #7 Silver: metal, resistivity 1.59e-08 ohm-m -> metallic glint; base #c4c8ce authored
+gold = ["#2c1c00", "#674700", "#d4a830", "#eecd7f", "#fbeac1"]  # crucible #8 Gold: metal, resistivity 2.44e-08 ohm-m -> metallic glint; base #d4a830 authored
+lead = ["#1e1f22", "#4a4d53", "#5a5e66", "#898d93", "#b6b8bb"]  # crucible #9 Lead: metal, resistivity 2.2e-07 ohm-m -> metallic glint; base #5a5e66 authored
+brass = ["#2a1d00", "#644800", "#c09a40", "#ebcd8e", "#f9eac9"]  # crucible #38 Brass (70/30): metal, resistivity 6.4e-08 ohm-m -> metallic glint; base #c09a40 authored
+bronze = ["#2c1b07", "#68441b", "#a0703a", "#caa47c", "#ead5bf"]  # crucible #39 Bronze (Cu-Sn): metal, resistivity 1.4e-07 ohm-m -> metallic glint; base #a0703a authored
+granite = ["#403931", "#645c53", "#8a8278", "#a59d94", "#bab3ab"]  # crucible #13 Granite: stone, resistivity 10000000000.0 ohm-m -> soft dielectric; base #8a8278 authored
+marble = ["#87837c", "#aeaba3", "#d8d4cc", "#f2eee7", "#f8f5ee"]  # crucible #14 Marble: stone, resistivity None ohm-m -> soft dielectric; base #d8d4cc authored
+brick = ["#480000", "#70240e", "#9a4a34", "#b36853", "#c4806d"]  # crucible #15 Clay brick: ceramic, resistivity None ohm-m -> soft dielectric; base #9a4a34 authored
+glass = ["#3c7078", "#62979f", "#8ac0c8", "#abdce3", "#c6f2f9"]  # crucible #16 Soda-lime glass: glass, resistivity 1000000000000.0 ohm-m -> soft dielectric; base #8ac0c8 authored
+oak = ["#480300", "#693100", "#8a5a30", "#9a795a", "#a3937d"]  # crucible #25 Oak (red, dry): wood, resistivity 100000000000000.0 ohm-m -> soft dielectric; base #8a5a30 authored
+pine = ["#753500", "#975f16", "#b88a50", "#c9ab7d", "#d2c5a4"]  # crucible #26 Pine (dry): wood, resistivity 100000000000000.0 ohm-m -> soft dielectric; base #b88a50 authored
+bamboo = ["#795300", "#997d29", "#b8a860", "#c9c88e", "#d3e2b6"]  # crucible #27 Bamboo: wood, resistivity None ohm-m -> soft dielectric; base #b8a860 authored

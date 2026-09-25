@@ -1,0 +1,22 @@
+# Brewer: Brewer, distiller, preserver, host.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.brewer"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.brewer"
+license = "Proprietary"
+label = "Brewer"
+
+[role]
+age = ["adult"]
+build = ["stocky"]
+top = ["apron"]
+bottom = ["trousers"]
+cloth_a = ["cream", "green"]
+cloth_b = ["leather"]
+headwear = ["bandana", "none"]
+hair = ["short", "topknot"]
+hair_color = ["brown", "black"]
+held = ["mug"]
+expression = ["happy"]
+accessories = [{ item = "belt", chance = 100 }]

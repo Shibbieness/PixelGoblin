@@ -53,3 +53,4 @@ template = [
 eyes = 1
 eye_color = "#f2f2a0"
 eye_band = [12, 30]
+legs = 2

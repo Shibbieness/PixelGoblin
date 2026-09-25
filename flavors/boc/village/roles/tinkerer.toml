@@ -1,0 +1,23 @@
+# Tinkerer: Mechanic, alchemist, experimentalist.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.tinkerer"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.tinkerer"
+license = "Proprietary"
+label = "Tinkerer"
+
+[role]
+age = ["teen"]
+build = ["slim"]
+top = ["vest", "apron"]
+bottom = ["shorts", "trousers"]
+cloth_a = ["leather", "teal"]
+cloth_b = ["cream"]
+headwear = ["goggles"]
+hair = ["wild", "short"]
+hair_color = ["black", "brown"]
+held = ["wrench"]
+offhand = ["flask", "none"]
+expression = ["happy", "curious"]
+accessories = [{ item = "pouches", chance = 100 }, { item = "belt", chance = 100 }]

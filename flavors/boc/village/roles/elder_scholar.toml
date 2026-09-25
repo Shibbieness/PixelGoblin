@@ -1,0 +1,22 @@
+# Elder Scholar: Historian, archivist, lore keeper.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.elder_scholar"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.elder_scholar"
+license = "Proprietary"
+label = "Elder Scholar"
+
+[role]
+age = ["elder"]
+build = ["slim"]
+top = ["robe"]
+bottom = ["none"]
+cloth_a = ["cream", "leather", "blue"]
+cloth_b = ["gold"]
+headwear = ["none"]
+hair = ["wild", "short"]
+hair_color = ["white"]
+held = ["book", "scroll"]
+expression = ["thoughtful", "curious"]
+accessories = [{ item = "glasses", chance = 100 }, { item = "beard", chance = 50 }]

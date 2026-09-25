@@ -117,3 +117,9 @@ class Streams:
 
     def rng(self, path: str) -> Rng:
         return Rng(self.seed(path))
+
+
+def seed_from_name(name: str) -> int:
+    """A name is a seed: 'Grubnak' always makes the same goblin. Case and
+    surrounding spaces do not matter; the rest of the name does."""
+    return int.from_bytes(sha256(("name:" + " ".join(name.split()).lower()).encode("utf-8"))[:8], "little")

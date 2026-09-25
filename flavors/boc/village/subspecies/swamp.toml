@@ -1,0 +1,13 @@
+# Swamp Goblin: water adapted. Overlay for any role: typefile.compose(role, this).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.sub.swamp"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.swamp"
+license = "Proprietary"
+label = "Swamp Goblin"
+
+[species]
+iris = ["green", "gold"]
+
+[palette.materials]
+skin = ["#22281a", "#3a4428", "#56623a", "#768250", "#9aa670"]

@@ -12,7 +12,9 @@ import json
 import sys
 from pathlib import Path
 
-from . import CREDIT, VERSION, brood, export, gen, hazard, sharecode, typefile, uikit, verdicts
+from . import CREDIT, VERSION, brood, cards, export, gen, gif, hazard, readability, sharecode, typefile, uikit, verdicts
+from .gen import rig
+from .rng import seed_from_name
 from .convert import convert_file, likeness
 from .sprite import Sprite
 from .tiles import autotile, wfc
@@ -32,6 +34,13 @@ EXAMPLES = {
     "verdict": "pixelgoblin verdict vanilla.creature.blob --seed 42 --target nes",
     "ascii": "pixelgoblin ascii vanilla.creature.blob --seed 42 --out blob.txt",
     "list": "pixelgoblin list",
+    "card": "pixelgoblin card boc.goblin.village_chief --name Grubnak --out chief_card.png",
+    "chain": "pixelgoblin chain boc.goblin.blacksmith --seed 3 --out smith/   (+ --sub snow, --era 8-bit)",
+    "roster": "pixelgoblin roster flavors/boc/village/roles --tier 64 --seed 1 --out roster.png --sub cave",
+    "gif": "pixelgoblin gif boc.goblin.musician --seed 2 --anim walk --tier 64 --out walk.gif --scale 2",
+    "squint": "pixelgoblin squint boc.goblin.assassin --seed 1 --tier 32",
+    "family": "pixelgoblin family vanilla.creature.blob 11 29 40 57 --out family.png --scale 4",
+    "watch": "pixelgoblin watch ./dropzone --once     (frog.png + frog.tag containing creature.small)",
 }
 
 
@@ -46,6 +55,19 @@ def _seeds(spec: str) -> list[int]:
     return out
 
 
+def _seed(a) -> int:
+    name = getattr(a, "name", None)
+    return seed_from_name(name) if name else getattr(a, "seed", 0)
+
+
+def _load(a):
+    """A type id or path, optionally with a variant overlay (--sub snow)."""
+    sub = getattr(a, "sub", None)
+    if sub:
+        return typefile.compose(a.type, sub if "." in sub else f"boc.goblin.sub.{sub}")
+    return typefile.load(a.type)
+
+
 def _write_json(path: Path, obj) -> None:
     path.write_text(json.dumps(obj, indent=2, sort_keys=True) + "\n")
 
@@ -56,8 +78,13 @@ def _say_findings(findings) -> None:
 
 
 def cmd_gen(a):
-    tf = typefile.load(a.type)
-    s = gen.sprite(tf, a.seed)
+    tf = _load(a)
+    a.seed = _seed(a)
+    if tf.generator == "rig":
+        g = rig.genome(tf.data, rig.streams_for(tf, a.seed))
+        s = rig.render(tf.data, g, a.tier or tf.data.get("tier", 64), a.era, rim=a.rim)[0]
+    else:
+        s = gen.sprite(tf, a.seed)
     s.save(a.out, a.scale)
     _write_json(Path(a.out).with_suffix(".json"), export.provenance(tf, a.seed, pixel_hash=s.pixel_hash(), share=sharecode.encode(tf.type_hash, a.seed)))
     print(f"{a.out}  {s.w}x{s.h}  {s.used_colors()} colours  share {sharecode.encode(tf.type_hash, a.seed)}")
@@ -145,7 +172,7 @@ def cmd_validate(a):
     files = []
     for p in a.paths:
         p = Path(p)
-        files += [f for f in sorted(p.rglob("*.toml")) if f.name != "tags.toml"] if p.is_dir() else [p]
+        files += typefile.type_files(p) if p.is_dir() else [p]
     for f in files:
         try:
             tf = typefile.load(f)
@@ -165,9 +192,7 @@ def cmd_share(a):
     if a.decode:
         info = sharecode.decode(a.decode)
         for root in typefile.search_path():
-            for f in sorted(root.rglob("*.toml")) if root.exists() else []:
-                if f.name == "tags.toml":
-                    continue
+            for f in typefile.type_files(root) if root.exists() else []:
                 try:
                     tf = typefile.load(f)
                 except typefile.TypeFileError:
@@ -208,9 +233,7 @@ def cmd_ascii(a):
 
 def cmd_list(a):
     for root in typefile.search_path():
-        for f in sorted(root.rglob("*.toml")) if root.exists() else []:
-            if f.name == "tags.toml":
-                continue
+        for f in typefile.type_files(root) if root.exists() else []:
             try:
                 tf = typefile.load(f)
                 print(f"{tf.id:34} {tf.generator:9} {tf.data['tag']:34} {tf.license}")
@@ -239,6 +262,11 @@ def build_parser() -> argparse.ArgumentParser:
     p = add("gen", cmd_gen, "Generate one sprite from a type file and a seed.")
     p.add_argument("type", help="type file path or id")
     common(p)
+    p.add_argument("--name", help="a name instead of a seed")
+    p.add_argument("--sub", help="variant overlay, like snow")
+    p.add_argument("--tier", type=int, choices=[8, 16, 32, 64, 128, 256], help="rig tier")
+    p.add_argument("--era", help="rig era: 8-bit, 16-bit, 32-bit, hd")
+    p.add_argument("--rim", action="store_true", help="light rim outline")
     p = add("sheet", cmd_sheet, "Generate many seeds as one contact sheet, to review variety.")
     p.add_argument("type")
     p.add_argument("--seeds", default="0-31", help="like 0-63 or 1,5,9")
@@ -293,6 +321,57 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("type")
     common(p)
     add("list", cmd_list, "List every type file on the search path.")
+
+    def rigopts(p):
+        p.add_argument("--name", help="a name instead of a seed: the same name is always the same character")
+        p.add_argument("--sub", help="variant overlay, like snow or cave (or a full type id)")
+        p.add_argument("--tier", type=int, choices=list(rig.TIERS), help="rig tier (8 to 256 px)")
+        p.add_argument("--era", choices=sorted(rig.ERAS), help="era palette rule, like 8-bit or 16-bit")
+        p.add_argument("--rim", action="store_true", help="light rim instead of dark outline (for dark backgrounds)")
+
+    p = add("card", cmd_card, "Character card: one character at every tier, with era, colours and what each tier adds.")
+    p.add_argument("type")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    rigopts(p)
+    p = add("chain", cmd_chain, "Export the build chain: one PNG per tier plus chain.json for engines.")
+    p.add_argument("type")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--out", required=True, help="output folder")
+    rigopts(p)
+    p = add("roster", cmd_roster, "Every rig type in a folder, one character each, on one sheet.")
+    p.add_argument("folder")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--tier", type=int, default=64, choices=list(rig.TIERS))
+    p.add_argument("--era", choices=sorted(rig.ERAS))
+    p.add_argument("--sub")
+    p.add_argument("--cols", type=int, default=9)
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    p = add("gif", cmd_gif, "Animated GIF (idle or walk for characters), with the flash-hazard check.")
+    p.add_argument("type")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--anim", default="idle", choices=sorted(rig.POSES))
+    p.add_argument("--ms", type=int, default=160)
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    rigopts(p)
+    p = add("squint", cmd_squint, "Readability at 1x: edge contrast on four backgrounds, detail and mass.")
+    p.add_argument("type")
+    p.add_argument("--seed", type=int, default=0)
+    rigopts(p)
+    p = add("family", cmd_family, "Three generations: four founders, two children, one grandchild.")
+    p.add_argument("type")
+    p.add_argument("founders", type=int, nargs=4)
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    p = add("watch", cmd_watch, "Dropzone: convert every image that arrives with a .tag file beside it.")
+    p.add_argument("folder")
+    p.add_argument("--once", action="store_true", help="scan once and exit (otherwise keep watching)")
+    p.add_argument("--every", type=int, default=5, help="seconds between scans")
+    p.add_argument("--scale", type=int, default=1)
     return ap
 
 
@@ -308,3 +387,124 @@ def main(argv=None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+def cmd_card(a):
+    tf = _load(a)
+    seed = _seed(a)
+    eras = {t: a.era for t in rig.TIERS} if a.era else None
+    img, data = cards.card(tf, seed, eras=eras, title=a.name.upper() if a.name else None)
+    img.save(a.out, a.scale)
+    _write_json(Path(a.out).with_suffix(".json"), data)
+    print(f"{a.out}  build chain {' '.join(str(r['tier']) for r in data['chain'])}  share {data['share']}")
+
+
+def cmd_chain(a):
+    tf = _load(a)
+    seed = _seed(a)
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    eras = {t: a.era for t in rig.TIERS} if a.era else None
+    g, ch = rig.chain(tf, seed, eras=eras)
+    rows = []
+    for c in ch:
+        name = f"{c['tier']}px_{c['era']}.png"
+        c["sprite"].save(out / name)
+        rows.append({"tier": c["tier"], "era": c["era"], "file": name, "colors": c["colors"], "features": c["features"]})
+    _write_json(out / "chain.json", {"id": tf.id, "seed": seed, "genome": g, "chain": rows,
+                                     "provenance": export.provenance(tf, seed)})
+    print(f"{out}/  {len(rows)} tiers + chain.json")
+
+
+def cmd_roster(a):
+    files = typefile.type_files(Path(a.folder))
+    sprites = []
+    for f in files:
+        tf = typefile.load(f) if not a.sub else typefile.compose(str(f), a.sub if "." in a.sub else f"boc.goblin.sub.{a.sub}")
+        if tf.generator != "rig":
+            continue
+        g = rig.genome(tf.data, rig.streams_for(tf, a.seed))
+        sprites.append(rig.render(tf.data, g, a.tier, a.era)[0])
+    if not sprites:
+        print("no rig type files in that folder")
+        return 1
+    export.contact_sheet(sprites, a.cols, 2).save(a.out, a.scale)
+    print(f"{a.out}  {len(sprites)} characters at {a.tier}px")
+
+
+def cmd_gif(a):
+    tf = _load(a)
+    seed = _seed(a)
+    if tf.generator == "rig":
+        frames = rig.generate_frames(tf, seed, tier=a.tier or tf.data.get("tier", 64), era=a.era, anim=a.anim)
+        ms = a.ms
+    else:
+        frames = gen.frames(tf, seed)
+        ms = tf.data.get("animation", {}).get("frame_ms", a.ms)
+    found = hazard.flash_check(frames, ms)
+    _say_findings(found)
+    gif.write(a.out, frames, ms, a.scale)
+    print(f"{a.out}  {len(frames)} frames @ {ms} ms" + ("  (hazard reported)" if found else ""))
+
+
+def cmd_squint(a):
+    tf = _load(a)
+    seed = _seed(a)
+    if tf.generator == "rig":
+        g = rig.genome(tf.data, rig.streams_for(tf, seed))
+        s = rig.render(tf.data, g, a.tier or 32, a.era, rim=a.rim)[0]
+    else:
+        s = gen.sprite(tf, seed)
+    print(json.dumps(readability.squint(s), indent=2))
+
+
+def cmd_family(a):
+    tf = _load(a)
+    fam = brood.family(tf, tuple(a.founders), a.seed)
+    row = lambda ids, over=None: [gen.frames(tf, i, over)[0] for i in ids]
+    founders = row(fam["founders"])
+    kids = [gen.frames(tf, c["seed"], c["overrides"])[0] for c in fam["children"]]
+    grand = gen.frames(tf, fam["grandchild"]["seed"], fam["grandchild"]["overrides"])[0]
+    blank = founders[0].copy()
+    blank.px[:] = bytes(len(blank.px))
+    sheet = export.contact_sheet(founders + [blank, kids[0], blank, kids[1]] + [blank, blank, grand, blank], 4, 3)
+    sheet.save(a.out, a.scale)
+    _write_json(Path(a.out).with_suffix(".json"), {k: v for k, v in fam.items()} | {
+        "children": [{k: v for k, v in c.items() if k != "overrides"} for c in fam["children"]],
+        "grandchild": {k: v for k, v in fam["grandchild"].items() if k != "overrides"}})
+    print(f"{a.out}  row 1 founders · row 2 their children · row 3 the grandchild")
+
+
+def cmd_watch(a):
+    """Dropzone: any image with a sibling .tag file converts on arrival."""
+    import time
+    from .convert import convert_file
+    root = Path(a.folder)
+    out = root / "out"
+    out.mkdir(parents=True, exist_ok=True)
+    index_path = out / "index.json"
+    index = json.loads(index_path.read_text()) if index_path.exists() else {}
+    while True:
+        done = 0
+        for img in sorted(root.glob("*.png")):
+            tag_file = img.with_suffix(".tag")
+            if not tag_file.exists():
+                continue
+            key = f"{img.name}:{img.stat().st_size}:{tag_file.read_text().strip()}"
+            if index.get(img.name) == key:
+                continue
+            tag = tag_file.read_text().strip()
+            try:
+                s, rep = convert_file(img, tag)
+                s.save(out / img.name, a.scale)
+                _write_json(out / (img.stem + ".json"), export.provenance(None, None, source=img.name, conversion=rep))
+                index[img.name] = key
+                done += 1
+                print(f"converted {img.name} as {tag}")
+            except (ValueError, typefile.TypeFileError) as e:
+                print(f"skipped {img.name}: {e}")
+        index_path.write_text(json.dumps(index, indent=1, sort_keys=True))
+        if a.once:
+            print(f"{done} new")
+            return 0
+        time.sleep(a.every)

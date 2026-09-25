@@ -1,0 +1,13 @@
+# Forest Goblin: nature-aligned. Overlay for any role: typefile.compose(role, this).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.sub.forest"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.forest"
+license = "Proprietary"
+label = "Forest Goblin"
+
+[species]
+iris = ["green", "amber"]
+
+[palette.materials]
+skin = ["#1e3414", "#34561e", "#56803a", "#84aa5a", "#b8d88a"]

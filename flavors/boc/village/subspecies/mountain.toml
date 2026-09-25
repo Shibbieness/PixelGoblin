@@ -1,0 +1,14 @@
+# Mountain Goblin: sturdy, stronger builds. Overlay for any role: typefile.compose(role, this).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.sub.mountain"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.mountain"
+license = "Proprietary"
+label = "Mountain Goblin"
+
+[species]
+build = ["stocky", "heavy"]
+ear_len = [60, 95]
+
+[palette.materials]
+skin = ["#2c3228", "#48503e", "#6a7458", "#909a7a", "#bcc4a4"]

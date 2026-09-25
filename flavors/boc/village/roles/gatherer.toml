@@ -1,0 +1,22 @@
+# Gatherer: Forager, herbalist, cook, keeper of nature.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.gatherer"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.gatherer"
+license = "Proprietary"
+label = "Gatherer"
+
+[role]
+age = ["adult"]
+build = ["slim", "average"]
+top = ["dress", "tunic"]
+bottom = ["skirt", "none"]
+cloth_a = ["cream", "green"]
+cloth_b = ["green", "leather"]
+headwear = ["flower_crown"]
+hair = ["long", "braids"]
+hair_color = ["white", "brown"]
+held = ["basket"]
+expression = ["happy", "curious"]
+accessories = [{ item = "earrings", chance = 50 }, { item = "necklace", chance = 40 }]

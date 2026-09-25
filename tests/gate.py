@@ -95,7 +95,7 @@ def vanilla_types() -> list[Path]:
 
 
 def flavor_types() -> list[Path]:
-    return sorted((ROOT / "flavors").rglob("*.toml"))
+    return typefile.type_files(ROOT / "flavors")
 
 
 def all_types():

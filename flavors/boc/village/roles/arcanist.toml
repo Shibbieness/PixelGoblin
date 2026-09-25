@@ -1,0 +1,22 @@
+# Arcanist: Mage, rune keeper, elementalist, spellcrafter.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.arcanist"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.arcanist"
+license = "Proprietary"
+label = "Arcanist"
+
+[role]
+age = ["adult"]
+build = ["slim", "average"]
+top = ["robe"]
+bottom = ["none"]
+cloth_a = ["purple", "black"]
+cloth_b = ["gold"]
+headwear = ["hood", "circlet"]
+hair = ["long", "wild"]
+hair_color = ["black", "blue"]
+held = ["orb", "staff"]
+expression = ["thoughtful", "curious"]
+accessories = [{ item = "tattoo", chance = 80 }, { item = "necklace", chance = 70 }]

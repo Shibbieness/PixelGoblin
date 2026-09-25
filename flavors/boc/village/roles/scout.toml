@@ -1,0 +1,23 @@
+# Scout: Pathfinder, cartographer, messenger.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.scout"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.scout"
+license = "Proprietary"
+label = "Scout"
+
+[role]
+age = ["teen", "adult"]
+build = ["slim"]
+top = ["cloak", "tunic"]
+bottom = ["trousers", "shorts"]
+cloth_a = ["blue", "teal"]
+cloth_b = ["leather"]
+headwear = ["hood"]
+hair = ["short", "ponytail"]
+hair_color = ["black"]
+held = ["map", "dagger"]
+back = ["backpack"]
+expression = ["curious", "confident"]
+accessories = [{ item = "scarf", chance = 70 }, { item = "pouches", chance = 60 }]

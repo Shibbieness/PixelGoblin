@@ -1,0 +1,22 @@
+# Teenager: Determined, independent, finding identity.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.teenager"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.teenager"
+license = "Proprietary"
+label = "Teenager"
+
+[role]
+age = ["teen"]
+build = ["slim"]
+top = ["crop", "vest"]
+bottom = ["trousers", "skirt"]
+cloth_a = ["red", "purple", "black"]
+cloth_b = ["leather"]
+headwear = ["none", "bandana"]
+hair = ["long", "wild", "ponytail"]
+hair_color = ["white", "black"]
+held = ["none", "dagger", "book"]
+expression = ["confident", "thoughtful", "annoyed"]
+accessories = [{ item = "earrings", chance = 60 }, { item = "bracers", chance = 40 }]

@@ -1,0 +1,14 @@
+# Snow Goblin: cold adapted. Overlay for any role: typefile.compose(role, this).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.sub.snow"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.snow"
+license = "Proprietary"
+label = "Snow Goblin"
+
+[species]
+hair_color = ["white"]
+iris = ["ice", "violet"]
+
+[palette.materials]
+skin = ["#6a7480", "#8e98a4", "#b4bcc6", "#d4dae0", "#f0f4f6"]

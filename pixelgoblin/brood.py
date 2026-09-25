@@ -35,3 +35,33 @@ def lineage(tf, parent_a: int, parent_b: int, child_seed: int) -> dict:
 def breed(tf, parent_a: int, parent_b: int, child_seed: int):
     lin = lineage(tf, parent_a, parent_b, child_seed)
     return gen.frames(tf, child_seed, lin["overrides"]), lin["inherited"]
+
+
+def family(tf, founders: tuple[int, int, int, int], seed: int = 0) -> dict:
+    """Three generations from four founder seeds: two couples, their two
+    children, and one grandchild. Every child names its parents, so the tree
+    is data a game can store; the pictures regenerate from it."""
+    a, b, c, d = founders
+    kid1, kid2 = seed * 2 + 1001, seed * 2 + 1002
+    grand = seed + 2001
+    lin1 = lineage(tf, a, b, kid1)
+    lin2 = lineage(tf, c, d, kid2)
+    # a grandchild inherits whole streams from its parents, who carry their own overrides
+    child_overrides = {1: lin1["overrides"], 2: lin2["overrides"]}
+    from .rng import Streams, master_seed
+    from . import ENGINE_MAJOR
+    kid_streams = {1: Streams(master_seed(tf.type_hash, kid1, ENGINE_MAJOR), child_overrides[1]),
+                   2: Streams(master_seed(tf.type_hash, kid2, ENGINE_MAJOR), child_overrides[2])}
+    pick = Streams(master_seed(tf.type_hash, grand, ENGINE_MAJOR)).rng("brood/pick")
+    g_over, g_rec = {}, {}
+    for path in gen.stream_paths(tf):
+        r = pick.below(100)
+        if r < MUTATION_PCT:
+            g_rec[path] = "mutation"
+            continue
+        side = 1 if r % 2 == 0 else 2
+        g_over[path] = kid_streams[side].seed(path)
+        g_rec[path] = "child 1" if side == 1 else "child 2"
+    return {"founders": [a, b, c, d], "children": [{"seed": kid1, "parents": [a, b], "inherited": lin1["inherited"], "overrides": lin1["overrides"]},
+                                                   {"seed": kid2, "parents": [c, d], "inherited": lin2["inherited"], "overrides": lin2["overrides"]}],
+            "grandchild": {"seed": grand, "parents": [kid1, kid2], "inherited": g_rec, "overrides": g_over}}

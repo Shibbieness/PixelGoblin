@@ -1,0 +1,12 @@
+schema = "pixelgoblin/type@1"
+id = "vanilla.terrain.cave"
+tag = "terrain"
+generator = "autotile"
+license = "CC0-1.0"
+size = [16, 16]
+tile = 16
+
+[palette]
+outline = "#0e0c10"
+highlight = "#9a948a"
+fill = ["#3a3632", "#4a4540", "#5a544e", "#6a645c"]

@@ -1,0 +1,32 @@
+# HD version of the village: twice the size, crowd drawn at 32 / 64 / 128 px.
+schema = "pixelgoblin/type@1"
+id = "boc.scene.village.hd"
+extends = "boc.scene.village"
+tag = "env.biome.village"
+license = "Proprietary"
+size = [640, 360]
+trees = 22
+huts = 8
+stalls = 4
+
+[[crowd]]
+name = "far"
+tier = 32
+count = 10
+on = "platforms"
+y = [40, 60]
+roles = ["boc.goblin.guard", "boc.goblin.scout", "boc.goblin.musician", "boc.goblin.gatherer", "boc.goblin.hunter"]
+
+[[crowd]]
+name = "mid"
+tier = 64
+count = 9
+y = [86, 93]
+roles = ["boc.goblin.trader", "boc.goblin.brewer", "boc.goblin.cook", "boc.goblin.craftswoman", "boc.goblin.child_girl", "boc.goblin.child_boy", "boc.goblin.elder"]
+
+[[crowd]]
+name = "near"
+tier = 128
+count = 4
+y = [101, 106]
+roles = ["boc.goblin.blacksmith", "boc.goblin.tinkerer", "boc.goblin.mother", "boc.goblin.artist", "boc.goblin.shaman", "boc.goblin.village_chief"]

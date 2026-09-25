@@ -1,0 +1,14 @@
+# Cave Goblin: pale, low-light adapted. Overlay for any role: typefile.compose(role, this).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.sub.cave"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.cave"
+license = "Proprietary"
+label = "Cave Goblin"
+
+[species]
+eye = [125, 150]
+iris = ["violet", "ice"]
+
+[palette.materials]
+skin = ["#4a4450", "#6e6874", "#948e98", "#bab4bc", "#dedae0"]

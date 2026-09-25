@@ -1,0 +1,22 @@
+schema = "pixelgoblin/type@1"
+id = "vanilla.warren.crypt"
+tag = "terrain"
+generator = "warren"
+license = "CC0-1.0"
+size = [40, 26]          # in tiles
+terrain = "vanilla.terrain.cave"
+rooms = [6, 10]
+room_size = [3, 7]
+attempts = 200
+loop_chance = 25
+corridor_width = 1
+kinds = ["hall", "treasure", "shrine", "hall"]
+
+[palette]
+void = "#0a080c"
+
+[palette.marks]
+entrance = "#56a39c"
+boss = "#c0402a"
+treasure = "#d9a441"
+shrine = "#8f7ad6"

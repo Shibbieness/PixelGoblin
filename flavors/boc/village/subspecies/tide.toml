@@ -1,0 +1,14 @@
+# Tide Goblin: coastal, salt tolerant. Overlay for any role: typefile.compose(role, this).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.sub.tide"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.tide"
+license = "Proprietary"
+label = "Tide Goblin"
+
+[species]
+iris = ["ice"]
+accessories = [{ item = "fins", chance = 100 }]
+
+[palette.materials]
+skin = ["#123a4a", "#1e5a6e", "#2f8294", "#5aaebc", "#96d8e0"]

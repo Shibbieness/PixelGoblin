@@ -1,0 +1,22 @@
+# Elder: Wise, experienced, story keeper, living history.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.elder"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.elder"
+license = "Proprietary"
+label = "Elder"
+
+[role]
+age = ["elder"]
+build = ["slim", "average"]
+top = ["robe", "tunic"]
+bottom = ["trousers", "none"]
+cloth_a = ["leather", "red", "cream"]
+cloth_b = ["cream"]
+headwear = ["none"]
+hair = ["wild", "long"]
+hair_color = ["white"]
+held = ["staff"]
+expression = ["thoughtful", "happy"]
+accessories = [{ item = "beard", chance = 100 }, { item = "necklace", chance = 50 }]

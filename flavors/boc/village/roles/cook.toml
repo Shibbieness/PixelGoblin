@@ -1,0 +1,22 @@
+# Cook: Chef, forager, preserver, brings people together.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.cook"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.cook"
+license = "Proprietary"
+label = "Cook"
+
+[role]
+age = ["adult"]
+build = ["stocky", "heavy"]
+top = ["apron"]
+bottom = ["trousers"]
+cloth_a = ["cream"]
+cloth_b = ["red", "cream"]
+headwear = ["chef_hat", "bandana"]
+hair = ["short", "topknot"]
+hair_color = ["black", "brown"]
+held = ["ladle"]
+expression = ["happy"]
+accessories = [{ item = "belt", chance = 100 }]

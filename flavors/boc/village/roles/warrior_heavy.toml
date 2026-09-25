@@ -1,0 +1,23 @@
+# Warrior — Heavy: Durable, strong, frontline defender.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.warrior_heavy"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.warrior_heavy"
+license = "Proprietary"
+label = "Warrior — Heavy"
+
+[role]
+age = ["adult"]
+build = ["heavy"]
+top = ["armor_heavy"]
+bottom = ["trousers", "kilt"]
+cloth_a = ["blue", "red"]
+cloth_b = ["leather"]
+headwear = ["helm"]
+hair = ["short", "none"]
+hair_color = ["black"]
+held = ["axe", "sword"]
+offhand = ["shield"]
+expression = ["angry", "confident"]
+accessories = [{ item = "pauldrons", chance = 100 }, { item = "tusks", chance = 70 }, { item = "belt", chance = 100 }]

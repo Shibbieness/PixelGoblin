@@ -1,0 +1,10 @@
+# Common Goblin: versatile, widespread. Overlay for any role: typefile.compose(role, this).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.sub.common"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.common"
+license = "Proprietary"
+label = "Common Goblin"
+
+[palette.materials]
+skin = ["#3e3c13", "#5d5a2b", "#938d51", "#bdb671", "#e5dd92"]

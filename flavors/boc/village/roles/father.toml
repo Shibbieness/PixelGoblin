@@ -1,0 +1,22 @@
+# Father: Provider, mentor, builder, role model.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.father"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.father"
+license = "Proprietary"
+label = "Father"
+
+[role]
+age = ["adult"]
+build = ["stocky", "average"]
+top = ["tunic", "vest"]
+bottom = ["trousers"]
+cloth_a = ["leather", "green", "blue"]
+cloth_b = ["cream"]
+headwear = ["none"]
+hair = ["short", "wild"]
+hair_color = ["black"]
+held = ["none", "hammer"]
+expression = ["happy", "confident"]
+accessories = [{ item = "beard", chance = 30 }, { item = "belt", chance = 100 }]

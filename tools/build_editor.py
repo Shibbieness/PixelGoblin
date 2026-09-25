@@ -21,9 +21,7 @@ from pixelgoblin import CREDIT, VERSION, typefile  # noqa: E402
 def main() -> int:
     types = []
     for root in typefile.search_path():
-        for p in sorted(root.rglob("*.toml")):
-            if p.name == "tags.toml":
-                continue
+        for p in typefile.type_files(root):
             tf = typefile.load(p)
             types.append({"data": tf.data, "flavor": not tf.id.startswith("vanilla."), "hash": tf.type_hash})
     tax = typefile.taxonomy()

@@ -1,0 +1,22 @@
+# Blacksmith: Smith, engineer, builder, toolmaker.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.blacksmith"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.blacksmith"
+license = "Proprietary"
+label = "Blacksmith"
+
+[role]
+age = ["adult"]
+build = ["stocky", "heavy"]
+top = ["apron"]
+bottom = ["trousers"]
+cloth_a = ["leather", "black"]
+cloth_b = ["red", "black"]
+headwear = ["none", "bandana"]
+hair = ["short", "wild"]
+hair_color = ["black", "brown"]
+held = ["hammer"]
+expression = ["confident", "annoyed"]
+accessories = [{ item = "bracers", chance = 100 }, { item = "belt", chance = 100 }]

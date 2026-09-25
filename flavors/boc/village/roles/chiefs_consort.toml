@@ -1,0 +1,22 @@
+# Chief's Consort: Advisor, healer, spiritual guide, cultural keeper.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.chiefs_consort"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.chiefs_consort"
+license = "Proprietary"
+label = "Chief's Consort"
+
+[role]
+age = ["adult"]
+build = ["slim", "average"]
+top = ["dress"]
+bottom = ["none"]
+cloth_a = ["cream", "red", "purple"]
+cloth_b = ["gold"]
+headwear = ["flower_crown", "circlet"]
+hair = ["long"]
+hair_color = ["black"]
+held = ["none", "flask"]
+expression = ["happy", "thoughtful"]
+accessories = [{ item = "necklace", chance = 100 }, { item = "earrings", chance = 100 }]

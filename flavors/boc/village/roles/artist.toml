@@ -1,0 +1,23 @@
+# Artist: Painter, sculptor, designer, visionary.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.artist"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.artist"
+license = "Proprietary"
+label = "Artist"
+
+[role]
+age = ["adult"]
+build = ["slim"]
+top = ["crop", "tunic"]
+bottom = ["skirt", "trousers"]
+cloth_a = ["purple", "teal", "magenta"]
+cloth_b = ["cream"]
+headwear = ["headscarf", "bandana", "none"]
+hair = ["wild", "long"]
+hair_color = ["blue", "magenta", "black"]
+held = ["brush"]
+offhand = ["book", "none"]
+expression = ["playful", "curious"]
+accessories = [{ item = "earrings", chance = 70 }, { item = "pouches", chance = 50 }]

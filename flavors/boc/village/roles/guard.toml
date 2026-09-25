@@ -1,0 +1,23 @@
+# Guard: Protector, sentinel, village watch.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.guard"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.guard"
+license = "Proprietary"
+label = "Guard"
+
+[role]
+age = ["adult"]
+build = ["stocky"]
+top = ["armor_light", "armor_heavy"]
+bottom = ["trousers", "kilt"]
+cloth_a = ["blue", "red"]
+cloth_b = ["leather"]
+headwear = ["helm", "none"]
+hair = ["short"]
+hair_color = ["black"]
+held = ["spear"]
+offhand = ["shield"]
+expression = ["annoyed", "confident"]
+accessories = [{ item = "pauldrons", chance = 60 }, { item = "belt", chance = 100 }]

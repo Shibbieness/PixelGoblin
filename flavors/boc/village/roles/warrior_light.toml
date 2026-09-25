@@ -1,0 +1,23 @@
+# Warrior — Light: Agile, fast, skirmisher, tactical.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.warrior_light"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.warrior_light"
+license = "Proprietary"
+label = "Warrior — Light"
+
+[role]
+age = ["adult"]
+build = ["slim"]
+top = ["armor_light", "crop"]
+bottom = ["trousers", "skirt"]
+cloth_a = ["red", "teal"]
+cloth_b = ["leather"]
+headwear = ["none", "bandana"]
+hair = ["ponytail", "long"]
+hair_color = ["black"]
+held = ["sword"]
+offhand = ["dagger", "none"]
+expression = ["confident", "angry"]
+accessories = [{ item = "scarf", chance = 80 }, { item = "bracers", chance = 100 }]

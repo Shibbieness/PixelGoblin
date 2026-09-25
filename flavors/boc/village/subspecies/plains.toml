@@ -1,0 +1,13 @@
+# Plains Goblin: fast, nomadic. Overlay for any role: typefile.compose(role, this).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.sub.plains"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.plains"
+license = "Proprietary"
+label = "Plains Goblin"
+
+[species]
+build = ["slim"]
+
+[palette.materials]
+skin = ["#4a4a14", "#6e6e28", "#96963e", "#bcbc5e", "#dede8a"]

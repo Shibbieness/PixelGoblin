@@ -1,0 +1,22 @@
+# Child — Boy: Adventurous, bold, mischievous, inventive.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.child_boy"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.child_boy"
+license = "Proprietary"
+label = "Child — Boy"
+
+[role]
+age = ["child"]
+build = ["average"]
+top = ["tunic", "vest"]
+bottom = ["shorts"]
+cloth_a = ["red", "blue", "leather"]
+cloth_b = ["cream"]
+headwear = ["goggles"]
+hair = ["wild"]
+hair_color = ["black", "brown"]
+held = ["none", "wrench"]
+expression = ["playful", "curious"]
+accessories = [{ item = "scarf", chance = 40 }]

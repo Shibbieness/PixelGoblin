@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import difflib
 import json
+import re
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
@@ -23,7 +24,7 @@ from .rng import sha256
 from .sprite import hex_to_rgba
 
 SCHEMA = "pixelgoblin/type@1"
-GENERATORS = ("mask", "lsystem", "parallax", "autotile", "uikit")
+GENERATORS = ("mask", "lsystem", "parallax", "autotile", "uikit", "rig", "scene", "warren")
 MASK_CHARS = set(".12#")
 REPO = Path(__file__).resolve().parent.parent
 
@@ -64,12 +65,35 @@ def type_hash(data: dict) -> str:
 
 
 def _merge(base: dict, over: dict) -> dict:
+    """Tables merge, lists replace — except a key ending in `_add`, which
+    appends to the list without the suffix (parts_add, accessories_add...)."""
     out = dict(base)
     for k, v in over.items():
+        if k.endswith("_add") and isinstance(v, list):
+            key = k[:-4]
+            out[key] = list(out.get(key, []) or []) + v
+            continue
         if isinstance(v, dict) and isinstance(out.get(k), dict):
             out[k] = _merge(out[k], v)
         else:
             out[k] = v
+    return out
+
+
+def type_files(root: Path) -> list[Path]:
+    """Every generative type file under root (palettes and tag tables are not)."""
+    out = []
+    for p in sorted(Path(root).rglob("*.toml")):
+        if p.name == "tags.toml":
+            continue
+        try:
+            head = p.read_text(encoding="utf-8")[:4000]
+        except OSError:
+            continue
+        m = re.search(r'^schema\s*=\s*"([^"]+)"', head, re.M)
+        if m and m.group(1) != SCHEMA:
+            continue
+        out.append(p)
     return out
 
 
@@ -81,9 +105,7 @@ def find_by_id(type_id: str, extra: list[Path] | None = None) -> Path:
     for root in (extra or []) + search_path():
         if not root.exists():
             continue
-        for p in sorted(root.rglob("*.toml")):
-            if p.name == "tags.toml":
-                continue
+        for p in type_files(root):
             try:
                 if tomllib.loads(p.read_text()).get("id") == type_id:
                     return p
@@ -234,8 +256,9 @@ def validate(data: dict) -> list[str]:
     if size is not None:
         if len(size) != 2 or not all(isinstance(n, int) and not isinstance(n, bool) for n in size):
             v.p.append("`size` must be two whole numbers, like [16, 16]")
-        elif not all(4 <= n <= 512 for n in size):
-            v.p.append(f"`size` {size} must be between 4 and 512 on each side")
+        elif not all(4 <= n <= (2048 if gen in ("scene", "parallax") else 512) for n in size):
+            limit = 2048 if gen in ("scene", "parallax") else 512
+            v.p.append(f"`size` {size} must be between 4 and {limit} on each side")
         else:
             W, H = size
     if gen == "mask":
@@ -249,6 +272,40 @@ def validate(data: dict) -> list[str]:
         v.colors("palette.fill", 3, 8)
         v.color("palette.outline")
         v.color("palette.highlight")
+    elif gen == "rig":
+        _validate_rig(v)
+    elif gen == "warren":
+        t = v.get("terrain", str)
+        if t is not None:
+            try:
+                find_by_id(t)
+            except TypeFileError:
+                v.p.append(f"`terrain` {t!r} is not a type file on the search path")
+        rooms = v.get("rooms", list)
+        rs = v.get("room_size", list)
+        for key, val in (("rooms", rooms), ("room_size", rs)):
+            if val is not None and (len(val) != 2 or not all(isinstance(x, int) for x in val) or not 1 <= val[0] <= val[1]):
+                v.p.append(f"`{key}` must be [low, high] whole numbers, low at least 1")
+        v.int_range("attempts", 1, 5000)
+        v.color("palette.void")
+    elif gen == "scene":
+        for k in ("sky", "cloud", "cliff_far", "cliff", "water", "leaf", "trunk", "wood", "roof", "glow", "ground"):
+            v.colors(f"palette.{k}", 2, 8)
+        crowd = v.get("crowd", list)
+        for i, band in enumerate(crowd or []):
+            sub = _V(band)
+            sub.get("name", str)
+            t = sub.get("tier", int)
+            if t is not None and t not in (8, 16, 32, 64, 128, 256):
+                sub.p.append(f"`tier` {t} must be one of 8, 16, 32, 64, 128, 256")
+            sub.int_range("count", 0, 200)
+            roles = sub.get("roles", list)
+            for r in roles or []:
+                try:
+                    find_by_id(r)
+                except TypeFileError:
+                    sub.p.append(f"role {r!r} is not a type file on the search path")
+            v.p += [f"crowd[{i}]: {m}" for m in sub.p]
     elif gen == "uikit":
         v.int_range("tile", 6, 32)
         v.int_range("border", 1, 3)
@@ -292,6 +349,7 @@ def _validate_mask(v: _V, W, H):
     band = v.get("features.eye_band", list, required=False)
     if band is not None and (len(band) != 2 or not all(isinstance(b, int) for b in band) or not 0 <= band[0] <= band[1] <= 100):
         v.p.append("`features.eye_band` must be [top, bottom] percentages of the body height, like [10, 30]")
+    v.int_range("features.legs", 0, 8, required=False)
     v.int_range("animation.frames", 1, 8, required=False)
     v.int_range("animation.frame_ms", 16, 2000, required=False)
     layers = [("body", v.d.get("body"))] + [(f"parts[{i}]", p) for i, p in enumerate(v.d.get("parts", []) or [])]
@@ -414,3 +472,61 @@ def profile_for(tag: str) -> dict:
         near = difflib.get_close_matches(parts[0], known, 1)
         raise TypeFileError([f"unknown tag {tag!r}" + (f" — did you mean {near[0]!r}?" if near else f"; known roots: {known}")])
     return prof
+
+
+def _validate_rig(v: _V):
+    from .gen import rig
+    tier = v.get("tier", int, required=False)
+    if tier is not None and tier not in rig.TIERS:
+        v.p.append(f"`tier` {tier} must be one of {list(rig.TIERS)}")
+    mats = v.get("palette.materials", dict)
+    for m in rig.FIXED_MATERIALS:
+        if m in ("iris",):
+            continue
+        if mats is not None and m not in mats:
+            v.p.append(f"`palette.materials.{m}` is missing; every rig needs it")
+    for group in ("materials", "cloth", "hair", "iris"):
+        tab = v.get(f"palette.{group}", dict)
+        for name, ramp in (tab or {}).items():
+            v.colors(f"palette.{group}.{name}", 2, 8)
+    vocab = {"age": tuple(rig.AGES), "build": tuple(rig.BUILDS), "hair": rig.HAIR, "top": rig.TOPS, "bottom": rig.BOTTOMS,
+             "headwear": rig.HEADWEAR, "held": rig.HELD, "offhand": rig.HELD, "back": rig.BACK, "expression": rig.EXPRESSIONS}
+    names = {"cloth_a": "cloth", "cloth_b": "cloth", "hair_color": "hair", "iris": "iris"}
+    for section in ("species", "role"):
+        sec = v.d.get(section, {}) or {}
+        for key, allowed in vocab.items():
+            for item in sec.get(key, []) or []:
+                if item not in allowed:
+                    near = difflib.get_close_matches(str(item), allowed, 1)
+                    v.p.append(f"`{section}.{key}` has {item!r}, which the rig does not know" + (f" — did you mean {near[0]!r}?" if near else f"; choose from {list(allowed)}"))
+        for key, group in names.items():
+            known = (v.d.get("palette", {}).get(group) or {})
+            for item in sec.get(key, []) or []:
+                if key == "cloth_b" and item in (v.d.get("palette", {}).get("materials") or {}):
+                    continue
+                if item not in known:
+                    near = difflib.get_close_matches(str(item), list(known), 1)
+                    v.p.append(f"`{section}.{key}` names {item!r}, which is not in `palette.{group}`" + (f" — did you mean {near[0]!r}?" if near else ""))
+        for entry in sec.get("accessories", []) or []:
+            if not isinstance(entry, dict) or entry.get("item") not in rig.ACCESSORIES:
+                v.p.append(f"`{section}.accessories` entries need an `item` from {list(rig.ACCESSORIES)} and an optional `chance`")
+        for key in ("head_adj", "head_w", "ear_len", "ear_lift", "ear_w", "nose", "eye"):
+            r = sec.get(key)
+            if r is not None and (not isinstance(r, list) or len(r) != 2 or not all(isinstance(x, int) for x in r) or r[0] > r[1]):
+                v.p.append(f"`{section}.{key}` must be [low, high] whole numbers")
+
+
+def compose(base_id: str, overlay_id: str) -> TypeFile:
+    """Overlay a variant (subspecies, era, outfit) onto a role: the overlay's OWN
+    keys win; its inherited keys are ignored, so the role keeps its outfit."""
+    base_p = find_by_id(base_id) if not Path(base_id).exists() else Path(base_id)
+    over_p = find_by_id(overlay_id) if not Path(overlay_id).exists() else Path(overlay_id)
+    data = resolve_raw(base_p)
+    own = _read_toml(over_p)
+    for k in ("schema", "id", "tag", "extends", "generator", "license"):
+        own.pop(k, None)
+    if "role" in own:
+        own.pop("role")
+    data = _merge(data, own)
+    data["id"] = f"{data['id']}@{_read_toml(over_p).get('id', overlay_id).split('.')[-1]}"
+    return from_dict(data, f"{base_p}+{over_p}")

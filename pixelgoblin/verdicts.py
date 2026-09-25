@@ -49,6 +49,10 @@ def spec_verdict(tf, spr) -> dict:
             ok = all((spr.px[y * spr.w + x] != 0) == (spr.px[y * spr.w + (2 * ax + fw - 1 - x)] != 0)
                      for y in range(spr.h) for x in range(spr.w) if 0 <= 2 * ax + fw - 1 - x < spr.w)
             checks.append(("mirror", ok, "silhouette symmetric about the body box"))
+    legs = d.get("features", {}).get("legs")
+    if legs:
+        runs = leg_runs(spr)
+        checks.append(("legs", runs == legs, f"{runs} separate legs in the leg rows, type file says {legs}"))
     return {"verdict": "SOUND" if all(c[1] for c in checks) else "UNSOUND",
             "checks": [{"name": n, "ok": ok, "detail": det} for n, ok, det in checks]}
 
@@ -70,3 +74,23 @@ def target_verdict(spr, target: str) -> dict:
         checks.append(("fixed_palette", not off, f"{len(off)} colours outside the {t['palette']} palette"))
     return {"verdict": "FITS" if all(c[1] for c in checks) else "DOES_NOT_FIT", "target": target, "why": t["why"],
             "checks": [{"name": n_, "ok": ok, "detail": det} for n_, ok, det in checks]}
+
+
+def leg_runs(spr) -> int:
+    """How many separate legs stand on the ground: the fewest opaque runs seen
+    in the two rows just above the bottom row of the silhouette (the last row,
+    where feet may touch, is skipped). Catches a mirrored centre column reading as a third leg."""
+    rows = [y for y in range(spr.h) if any(spr.px[y * spr.w + x] for x in range(spr.w))]
+    if len(rows) < 4:
+        return 0
+    band = rows[-3:-1]
+    counts = []
+    for y in band:
+        runs, inside = 0, False
+        for x in range(spr.w):
+            on = spr.px[y * spr.w + x] != 0
+            if on and not inside:
+                runs += 1
+            inside = on
+        counts.append(runs)
+    return min(counts)

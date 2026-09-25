@@ -1,0 +1,22 @@
+# Rider: Beast handler, courier, companion (mount not yet generated).
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.rider"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.rider"
+license = "Proprietary"
+label = "Rider"
+
+[role]
+age = ["adult"]
+build = ["average"]
+top = ["armor_light", "vest"]
+bottom = ["trousers"]
+cloth_a = ["blue", "teal", "leather"]
+cloth_b = ["leather"]
+headwear = ["goggles", "none"]
+hair = ["ponytail", "wild"]
+hair_color = ["black", "brown"]
+held = ["whip"]
+expression = ["confident", "happy"]
+accessories = [{ item = "scarf", chance = 80 }, { item = "bracers", chance = 60 }]

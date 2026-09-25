@@ -1,0 +1,14 @@
+# Desert Goblin: heat adapted. Overlay for any role: typefile.compose(role, this).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.sub.desert"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.desert"
+license = "Proprietary"
+label = "Desert Goblin"
+
+[species]
+ear_len = [100, 150]
+iris = ["gold", "amber"]
+
+[palette.materials]
+skin = ["#5a3a14", "#80582a", "#a87e46", "#cca468", "#ecd09a"]

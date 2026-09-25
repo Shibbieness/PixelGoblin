@@ -3,3 +3,6 @@ __pycache__/
 out/
 dist/
 *.pyc
+# Mark's private reference images: used to derive palettes (hashes recorded in
+# docs/explanation/tier-chain.md), never published with the engine
+refs/

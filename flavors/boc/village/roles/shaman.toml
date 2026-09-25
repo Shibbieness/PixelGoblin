@@ -1,0 +1,23 @@
+# Shaman: Spiritualist, healer, ritual keeper, nature walker.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.shaman"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.shaman"
+license = "Proprietary"
+label = "Shaman"
+
+[role]
+age = ["adult", "elder"]
+build = ["slim"]
+top = ["fur_mantle", "robe"]
+bottom = ["skirt", "trousers"]
+cloth_a = ["cream", "leather"]
+cloth_b = ["leather"]
+headwear = ["horns"]
+hair = ["long", "braids"]
+hair_color = ["white"]
+held = ["staff"]
+back = ["fur", "none"]
+expression = ["thoughtful"]
+accessories = [{ item = "necklace", chance = 100 }, { item = "tattoo", chance = 100 }, { item = "earrings", chance = 60 }]

@@ -1,0 +1,14 @@
+# River Goblin: strong swimmers. Overlay for any role: typefile.compose(role, this).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.sub.river"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.river"
+license = "Proprietary"
+label = "River Goblin"
+
+[species]
+iris = ["ice", "green"]
+accessories = [{ item = "fins", chance = 50 }]
+
+[palette.materials]
+skin = ["#1e3a30", "#2e5a48", "#4a8066", "#72a88a", "#a4d0b4"]

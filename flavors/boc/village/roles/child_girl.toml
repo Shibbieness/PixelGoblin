@@ -1,0 +1,22 @@
+# Child — Girl: Playful, curious, imaginative, creative.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.child_girl"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.child_girl"
+license = "Proprietary"
+label = "Child — Girl"
+
+[role]
+age = ["child"]
+build = ["slim", "average"]
+top = ["dress"]
+bottom = ["none"]
+cloth_a = ["magenta", "cream", "red"]
+cloth_b = ["gold"]
+headwear = ["none", "flower_crown"]
+hair = ["twintails"]
+hair_color = ["white", "magenta"]
+held = ["teddy"]
+expression = ["playful", "happy"]
+accessories = [{ item = "necklace", chance = 40 }]

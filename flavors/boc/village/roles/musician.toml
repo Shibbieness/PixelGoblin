@@ -1,0 +1,22 @@
+# Musician: Performer, bard, storyteller, mood maker.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.musician"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.musician"
+license = "Proprietary"
+label = "Musician"
+
+[role]
+age = ["adult", "teen"]
+build = ["slim"]
+top = ["crop", "vest"]
+bottom = ["skirt", "trousers"]
+cloth_a = ["red", "purple"]
+cloth_b = ["gold", "black"]
+headwear = ["none"]
+hair = ["wild", "long"]
+hair_color = ["red", "magenta"]
+held = ["lute"]
+expression = ["playful", "happy"]
+accessories = [{ item = "earrings", chance = 100 }, { item = "necklace", chance = 60 }]

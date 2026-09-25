@@ -1,0 +1,22 @@
+# Mother: Caregiver, teacher, protector, legacy.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.mother"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.mother"
+license = "Proprietary"
+label = "Mother"
+
+[role]
+age = ["adult"]
+build = ["average"]
+top = ["dress"]
+bottom = ["none"]
+cloth_a = ["cream", "red"]
+cloth_b = ["leather"]
+headwear = ["none"]
+hair = ["long", "bun"]
+hair_color = ["red", "black"]
+held = ["none", "basket"]
+expression = ["happy"]
+accessories = [{ item = "necklace", chance = 80 }, { item = "earrings", chance = 60 }]

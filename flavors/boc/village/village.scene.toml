@@ -1,0 +1,51 @@
+# The goblin village from Mark's reference (refs/village.png): cliffs, waterfalls,
+# treehouses on stilted platforms, rope bridges, lanterns, a pool, market stalls,
+# `y` is where feet stand, in % of scene height.
+# and a crowd drawn at depth tiers so far goblins stay real characters.
+schema = "pixelgoblin/type@1"
+id = "boc.scene.village"
+tag = "env.biome.village"
+generator = "scene"
+license = "Proprietary"
+size = [320, 180]
+clouds = 5
+waterfalls = 3
+trees = 14
+huts = 6
+stalls = 3
+
+[palette]
+sky = ["#34567b", "#5f86b4", "#7298cd", "#99c0ed", "#d8e8f4"]      # (ref sky)
+cloud = ["#b8c8dc", "#dce6f0", "#f4f8fc"]
+cliff_far = ["#46505a", "#5e6a72", "#7a868c", "#9aa4a8"]
+cliff = ["#3a3226", "#544634", "#6e5e44", "#8a785a"]
+water = ["#1e4a5a", "#2f7080", "#55a0a8", "#9ad4d8", "#e0f4f4"]
+leaf = ["#1e3016", "#2f4a20", "#4a6a2e", "#6f8f44", "#9fb86a"]
+trunk = ["#2e1a0e", "#4f3016", "#6b4e27"]
+wood = ["#2e1a0e", "#4f3016", "#6b4e27", "#8a6940", "#ab875d"]      # (ref timber)
+roof = ["#4e1310", "#65201a", "#7b2f27", "#974134", "#c46656"]      # (ref red cloth)
+glow = ["#b85a10", "#e08a20", "#f2b640", "#fbe07a", "#fff6c8"]
+ground = ["#43220e", "#5d371f", "#754b2f", "#926342", "#c4936d"]    # (ref leather/earth)
+awnings = [["#4e1310", "#7b2f27", "#974134", "#c46656"], ["#351a40", "#734b93", "#976baf", "#d0a0e4"], ["#684b1a", "#9f7d47", "#d7b175", "#f2dca0"]]
+
+[[crowd]]
+name = "far"
+tier = 16
+count = 10
+on = "platforms"
+y = [40, 60]
+roles = ["boc.goblin.guard", "boc.goblin.scout", "boc.goblin.musician", "boc.goblin.gatherer", "boc.goblin.hunter"]
+
+[[crowd]]
+name = "mid"
+tier = 32
+count = 9
+y = [86, 93]
+roles = ["boc.goblin.trader", "boc.goblin.brewer", "boc.goblin.cook", "boc.goblin.craftswoman", "boc.goblin.child_girl", "boc.goblin.child_boy", "boc.goblin.elder"]
+
+[[crowd]]
+name = "near"
+tier = 64
+count = 4
+y = [101, 106]
+roles = ["boc.goblin.blacksmith", "boc.goblin.tinkerer", "boc.goblin.mother", "boc.goblin.artist", "boc.goblin.shaman", "boc.goblin.village_chief"]

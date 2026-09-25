@@ -1,0 +1,22 @@
+# Craftswoman: Artisan, tailor, upcycler, textile artist.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.craftswoman"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.craftswoman"
+license = "Proprietary"
+label = "Craftswoman"
+
+[role]
+age = ["adult"]
+build = ["average"]
+top = ["dress", "tunic"]
+bottom = ["skirt", "none"]
+cloth_a = ["magenta", "purple", "red"]
+cloth_b = ["cream", "gold"]
+headwear = ["headscarf", "none"]
+hair = ["long", "wild"]
+hair_color = ["magenta", "red"]
+held = ["brush", "scroll"]
+expression = ["happy", "curious"]
+accessories = [{ item = "earrings", chance = 80 }, { item = "goggles", chance = 40 }, { item = "pouches", chance = 60 }]

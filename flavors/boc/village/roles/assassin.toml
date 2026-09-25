@@ -1,0 +1,23 @@
+# Assassin: Stealthy, silent, precise, discreet.
+# Role from Mark's goblin roster reference (refs/roster.png).
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.assassin"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.assassin"
+license = "Proprietary"
+label = "Assassin"
+
+[role]
+age = ["adult"]
+build = ["slim"]
+top = ["cloak"]
+bottom = ["trousers"]
+cloth_a = ["black", "purple"]
+cloth_b = ["black"]
+headwear = ["hood"]
+hair = ["short", "ponytail"]
+hair_color = ["black"]
+held = ["dagger"]
+offhand = ["dagger"]
+expression = ["annoyed", "confident"]
+accessories = [{ item = "scarf", chance = 100 }, { item = "bracers", chance = 70 }]
