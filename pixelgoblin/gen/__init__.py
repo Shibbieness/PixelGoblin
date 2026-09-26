@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from types import MappingProxyType
 
-from . import lsystem, mask, parallax, rig, scene, warren
+from . import beast, lsystem, mask, parallax, rig, scene, warren
 
 _FRAMES = {
     "mask": mask.generate_frames,
@@ -14,6 +14,7 @@ _FRAMES = {
     "rig": rig.generate_frames,
     "scene": scene.generate_frames,
     "warren": warren.generate_frames,
+    "beast": beast.generate_frames,
 }
 REGISTRY = MappingProxyType(_FRAMES)
 
@@ -36,6 +37,8 @@ def stream_paths(tf) -> list[str]:
         return ["grow", "step", "fruit"]
     if tf.generator == "rig":
         return rig.stream_paths()
+    if tf.generator == "beast":
+        return beast.stream_paths()
     if tf.generator == "warren":
         return ["rooms", "loops", "corridors"]
     if tf.generator == "scene":

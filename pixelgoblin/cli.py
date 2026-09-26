@@ -41,6 +41,13 @@ EXAMPLES = {
     "squint": "pixelgoblin squint boc.goblin.assassin --seed 1 --tier 32",
     "family": "pixelgoblin family vanilla.creature.blob 11 29 40 57 --out family.png --scale 4",
     "watch": "pixelgoblin watch ./dropzone --once     (frog.png + frog.tag containing creature.small)",
+    "view": "pixelgoblin view boc.goblin.guard --name Brakka --view iso_sw --tier 64 --out brakka_iso.png --scale 4   (or --yaw 120 --pitch 20)",
+    "turnaround": "pixelgoblin turnaround boc.goblin.scout --seed 3 --pitch 30 --tier 64 --out scout_8dir.png --scale 2",
+    "expressions": "pixelgoblin expressions boc.goblin.musician --seed 4 --tier 128 --out faces.png",
+    "clans": "pixelgoblin clans boc.goblin.guard --seed 2 --out clans.png --scale 2",
+    "zoom": "pixelgoblin zoom boc.goblin.shaman --seed 5 --from 16 --to 256 --out zoom.gif",
+    "ride": "pixelgoblin ride boc.goblin.rider boc.mount.boar --seed 2 --mount-seed 1 --view side_right --tier 128 --out rider.png --scale 2",
+    "city": "pixelgoblin city boc.city.goblintown flavors/boc/village/goblintown.names.txt --out town/",
 }
 
 
@@ -61,11 +68,11 @@ def _seed(a) -> int:
 
 
 def _load(a):
-    """A type id or path, optionally with a variant overlay (--sub snow)."""
+    """A type id or path, optionally with a variant overlay (--sub snow) and clan colours (--team ashfang)."""
     sub = getattr(a, "sub", None)
-    if sub:
-        return typefile.compose(a.type, sub if "." in sub else f"boc.goblin.sub.{sub}")
-    return typefile.load(a.type)
+    tf = typefile.compose(a.type, sub if "." in sub else f"boc.goblin.sub.{sub}") if sub else typefile.load(a.type)
+    team = getattr(a, "team", None)
+    return typefile.with_team(tf, team) if team else tf
 
 
 def _write_json(path: Path, obj) -> None:
@@ -328,6 +335,7 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument("--tier", type=int, choices=list(rig.TIERS), help="rig tier (8 to 256 px)")
         p.add_argument("--era", choices=sorted(rig.ERAS), help="era palette rule, like 8-bit or 16-bit")
         p.add_argument("--rim", action="store_true", help="light rim instead of dark outline (for dark backgrounds)")
+        p.add_argument("--team", help="clan colours, like ashfang (see *.teams.toml)")
 
     p = add("card", cmd_card, "Character card: one character at every tier, with era, colours and what each tier adds.")
     p.add_argument("type")
@@ -372,6 +380,63 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--once", action="store_true", help="scan once and exit (otherwise keep watching)")
     p.add_argument("--every", type=int, default=5, help="seconds between scans")
     p.add_argument("--scale", type=int, default=1)
+    from .gen import rig3d
+    p = add("view", cmd_view, "One character (or beast) from any direction: side, back, isometric, top-down or free rotation.")
+    p.add_argument("type")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--view", default="iso_sw", choices=list(rig3d.VIEWS))
+    p.add_argument("--yaw", type=int, help="free rotation: 0 front, 90 facing left, 180 back, 270 facing right")
+    p.add_argument("--pitch", type=int, help="tilt: 0 level, 30 isometric, 90 straight down")
+    p.add_argument("--anim", choices=["idle", "walk_side"], help="write a GIF of this motion instead of a still")
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    rigopts(p)
+    p = add("turnaround", cmd_turnaround, "Eight directions (every 45 degrees) on one sheet, for 8-way sprites.")
+    p.add_argument("type")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--pitch", type=int, default=0)
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    rigopts(p)
+    p = add("expressions", cmd_expressions, "Expression sheet: the same face with every expression.")
+    p.add_argument("type")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    rigopts(p)
+    p = add("clans", cmd_clans, "The same character in every clan's colours.")
+    p.add_argument("type")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    rigopts(p)
+    p = add("zoom", cmd_zoom, "Animated zoom from a crowd-sized sprite to the portrait, dissolving between chain tiers.")
+    p.add_argument("type")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--from", dest="from_tier", type=int, default=16, choices=list(rig.TIERS))
+    p.add_argument("--to", dest="to_tier", type=int, default=256, choices=list(rig.TIERS))
+    p.add_argument("--steps", type=int, default=24)
+    p.add_argument("--ms", type=int, default=80)
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    rigopts(p)
+    p = add("ride", cmd_ride, "A rider on a mount, from any direction, at the mount's scale.")
+    p.add_argument("type", help="the rider's type")
+    p.add_argument("mount", help="the mount's type, like boc.mount.boar")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--mount-seed", type=int, default=0)
+    p.add_argument("--view", default="side_right", choices=list(rig3d.VIEWS))
+    p.add_argument("--yaw", type=int)
+    p.add_argument("--pitch", type=int)
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    rigopts(p)
+    p = add("city", cmd_city, "A whole population from a list of names: census, households and the village with them in it.")
+    p.add_argument("city", help="city file or id, like boc.city.goblintown")
+    p.add_argument("names", help="text file, one citizen per line")
+    p.add_argument("--seed", type=int, default=1, help="village seed")
+    p.add_argument("--tier", type=int, default=32, choices=list(rig.TIERS), help="size of the household sheet")
+    p.add_argument("--out", required=True, help="output folder")
     return ap
 
 
@@ -508,3 +573,94 @@ def cmd_watch(a):
             print(f"{done} new")
             return 0
         time.sleep(a.every)
+
+
+def cmd_view(a):
+    from .gen import beast, rig3d
+    tf = _load(a)
+    seed = _seed(a)
+    tier = a.tier or tf.data.get("tier", 64)
+    poses = rig3d_poses(a.anim)
+    if tf.generator == "beast":
+        bg = beast.genome(tf.data, beast.streams_for(tf, seed))
+        frames = [beast.render(tf.data, bg, tier, a.view, a.yaw, a.pitch, a.era, p, a.rim) for p in poses]
+    else:
+        g = rig.genome(tf.data, rig.streams_for(tf, seed))
+        frames = [rig3d.render_view(tf.data, g, tier, a.view, a.yaw, a.pitch, a.era, p, a.rim) for p in poses]
+    if a.anim:
+        gif.write(a.out, frames, 160, a.scale)
+    else:
+        frames[0].save(a.out, a.scale)
+    print(f"{a.out}  {frames[0].w}x{frames[0].h}  {len(frames)} frame(s)  view {a.view if a.yaw is None and a.pitch is None else f'yaw {a.yaw} pitch {a.pitch}'}")
+
+
+def rig3d_poses(anim):
+    if anim == "walk_side":
+        return [{"stride": 2}, {"bob": 1}, {"stride": -2}, {"bob": 1}]
+    if anim == "idle":
+        return rig.POSES["idle"]
+    return [{}]
+
+
+def cmd_turnaround(a):
+    from .gen import rig3d
+    tf = _load(a)
+    seed = _seed(a)
+    tier = a.tier or 64
+    g = rig.genome(tf.data, rig.streams_for(tf, seed))
+    items = [(f"{y} deg", rig3d.render_view(tf.data, g, tier, yaw=y, pitch=a.pitch, era=a.era, rim=a.rim)) for y in rig3d.TURNAROUND]
+    sheet = export.contact_sheet([s for _, s in items], 8, 0)
+    sheet.save(a.out, a.scale)
+    _write_json(Path(a.out).with_suffix(".json"), {"id": tf.id, "seed": seed, "tier": tier, "pitch": a.pitch,
+                                                   "frames": [{"yaw": y, "x": i * sheet.w // 8, "w": items[i][1].w, "h": items[i][1].h} for i, y in enumerate(rig3d.TURNAROUND)]})
+    print(f"{a.out}  8 directions at {tier}px, tilt {a.pitch}")
+
+
+def cmd_expressions(a):
+    tf = _load(a)
+    t = a.tier or 128
+    cards.labelled(cards.expressions(tf, _seed(a), t, a.era), t, 9).save(a.out, a.scale)
+    print(f"{a.out}  {len(rig.EXPRESSIONS)} expressions at {t}px")
+
+
+def cmd_clans(a):
+    tf = _load(a)
+    t = a.tier or 64
+    items = cards.team_row(tf, _seed(a), t, a.era)
+    cards.labelled(items, t, len(items)).save(a.out, a.scale)
+    print(f"{a.out}  {len(items) - 1} clans")
+
+
+def cmd_zoom(a):
+    tf = _load(a)
+    frames = cards.zoom(tf, _seed(a), a.from_tier, a.to_tier, a.steps)
+    gif.write(a.out, frames, a.ms, a.scale)
+    print(f"{a.out}  {len(frames)} frames, {a.from_tier} px to {a.to_tier} px")
+
+
+def cmd_ride(a):
+    from .gen import beast
+    rider = _load(a)
+    mount = typefile.load(a.mount)
+    s = beast.mounted(rider, _seed(a), mount, a.mount_seed, a.tier or 128, a.view, a.yaw, a.pitch, a.era, None, a.rim)
+    s.save(a.out, a.scale)
+    print(f"{a.out}  {s.w}x{s.h}  rider on {mount.id}")
+
+
+def cmd_city(a):
+    from . import city
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    cty = city.load_city(a.city)
+    people = city.census(cty, city.parse_names(Path(a.names).read_text()))
+    city.village(cty, people, a.seed).save(out / "village.png")
+    houses = {}
+    for p in people:
+        houses.setdefault(p["household"], []).append(p)
+    items = []
+    for h, members in houses.items():
+        for p in members:
+            items.append((p["name"].split(" ")[0] + "\n" + p["role"].split(".")[-1].replace("_", " "), city.sprite(p, a.tier)))
+    cards.labelled(items, a.tier, 10, 2).save(out / "citizens.png", 2)
+    _write_json(out / "census.json", {"city": cty["id"], "citizens": city.public(people)})
+    print(f"{out}/  {len(people)} citizens in {len(houses)} households: census.json, citizens.png, village.png")

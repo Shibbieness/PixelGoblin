@@ -58,3 +58,68 @@ def card(tf, seed: int, tiers=rig.TIERS, eras=None, title: str | None = None) ->
     data = {"id": tf.id, "label": title, "seed": seed, "share": code, "type_hash": tf.type_hash,
             "genome": g, "chain": rows, "lod_ladder": rig.LOD}
     return out, data
+
+
+# ---------------------------------------------------------------- labelled sheets
+LIGHT_BG, LIGHT_INK, LIGHT_MUTE = (236, 230, 212, 255), (38, 38, 30, 255), (106, 101, 82, 255)
+
+
+def labelled(items: list[tuple[str, Sprite]], cell: int, cols: int, label_rows: int = 1, dark: bool = False) -> Sprite:
+    """Sprites bottom-aligned in equal cells, each with a caption underneath."""
+    lab_h = 7 * label_rows + 3
+    rows = (len(items) + cols - 1) // cols
+    W, H = cols * (cell + 6) + 6, rows * (cell + lab_h + 6) + 6
+    bg, ink, mute = (BG, INK, MUTE) if dark else (LIGHT_BG, LIGHT_INK, LIGHT_MUTE)
+    out = Sprite(W, H, [TRANSPARENT, bg, ink, mute])
+    out.px[:] = bytes([1]) * (W * H)
+    for i, (label, s) in enumerate(items):
+        x0, y0 = 6 + (i % cols) * (cell + 6), 6 + (i // cols) * (cell + lab_h + 6)
+        blit(out, s, x0 + (cell - s.w) // 2, y0 + cell - s.h)
+        for k, line in enumerate(label.split("\n")[:label_rows]):
+            while font.text_width(line) > cell and len(line) > 1:
+                line = line[:-1]
+            font.draw(out, x0 + (cell - font.text_width(line)) // 2, y0 + cell + 3 + 7 * k, line, 2 if k == 0 else 3)
+    return out
+
+
+def expressions(tf, seed: int, tier: int = 64, era: str | None = None) -> list[tuple[str, Sprite]]:
+    """The same face with every expression. Only the expression field changes."""
+    g = rig.genome(tf.data, rig.streams_for(tf, seed))
+    return [(e, rig.render(tf.data, dict(g, expression=e), tier, era)[0]) for e in rig.EXPRESSIONS]
+
+
+def team_row(tf, seed: int, tier: int = 64, era: str | None = None) -> list[tuple[str, Sprite]]:
+    """The same character in every clan's colours."""
+    from . import typefile
+    out = [("own colours", rig.render(tf.data, rig.genome(tf.data, rig.streams_for(tf, seed)), tier, era)[0])]
+    for name, spec in sorted(typefile.teams().items()):
+        t = typefile.with_team(tf, name)
+        out.append((spec.get("label", name), rig.render(t.data, rig.genome(t.data, rig.streams_for(t, seed)), tier, era)[0]))
+    return out
+
+
+def zoom(tf, seed: int, from_tier: int = 16, to_tier: int = 256, steps: int = 24, eras=None) -> list[Sprite]:
+    """A crowd goblin zooming into its portrait: every frame dissolves between
+    the two chain tiers around its size (ordered dither), scaled to whole
+    screen pixels and standing on the same ground line."""
+    g = rig.genome(tf.data, rig.streams_for(tf, seed))
+    cache = {}
+
+    def at(t):
+        if t not in cache:
+            cache[t] = rig.render(tf.data, g, t, (eras or {}).get(t))[0]
+        return cache[t]
+    frames = []
+    for size, a, b, w in rig.zoom_plan(from_tier, to_tier, steps):
+        out = Sprite(to_tier, to_tier, [TRANSPARENT])
+        A, B = at(a), at(b)
+        ox, oy = (to_tier - size) // 2, to_tier - size
+        for y in range(size):
+            for x in range(size):
+                use_b = w > rig.BAYER4[y % 4][x % 4]
+                src = B if use_b else A
+                i = src.px[(y * src.h // size) * src.w + x * src.w // size]
+                if i:
+                    out.set(ox + x, oy + y, out.color_index(src.palette[i]))
+        frames.append(out)
+    return frames

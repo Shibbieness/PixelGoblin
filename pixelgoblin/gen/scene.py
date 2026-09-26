@@ -69,12 +69,56 @@ class _Canvas:
                     self.spr.px[y * self.w + x] = i
 
 
+# ---------------------------------------------------------------- prop detail by size
+# Props follow the characters' rule: detail arrives with size, it is never
+# smeared. A hut gains a door at 14 px wide, planks and a framed window at 20,
+# roof shingles at 32; a stall gains a scalloped awning and crates at 60.
+PROP_LOD = {"door": 14, "planks": 20, "window_frame": 20, "shingles": 32, "scallops": 60, "crates": 60}
+
+
+def _hut_detail(cv, px_, py, hw, hh, wd, nwd, rf, nrf):
+    if hw >= PROP_LOD["planks"]:
+        for yy in range(py - hh + 2, py, 3):
+            cv.rect(px_ - hw // 2 + 1, yy, px_ + hw // 2 - 1, yy + 1, wd + max(0, nwd - 4))
+    if hw >= PROP_LOD["window_frame"]:
+        y0, y1 = py - hh * 6 // 10, py - hh * 2 // 10
+        cv.rect(px_ - 2, y0 - 1, px_ + 3, y0, wd)
+        cv.rect(px_ - 2, y1, px_ + 3, y1 + 1, wd)
+        cv.rect(px_ - 2, y0, px_ - 1, y1, wd)
+        cv.rect(px_ + 2, y0, px_ + 3, y1, wd)
+    if hw >= PROP_LOD["door"]:
+        dx = px_ + hw // 4
+        cv.rect(dx, py - hh * 55 // 100, dx + max(2, hw // 6), py, wd + 1)
+    if hw >= PROP_LOD["shingles"]:
+        top = py - hh - hh * 7 // 10
+        for yy in range(top + 3, py - hh, 3):
+            half = (yy - top) * (hw * 7 // 10) // max(1, hh * 7 // 10)
+            for x in range(px_ - half + 1, px_ + half):
+                if (x + yy) % 4 == 0:
+                    cv.put(x, yy, rf + max(0, nrf - 4))
+
+
+def _stall_detail(cv, sx, sy, sw, H, aw, wd):
+    if sw >= PROP_LOD["scallops"]:
+        yb = sy - H // 5 + H // 40
+        for x in range(sx - 2, sx + sw + 2):
+            if (x - sx) % 4 < 2:
+                cv.put(x, yb, aw + 1)
+    if sw >= PROP_LOD["crates"]:
+        for k in range(sw // 12):
+            cx = sx + 3 + k * 12
+            cv.rect(cx, sy - 5, cx + 5, sy - 1, wd + 2)
+            cv.rect(cx, sy - 5, cx + 5, sy - 4, wd + 3)
+
+
 def generate(tf, seed: int, overrides=None) -> Sprite:
     return generate_frames(tf, seed, overrides)[0]
 
 
-def generate_frames(tf, seed: int, overrides=None) -> list[Sprite]:
-    from ..typefile import load
+def generate_frames(tf, seed: int, overrides=None, population=None) -> list[Sprite]:
+    """`population` (from city.census) replaces the random crowd with named
+    citizens: dicts with role, seed, band, and optional overrides, sub, team."""
+    from ..typefile import compose, load, with_team
     d = tf.data
     W, H = d["size"]
     S = Streams(master_seed(identity(tf), seed, ENGINE_MAJOR), overrides)
@@ -155,6 +199,7 @@ def generate_frames(tf, seed: int, overrides=None) -> list[Sprite]:
         cv.tri(px_ - hw * 7 // 10, py - hh, px_ + hw * 7 // 10, py - hh, px_, py - hh - hh * 7 // 10, rf + len(P["roof"]) - 2)
         cv.tri(px_ - hw * 7 // 10, py - hh, px_, py - hh, px_, py - hh - hh * 7 // 10, rf + len(P["roof"]) - 3)
         cv.rect(px_ - 1, py - hh * 6 // 10, px_ + 2, py - hh * 2 // 10, gl + ng - 2)
+        _hut_detail(cv, px_, py, hw, hh, wd, nwd, rf, len(P["roof"]))
         # lantern
         lx = px_ + pw // 2 - 1
         cv.put(lx, py - 3, wd)
@@ -200,6 +245,7 @@ def generate_frames(tf, seed: int, overrides=None) -> list[Sprite]:
             cv.put(sx + 1 + k * 3, sy - 1, cl2[(k + i) % len(cl2)] + 3)
             cv.put(sx + 2 + k * 3, sy - 1, gl + ng - 2)
         cv.ellipse(sx + sw // 2, sy - H // 5 + H // 20, 1, 2, gl + ng - 1)
+        _stall_detail(cv, sx, sy, sw, H, aw, wd)
     # the crowd, at depth tiers
     for band in d["crowd"]:
         rc = S.rng(f"crowd/{band['name']}")
@@ -207,13 +253,22 @@ def generate_frames(tf, seed: int, overrides=None) -> list[Sprite]:
         y_lo, y_hi = H * band["y"][0] // 100, H * band["y"][1] // 100
         placed = []
         pool: list = []
-        for k in range(band["count"]):
-            if not pool:  # every role appears once before any repeats
-                pool = list(band["roles"])
-            role = pool.pop(rc.below(len(pool)))
-            ctf = load(role)
-            cseed = rc.next()
-            g = rig.genome(ctf.data, rig.streams_for(ctf, cseed))
+        people = [p for p in population if p["band"] == band["name"]] if population is not None else None
+        for k in range(band["count"] if people is None else len(people)):
+            if people is None:
+                if not pool:  # every role appears once before any repeats
+                    pool = list(band["roles"])
+                role = pool.pop(rc.below(len(pool)))
+                ctf = load(role)
+                cseed = rc.next()
+                over = None
+            else:
+                who = people[k]
+                ctf = compose(who["role"], who["sub"]) if who.get("sub") else load(who["role"])
+                if who.get("team"):
+                    ctf = with_team(ctf, who["team"])
+                cseed, over = who["seed"], who.get("overrides")
+            g = rig.genome(ctf.data, rig.streams_for(ctf, cseed, over))
             spr, _ = rig.render(ctf.data, g, tier, band.get("era"))
             if band.get("on") == "platforms" and plats:
                 pl = plats[rc.below(len(plats))]

@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>PixelGoblin Workbench</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Silkscreen&display=swap">
@@ -90,6 +91,13 @@ table.gen th{color:var(--mute);font-weight:400;white-space:nowrap}
 .tree figcaption{font-size:.75em;color:var(--mute)}
 .scenewrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:4px}
 .scenewrap canvas{display:block;cursor:pointer}
+.viewrow{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.viewctl{display:flex;flex-direction:column;gap:8px;min-width:220px;flex:1}
+.viewbtn[aria-pressed="true"]{background:var(--teal);color:var(--bg);border-color:var(--teal)}
+.house{border-top:1px solid var(--line);padding:8px 0;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.house h3{width:100%;margin:0;font-size:.9rem}
+.house figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.house figcaption{font-size:.72rem;color:var(--mute);text-align:center;max-width:110px}
 .save{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px}
 .save img{border:1px solid var(--line);image-rendering:pixelated;max-width:100%}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--accent);color:var(--accent-ink);padding:8px 14px;border-radius:4px;font-weight:700}
@@ -106,6 +114,7 @@ footer{margin-top:12px;color:var(--mute);font-size:.8em;display:flex;flex-wrap:w
     <button class="tab" role="tab" data-tab="gen" aria-selected="true">Generate</button>
     <button class="tab" role="tab" data-tab="chars" aria-selected="false">Characters</button>
     <button class="tab" role="tab" data-tab="village" aria-selected="false">Village</button>
+    <button class="tab" role="tab" data-tab="city" aria-selected="false">City</button>
     <button class="tab" role="tab" data-tab="edit" aria-selected="false">Edit</button>
     <button class="tab" role="tab" data-tab="convert" aria-selected="false">Convert</button>
     <button class="tab" role="tab" data-tab="tiles" aria-selected="false">Tiles</button>
@@ -160,6 +169,7 @@ footer{margin-top:12px;color:var(--mute);font-size:.8em;display:flex;flex-wrap:w
     <aside class="rail">
       <label>Role<select id="k-role"></select></label>
       <label>Subspecies<select id="k-sub"></select></label>
+      <label>Clan colours<select id="k-team"><option value="">Own colours</option></select></label>
       <label>Name (a name is a seed)<input type="text" id="k-name" placeholder="e.g. Grubnak" autocomplete="off"></label>
       <label>Seed<input type="text" id="k-seed" value="7" inputmode="numeric"></label>
       <div class="btns"><button class="btn" id="k-prev">Previous</button><button class="btn primary" id="k-next">Next goblin</button></div>
@@ -172,11 +182,39 @@ footer{margin-top:12px;color:var(--mute);font-size:.8em;display:flex;flex-wrap:w
       <label class="row"><input type="checkbox" id="k-true"> True pixel size (×2)</label>
       <div class="hint">One genome, six resolutions. The genome never looks at the tier; each tier only decides which features exist at that size, how many shades, and which era palette limit applies.</div>
       <div class="btns"><button class="btn" id="k-savechain">Save chain PNG</button><button class="btn" id="k-edit">Open 64 px in editor</button></div>
+      <h2 style="font-size:.9rem;margin:6px 0 0">Mount</h2>
+      <label>Riding<select id="k-mount"><option value="">On foot</option></select></label>
+      <label>Mount seed<input type="number" id="k-mseed" value="1" min="0"></label>
+      <div class="hint">A mounted rider is shown in the Views panel, at the mount's scale.</div>
     </aside>
     <div class="stage">
       <h2 style="font-size:1rem;margin:0" id="k-title"></h2>
       <div class="chain" id="k-chain"></div>
       <div id="k-checks" class="verdicts"></div>
+      <details open id="k-views-box"><summary>Views: side, back, isometric, top-down, free rotation</summary>
+        <div class="hint">Every view is built from the front drawing: each part is lifted into a solid by a depth rule, and one model is seen from any angle. Drag the picture to turn it.</div>
+        <div class="btns" id="k-viewbtns" role="toolbar" aria-label="Views"></div>
+        <div class="viewrow">
+          <figure style="margin:0"><canvas id="k-view" class="checker" style="cursor:grab;touch-action:none"></canvas><figcaption id="k-viewcap" class="hint"></figcaption></figure>
+          <div class="viewctl">
+            <label>Turn (yaw) <span class="mono" id="k-yawv"></span><input type="range" id="k-yaw" min="0" max="359" value="0"></label>
+            <label>Tilt (pitch) <span class="mono" id="k-pitchv"></span><input type="range" id="k-pitch" min="0" max="90" value="0"></label>
+            <label>Size<select id="k-vtier"><option>16</option><option>32</option><option selected>64</option><option>128</option></select></label>
+            <label>Motion<select id="k-vanim"><option value="">still</option><option value="idle">idle</option><option value="walk_side">walk (side)</option></select></label>
+            <div class="btns"><button class="btn" id="k-saveview">Save this view</button><button class="btn" id="k-saveturn">Save 8-direction sheet</button></div>
+            <div id="k-ortho" class="hint"></div>
+          </div>
+        </div>
+        <div class="hint">Turnaround: the same model every 45°, at this tilt.</div>
+        <div class="chain" id="k-turn"></div>
+      </details>
+      <details><summary>Expressions (only the face changes)</summary><div class="chain" id="k-expr"></div></details>
+      <details><summary>Clans (only the clothes change)</summary><div class="chain" id="k-teams"></div></details>
+      <details><summary>Zoom: from a crowd goblin to its portrait</summary>
+        <div class="hint">Each frame dissolves between the two chain tiers around its size, so detail arrives the way the ladder says it does.</div>
+        <div class="viewrow"><canvas id="k-zoom" class="checker"></canvas>
+          <div class="viewctl"><label>Zoom <input type="range" id="k-zoomr" min="0" max="23" value="0"></label><button class="btn" id="k-zoomplay">Play</button><button class="btn" id="k-zoomgif">Save as frames PNG</button></div></div>
+      </details>
       <details open><summary>Genome (what this goblin IS, at every size)</summary><table class="gen" id="k-genome"></table></details>
       <details><summary>Level-of-detail ladder (what each tier adds)</summary><div class="ladder" id="k-ladder"></div></details>
       <details><summary>Family tree (three generations of this role)</summary>
@@ -201,6 +239,26 @@ footer{margin-top:12px;color:var(--mute);font-size:.8em;display:flex;flex-wrap:w
       <div id="v-crowd" class="hint"></div>
     </aside>
     <div class="stage"><div class="scenewrap"><canvas id="v-view"></canvas></div><div id="v-pick" class="hint"></div></div>
+  </div>
+</section>
+
+<!-- ============ CITY ============ -->
+<section class="pane" id="p-city" hidden>
+  <div class="app">
+    <aside class="rail">
+      <label>City<select id="c2-city"></select></label>
+      <label>Citizens, one per line<textarea id="c2-names" spellcheck="false" style="min-height:260px"></textarea></label>
+      <div class="hint">A shared last name is a household: the first two grown members are parents, later ones their children. <code>: miner</code> pins a job; <code>(child)</code> or <code>(elder)</code> says who is young or old. A name is a seed, so each citizen looks the same every time.</div>
+      <label>Village seed<input type="number" id="c2-seed" value="1" min="0"></label>
+      <div class="btns"><button class="btn primary" id="c2-go">Build the city</button><button class="btn" id="c2-savejson">Save census</button><button class="btn" id="c2-savepng">Save village</button></div>
+      <div id="c2-sum" class="hint"></div>
+    </aside>
+    <div class="stage">
+      <div class="scenewrap"><canvas id="c2-view"></canvas></div>
+      <div id="c2-pick"></div>
+      <h2 style="font-size:.9rem;margin:6px 0 0">Households</h2>
+      <div id="c2-houses"></div>
+    </div>
   </div>
 </section>
 
@@ -348,7 +406,7 @@ function showTab(name) {
   document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
   document.querySelectorAll(".pane").forEach((p) => { p.hidden = p.id !== "p-" + name; });
   store.set("tab", name);
-  if (name === "chars") drawChars(); if (name === "village") drawVillage();
+  if (name === "chars") drawChars(); if (name === "village") drawVillage(); if (name === "city") drawCity();
   if (name === "bg") drawBg(); if (name === "tiles") drawTiles(); if (name === "ui") drawUi(); if (name === "edit") drawEd();
 }
 document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
@@ -476,6 +534,8 @@ $("b-go").onclick = () => {
 PGRig.setResolver((id) => { const d = typeById(id); if (!d) throw new Error("unknown type " + id); return d; });
 const rigRoles = PRESETS.types.filter((t) => t.data.generator === "rig" && t.data.role && !t.own && t.data.label).sort((a, b) => (a.data.label || a.data.id).localeCompare(b.data.label || b.data.id));
 const rigSubs = PRESETS.types.filter((t) => t.data.generator === "rig" && t.own);
+const beasts = PRESETS.types.filter((t) => t.data.generator === "beast");
+PGRig.setTables(PRESETS.teams || {}, Object.fromEntries(rigSubs.map((t) => [t.data.id, t.own])));
 (() => {
   const r = $("k-role"); rigRoles.forEach((t) => { const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.label || t.data.id; r.appendChild(o); });
   const sb = $("k-sub"); const o0 = document.createElement("option"); o0.value = ""; o0.textContent = "Common (role as written)"; sb.appendChild(o0);
@@ -483,7 +543,13 @@ const rigSubs = PRESETS.types.filter((t) => t.data.generator === "rig" && t.own)
   r.value = store.get("k.role", "boc.goblin.blacksmith"); if (!r.value && rigRoles.length) r.value = rigRoles[0].data.id;
   sb.value = store.get("k.sub", "");
   $("k-seed").value = store.get("k.seed", "7");
+  const tm = $("k-team");
+  Object.keys(PRESETS.teams || {}).sort().forEach((k) => { const o = document.createElement("option"); o.value = k; o.textContent = PRESETS.teams[k].label || k; tm.appendChild(o); });
+  tm.value = store.get("k.team", "");
+  const mt = $("k-mount");
+  beasts.forEach((t) => { const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.label || t.data.id; mt.appendChild(o); });
 })();
+const withTeamSel = (data) => ($("k-team").value ? PGRig.withTeam(data, $("k-team").value) : data);
 function charData(roleId, subId) {
   const base = typeById(roleId);
   if (!subId) return base;
@@ -496,8 +562,8 @@ const nice = (k) => k.replace(/_/g, " ");
 function drawChars() {
   if (!rigRoles.length) return;
   const roleId = $("k-role").value, subId = $("k-sub").value, seed = kSeed();
-  store.set("k.role", roleId); store.set("k.sub", subId); store.set("k.seed", seed);
-  const data = charData(roleId, subId), g = PGRig.genome(data, PGRig.streamsFor(data, seed));
+  store.set("k.role", roleId); store.set("k.sub", subId); store.set("k.seed", seed); store.set("k.team", $("k-team").value);
+  const data = withTeamSel(charData(roleId, subId)), g = PGRig.genome(data, PGRig.streamsFor(data, seed));
   const eraAll = $("k-era").value || null, rim = $("k-rim").checked, trueSize = $("k-true").checked, anim = $("k-anim").value;
   const role = typeById(roleId), sub = subId ? typeById(subId) : null;
   $("k-title").textContent = `${role.label || roleId}${sub ? " · " + (sub.label || subId) : ""} · seed ${seed.length > 12 ? seed.slice(0, 12) + "…" : seed}`;
@@ -533,7 +599,126 @@ function drawChars() {
   $("k-ladder").innerHTML = Object.keys(byTier).sort((a, b) => a - b).map((t) => `<div><b>${t} px</b><br>${byTier[t].join(", ")}</div>`).join("");
   drawTree(data, seed);
   drawRoster(subId, seed, roleId);
+  kCur = { data, g };
+  drawViews();
+  drawExtras();
 }
+// ---------- views: the lifted 3D model, from any angle
+let kCur = null, vAnim = null, vPending = false;
+const VIEW_NAMES = [["front", "Front"], ["side_right", "Side →"], ["side_left", "← Side"], ["back", "Back"], ["iso_sw", "Iso ↙"], ["iso_se", "Iso ↘"],
+  ["iso_nw", "Iso ↖"], ["iso_ne", "Iso ↗"], ["three_quarter", "¾ top-down"], ["top", "Top"]];
+(() => {
+  const box = $("k-viewbtns");
+  VIEW_NAMES.forEach(([v, label]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "btn viewbtn"; b.textContent = label; b.dataset.view = v;
+    b.onclick = () => { const [y, p] = PGRig.VIEWS[v]; $("k-yaw").value = y; $("k-pitch").value = p; drawViews(); };
+    box.appendChild(b);
+  });
+  $("k-yaw").value = store.get("k.yaw", 45); $("k-pitch").value = store.get("k.pitch", 30);
+})();
+function viewSprite(tier, yaw, pitch, pose) {
+  const { data, g } = kCur;
+  const o = { yaw, pitch, pose, era: $("k-era").value || null, rim: $("k-rim").checked };
+  const mid = $("k-mount").value;
+  if (mid) {
+    const md = typeById(mid), bg = PGRig.beastGenome(md, PGRig.streamsFor(md, Math.max(0, +$("k-mseed").value || 0)));
+    return PGRig.mounted(data, g, md, bg, tier, o).sprite;
+  }
+  return PGRig.renderView(data, g, tier, o).sprite;
+}
+function drawViews() {
+  if (!kCur) return;
+  const yaw = +$("k-yaw").value, pitch = +$("k-pitch").value, tier = +$("k-vtier").value, motion = $("k-vanim").value;
+  store.set("k.yaw", yaw); store.set("k.pitch", pitch);
+  $("k-yawv").textContent = yaw + "°"; $("k-pitchv").textContent = pitch + "°";
+  document.querySelectorAll(".viewbtn").forEach((b) => { const [y, p] = PGRig.VIEWS[b.dataset.view]; b.setAttribute("aria-pressed", String(y === yaw && p === pitch)); });
+  const poses = motion ? PGRig.VIEW_POSES[motion] : [{}];
+  const frames = poses.map((p) => viewSprite(tier, yaw, pitch, p));
+  const scale = Math.max(frames[0].w <= 128 ? 2 : 1, Math.floor(360 / Math.max(frames[0].w, frames[0].h)));
+  const cv = $("k-view"); paint(cv, frames[0], scale);
+  $("k-viewcap").textContent = `${frames[0].w}×${frames[0].h} px · turn ${yaw}° · tilt ${pitch}° · ${frames[0].usedColors()} colours`;
+  clearInterval(vAnim); let k = 0;
+  if (frames.length > 1 && !matchMedia("(prefers-reduced-motion: reduce)").matches) vAnim = setInterval(() => { k = (k + 1) % frames.length; paint(cv, frames[k], scale); }, 200);
+  const turn = $("k-turn"); turn.innerHTML = "";
+  [0, 45, 90, 135, 180, 225, 270, 315].forEach((y) => {
+    const f = document.createElement("figure"); const s2 = viewSprite(Math.min(tier, 64), y, pitch, {});
+    f.appendChild(spriteCanvas(s2, Math.max(1, Math.floor(96 / Math.max(s2.w, s2.h)))));
+    const c = document.createElement("figcaption"); c.textContent = y + "°"; f.appendChild(c);
+    f.style.cursor = "pointer"; f.onclick = () => { $("k-yaw").value = y; drawViews(); };
+    turn.appendChild(f);
+  });
+  if (!$("k-mount").value) {
+    const ext = (s2) => { let x0 = 1e9, x1 = -1, y0 = 1e9, y1 = -1; for (let i = 0; i < s2.px.length; i++) if (s2.px[i]) { const x = i % s2.w, y = Math.floor(i / s2.w); x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); } return [x0, x1, y0, y1]; };
+    const fr = ext(viewSprite(32, 0, 0, {})), sd = ext(viewSprite(32, 270, 0, {})), tp = ext(viewSprite(32, 0, 90, {}));
+    const ok1 = fr[2] === sd[2] && fr[3] === sd[3], ok2 = fr[0] === tp[0] && fr[1] === tp[1];
+    $("k-ortho").innerHTML = `<span class="chip ${ok1 ? "good" : "bad"}">front and side share heights</span> <span class="chip ${ok2 ? "good" : "bad"}">front and top share widths</span>`;
+  } else $("k-ortho").textContent = "";
+}
+["k-yaw", "k-pitch"].forEach((id) => { $(id).oninput = () => { if (!vPending) { vPending = true; requestAnimationFrame(() => { vPending = false; drawViews(); }); } }; });
+["k-vtier", "k-vanim", "k-mount", "k-mseed"].forEach((id) => { $(id).onchange = drawViews; });
+(() => {
+  const cv = $("k-view"); let drag = null;
+  cv.addEventListener("pointerdown", (e) => { drag = [e.clientX, e.clientY, +$("k-yaw").value, +$("k-pitch").value]; cv.setPointerCapture(e.pointerId); cv.style.cursor = "grabbing"; });
+  cv.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    $("k-yaw").value = ((drag[2] - Math.round((e.clientX - drag[0]) / 2)) % 360 + 360) % 360;
+    $("k-pitch").value = Math.max(0, Math.min(90, drag[3] + Math.round((e.clientY - drag[1]) / 3)));
+    $("k-yaw").oninput();
+  });
+  const end = () => { drag = null; cv.style.cursor = "grab"; };
+  cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
+})();
+$("k-saveview").onclick = async () => {
+  const s2 = viewSprite(+$("k-vtier").value, +$("k-yaw").value, +$("k-pitch").value, {});
+  saveFile(`${$("k-role").value}-${kSeed()}-yaw${$("k-yaw").value}-pitch${$("k-pitch").value}.png`, await pngBlob(s2, 1));
+};
+$("k-saveturn").onclick = async () => {
+  const tier = +$("k-vtier").value, pitch = +$("k-pitch").value;
+  const sprs = [0, 45, 90, 135, 180, 225, 270, 315].map((y) => viewSprite(tier, y, pitch, {}));
+  const W = sprs.reduce((a, s2) => a + s2.w, 0), H = Math.max(...sprs.map((s2) => s2.h));
+  const out = new PG.Sprite(W, H, [[0, 0, 0, 0]]); let x = 0;
+  for (const s2 of sprs) {
+    for (let y = 0; y < s2.h; y++) for (let xx = 0; xx < s2.w; xx++) { const i = s2.px[y * s2.w + xx]; if (i) { const c = s2.palette[i]; let k = out.palette.findIndex((q) => q[0] === c[0] && q[1] === c[1] && q[2] === c[2] && q[3] === c[3]); if (k < 0) { out.palette.push(c.slice()); k = out.palette.length - 1; } out.set(x + xx, y, k); } }
+    x += s2.w;
+  }
+  saveFile(`${$("k-role").value}-${kSeed()}-8dir-${tier}px-pitch${pitch}.png`, await pngBlob(out, 1));
+};
+// ---------- expressions, clans, zoom
+let zFrames = null, zPlay = null;
+function drawExtras() {
+  if (!kCur) return;
+  const { data, g } = kCur;
+  const ex = $("k-expr"); ex.innerHTML = "";
+  if ($("k-expr").closest("details").open) PGRig.EXPRESSIONS.forEach((e) => {
+    const f = document.createElement("figure"); f.appendChild(spriteCanvas(PGRig.render(data, Object.assign({}, g, { expression: e }), 64, {}).sprite, 2));
+    const c = document.createElement("figcaption"); c.textContent = e; f.appendChild(c); ex.appendChild(f);
+  });
+  const tb = $("k-teams"); tb.innerHTML = "";
+  if (tb.closest("details").open) {
+    const base = charData($("k-role").value, $("k-sub").value);
+    [["", "own colours"]].concat(Object.keys(PRESETS.teams || {}).sort().map((k) => [k, PRESETS.teams[k].label || k])).forEach(([k, label]) => {
+      const d = k ? PGRig.withTeam(base, k) : base, gg = PGRig.genome(d, PGRig.streamsFor(d, kSeed()));
+      const f = document.createElement("figure"); f.appendChild(spriteCanvas(PGRig.render(d, gg, 64, {}).sprite, 2));
+      const c = document.createElement("figcaption"); c.textContent = label; f.appendChild(c); f.style.cursor = "pointer";
+      f.onclick = () => { $("k-team").value = k; drawChars(); }; tb.appendChild(f);
+    });
+  }
+  zFrames = null;
+  if ($("k-zoom").closest("details").open) { zFrames = PGRig.zoomFrames(data, g, 16, 256, 24); showZoom(); }
+}
+function showZoom() { if (zFrames) paint($("k-zoom"), zFrames[+$("k-zoomr").value], 1); }
+$("k-zoomr").oninput = showZoom;
+$("k-zoomplay").onclick = () => {
+  clearInterval(zPlay); if (!zFrames) return;
+  let k = 0, dir = 1; zPlay = setInterval(() => { $("k-zoomr").value = k; showZoom(); k += dir; if (k >= zFrames.length - 1 || k <= 0) dir = -dir; }, 90);
+};
+$("k-zoomgif").onclick = async () => {
+  if (!zFrames) return;
+  const out = new PG.Sprite(zFrames[0].w * 6, zFrames[0].h * 4, [[0, 0, 0, 0]]);
+  zFrames.forEach((f, n) => { const ox = (n % 6) * f.w, oy = Math.floor(n / 6) * f.h; for (let i = 0; i < f.px.length; i++) if (f.px[i]) { const c = f.palette[f.px[i]]; let k = out.palette.findIndex((q) => q[0] === c[0] && q[1] === c[1] && q[2] === c[2] && q[3] === c[3]); if (k < 0) { out.palette.push(c.slice()); k = out.palette.length - 1; } out.set(ox + i % f.w, oy + Math.floor(i / f.w), k); } });
+  saveFile(`${$("k-role").value}-${kSeed()}-zoom.png`, await pngBlob(out, 1));
+};
+document.querySelectorAll("#p-chars details").forEach((d) => d.addEventListener("toggle", () => { if (d.open) drawExtras(); }));
 function drawTree(data, seed) {
   const box = $("k-tree"); box.innerHTML = "";
   const s0 = BigInt(seed), f = [0n, 1n, 2n, 3n].map((i) => (s0 + i) % (1n << 64n));
@@ -555,7 +740,7 @@ function drawTree(data, seed) {
 function drawRoster(subId, seed, current) {
   const box = $("k-roster"); box.innerHTML = "";
   rigRoles.forEach((t) => {
-    const d = charData(t.data.id, subId), g = PGRig.genome(d, PGRig.streamsFor(d, seed));
+    const d = withTeamSel(charData(t.data.id, subId)), g = PGRig.genome(d, PGRig.streamsFor(d, seed));
     const b = document.createElement("button"); b.type = "button"; b.className = "cell" + (t.data.id === current ? " sel" : "");
     b.appendChild(spriteCanvas(PGRig.render(d, g, 32, {}).sprite, 2));
     const sp = document.createElement("span"); sp.textContent = t.data.label || t.data.id; b.appendChild(sp);
@@ -563,7 +748,7 @@ function drawRoster(subId, seed, current) {
     box.appendChild(b);
   });
 }
-["k-role", "k-sub", "k-era", "k-anim", "k-rim", "k-true"].forEach((id) => { $(id).onchange = drawChars; });
+["k-role", "k-sub", "k-team", "k-era", "k-anim", "k-rim", "k-true"].forEach((id) => { $(id).onchange = drawChars; });
 $("k-seed").onchange = () => { $("k-name").value = ""; drawChars(); };
 $("k-name").oninput = () => { const n = $("k-name").value; if (n.trim()) { $("k-seed").value = PGRig.seedFromName(n); drawChars(); } };
 const stepSeed = (d) => { const v = (BigInt(kSeed()) + BigInt(d) + (1n << 64n)) % (1n << 64n); $("k-seed").value = v.toString(); $("k-name").value = ""; drawChars(); };
@@ -624,6 +809,72 @@ $("v-view").onclick = (ev) => {
   $("v-pick").textContent = "No goblin there. Click a goblin to open it.";
 };
 
+
+// ---------- CITY (a population from a list of names)
+const cities = PRESETS.cities || [];
+let cPeople = [], cImg = null, cPlaced = [];
+(() => {
+  const sel = $("c2-city");
+  cities.forEach((c, i) => { const o = document.createElement("option"); o.value = i; o.textContent = c.data.id; sel.appendChild(o); });
+  $("c2-names").value = store.get("c2.names", cities.length ? cities[0].names : "");
+})();
+function drawCity() {
+  if (!cities.length) return;
+  const city = cities[+$("c2-city").value || 0].data;
+  store.set("c2.names", $("c2-names").value);
+  const names = PGRig.parseNames($("c2-names").value);
+  cPeople = PGRig.census(city, names);
+  cPlaced = [];
+  cImg = PGRig.cityVillage(city, cPeople, Math.max(0, +$("c2-seed").value || 0), (c) => cPlaced.push(c));
+  paint($("c2-view"), cImg, 3);
+  const houses = {};
+  cPeople.forEach((p) => { (houses[p.household] = houses[p.household] || []).push(p); });
+  const box = $("c2-houses"); box.innerHTML = "";
+  Object.keys(houses).forEach((h) => {
+    const row = document.createElement("div"); row.className = "house";
+    const members = houses[h];
+    const t = members[0].team ? (PRESETS.teams[members[0].team] || {}).label || members[0].team : "no clan";
+    row.innerHTML = `<h3>${members.length > 1 ? "House " + h : h} · ${members[0].sub || "common"} · ${t}</h3>`;
+    members.forEach((p) => {
+      const f = document.createElement("figure");
+      f.appendChild(spriteCanvas(PGRig.citizenSprite(p, 32), 2));
+      const role = (typeById(p.role) || {}).label || p.role;
+      const c = document.createElement("figcaption");
+      c.textContent = `${p.name.split(" ")[0]} · ${role}${p.parents.length ? " · child" : ""}${p.outdoors ? "" : " · indoors"}`;
+      f.appendChild(c); f.onclick = () => citizen(p); row.appendChild(f);
+    });
+    box.appendChild(row);
+  });
+  const out = cPeople.filter((p) => p.outdoors).length;
+  $("c2-sum").textContent = `${cPeople.length} citizens in ${Object.keys(houses).length} households; ${out} out in the village, ${cPeople.length - out} indoors.`;
+  $("c2-pick").innerHTML = "";
+}
+function citizen(p) {
+  const box = $("c2-pick");
+  const role = (typeById(p.role) || {}).label || p.role;
+  box.innerHTML = `<h2 style="font-size:1rem;margin:0">${p.name}</h2><div class="hint">${role} · ${p.sub || "common"} goblin · ${p.team ? (PRESETS.teams[p.team] || {}).label || p.team : "no clan"} · house ${p.household}</div><div class="chain" id="c2-chain"></div><div class="inherit" id="c2-inh"></div>`;
+  const data0 = (() => { let d = p.sub ? PGRig.composeId(p.role, "boc.goblin.sub." + p.sub) : typeById(p.role); return p.team ? PGRig.withTeam(d, p.team) : d; })();
+  const g = PGRig.genome(data0, PGRig.streamsFor(data0, p.seed, p.overrides || null));
+  const ch = $("c2-chain");
+  [16, 32, 64, 128].forEach((t) => { const f = document.createElement("figure"); f.appendChild(spriteCanvas(PGRig.render(data0, g, t, {}).sprite, Math.max(1, Math.floor(128 / t)))); const c = document.createElement("figcaption"); c.textContent = t + " px"; f.appendChild(c); ch.appendChild(f); });
+  [45, 270, 180].forEach((y) => { const f = document.createElement("figure"); f.appendChild(spriteCanvas(PGRig.renderView(data0, g, 64, { yaw: y, pitch: y === 45 ? 30 : 0 }).sprite, 2)); const c = document.createElement("figcaption"); c.textContent = y === 45 ? "isometric" : y === 270 ? "side" : "back"; f.appendChild(c); ch.appendChild(f); });
+  if (p.inherited) Object.entries(p.inherited).forEach(([k, v]) => { const sp = document.createElement("span"); sp.className = "chip" + (v === "mutation" ? " bad" : ""); sp.textContent = k.replace("g/", "") + " from " + v; $("c2-inh").appendChild(sp); });
+  box.scrollIntoView({ block: "nearest" });
+}
+$("c2-go").onclick = drawCity; $("c2-city").onchange = () => { $("c2-names").value = cities[+$("c2-city").value].names; drawCity(); };
+$("c2-seed").onchange = drawCity;
+$("c2-savejson").onclick = () => saveFile("census.json", JSON.stringify(cPeople.map((p) => { const o = Object.assign({}, p); delete o.overrides; o.seed = String(p.seed); return o; }), null, 1));
+$("c2-savepng").onclick = async () => { if (cImg) saveFile("city-village.png", await pngBlob(cImg, 1)); };
+$("c2-view").onclick = (ev) => {
+  const cv = $("c2-view"), r = cv.getBoundingClientRect();
+  const x = Math.floor((ev.clientX - r.left) * cImg.w / r.width), y = Math.floor((ev.clientY - r.top) * cImg.h / r.height);
+  for (let i = cPlaced.length - 1; i >= 0; i--) {
+    const c = cPlaced[i];
+    if (x < c.x || y < c.y || x >= c.x + c.tier || y >= c.y + c.tier || !c.who) continue;
+    const p = cPeople.find((q) => q.name === c.who.name);
+    if (p) { citizen(p); return; }
+  }
+};
 // ---------- EDIT
 let doc = null, cur = 0, color = 1, tool = "pen", undo = [], redo = [], drag = null, playing = null;
 function newDoc(w, h) { doc = { w, h, palette: [[0, 0, 0, 0], [26, 20, 40, 255], [217, 164, 65, 255], [86, 163, 156, 255], [233, 227, 207, 255]], frames: [new Uint8Array(w * h)], ms: 200 }; cur = 0; color = 2; undo = []; redo = []; }

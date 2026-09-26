@@ -66,7 +66,11 @@ Each feature has the smallest tier at which it is drawn. Below that tier it is l
 | 64 px | brows, eye whites, inner ears, necklace, tusks, pouches, bracers, tongue, flowers, straps |
 | 128 px | pupils, highlights, pattern, stitches, fur tufts, nails |
 
-Feet were on the 32 px rung until this session. At 8 px that left guards and warriors with no feet, because a spear and a shield covered both legs. Feet are now on the 8 px rung, and below 32 px they are drawn in front of held items.
+Feet were on the 32 px rung until session 3. At 8 px that left guards and warriors with no feet, because a spear and a shield covered both legs. Feet are now on the 8 px rung, and below 32 px they are drawn in front of everything, even a role's signature item.
+
+**Signatures (session 4).** Each role has one feature that says who it is: what it holds, else its headwear, its back item, a beard or its top, or whatever `[role] signature` names. That feature is promoted to the 8 px rung, snapped to a whole pixel and drawn on top below 32 px, and its colours are the last to merge in a small palette. Gate B20 checks that no two roles share an 8 px icon.
+
+**8-bit eyes (session 4).** At three colours, eyes and mouths are drawn in the outline colour, as NES sprites did, so a face survives the palette.
 
 ## How identity across tiers is measured
 
@@ -75,17 +79,19 @@ Feet were on the 32 px rung until this session. At 8 px that left guards and war
 - **IoU**: silhouette overlap, as a percentage;
 - **material**: of the pixels both drawings fill, the share with the same material (skin, cloth, metal and so on).
 
-These values were measured over all 28 goblin role and base types at seed 0:
+These values were measured over all 30 goblin role and base types at seed 0 (session 4, with signatures):
 
 | Tier | IoU average | IoU minimum | Material average | Material minimum |
 |---|---|---|---|---|
-| 8 px | 59 | 35 | 86 | 37 |
-| 16 px | 80 | 67 | 81 | 60 |
+| 8 px | 59 | 35 | 81 | 37 |
+| 16 px | 79 | 67 | 81 | 60 |
 | 32 px | 92 | 82 | 93 | 81 |
 | 64 px | 96 | 91 | 96 | 85 |
 | 128 px | 96 | 95 | 96 | 95 |
 
-Gate B16 holds floors just under these values. Read them honestly. At 32 px and above a character is very nearly the same drawing. At 16 px it is clearly the same character. At 8 px the materials still agree (86% on average), but the outline is only about 60% the same, because in an 8×8 grid every snapped ear and every one-pixel foot is a big share of the picture. An 8 px sprite is an icon of the character, not a small copy of it, and that is true of hand-made sprite chains too.
+The 8 px material average fell from 86 to 81 when signatures arrived. That is expected: a signature item is snapped to a whole pixel and drawn on top, which a 256 px reference can only partly reproduce. The icons became more distinct from each other (gate B20), and slightly less like a shrunken portrait.
+
+Gate B16 holds floors just under these values. Read them honestly. At 32 px and above a character is very nearly the same drawing. At 16 px it is clearly the same character. At 8 px the materials still mostly agree (81% on average), but the outline is only about 60% the same, because in an 8×8 grid every snapped ear and every one-pixel foot is a big share of the picture. An 8 px sprite is an icon of the character, not a small copy of it, and that is true of hand-made sprite chains too.
 
 ## Transitions: moving between tiers
 

@@ -1,0 +1,32 @@
+# Miner: digs the warren deeper. Added in session 4 to show items written as data:
+# the pickaxe below is not in the engine's code, only in this file.
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.miner"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.miner"
+license = "Proprietary"
+label = "Miner"
+
+[role]
+age = ["adult"]
+build = ["stocky", "heavy"]
+top = ["vest", "apron"]
+bottom = ["trousers"]
+cloth_a = ["leather", "black"]
+cloth_b = ["leather"]
+headwear = ["goggles", "cap"]
+hair = ["short", "wild", "none"]
+hair_color = ["black", "brown"]
+held = ["pickaxe"]
+offhand = ["lantern", "none"]
+expression = ["confident", "annoyed", "neutral"]
+accessories = [{ item = "belt", chance = 100 }, { item = "pouches", chance = 70 }, { item = "beard", chance = 30 }]
+
+# Shapes are in hundredths of the item scale, relative to the hand; x is mirrored
+# for the left hand. `layer` stacks shapes; `feat` puts them on the LOD ladder.
+[items.pickaxe]
+shapes = [
+  { shape = "C", at = [0, 25, 12, -85, 6], mat = "wood", feat = "held.large", snap = true },
+  { shape = "T", at = [-38, -76, 12, -94, 12, -78], mat = "metal", layer = 1, feat = "held.large" },
+  { shape = "T", at = [12, -94, 12, -78, 52, -68], mat = "metal", layer = 1, feat = "held.large" },
+]

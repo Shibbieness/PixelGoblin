@@ -24,7 +24,7 @@ from .rng import sha256
 from .sprite import hex_to_rgba
 
 SCHEMA = "pixelgoblin/type@1"
-GENERATORS = ("mask", "lsystem", "parallax", "autotile", "uikit", "rig", "scene", "warren")
+GENERATORS = ("mask", "lsystem", "parallax", "autotile", "uikit", "rig", "scene", "warren", "beast")
 MASK_CHARS = set(".12#")
 REPO = Path(__file__).resolve().parent.parent
 
@@ -274,6 +274,25 @@ def validate(data: dict) -> list[str]:
         v.color("palette.highlight")
     elif gen == "rig":
         _validate_rig(v)
+    elif gen == "beast":
+        bd = v.get("beast", dict)
+        if bd is not None and bd.get("kind") not in ("boar", "wolf"):
+            v.p.append(f"`beast.kind` {bd.get('kind')!r} must be boar or wolf")
+        for key in ("length", "height", "girth", "head", "snout", "ear", "tail"):
+            r = (bd or {}).get(key)
+            if r is not None and (not isinstance(r, list) or len(r) != 2 or not all(isinstance(x, int) for x in r) or r[0] > r[1]):
+                v.p.append(f"`beast.{key}` must be [low, high] whole numbers")
+        for group in ("materials", "cloth", "hair", "iris"):
+            for name in (v.get(f"palette.{group}", dict) or {}):
+                v.colors(f"palette.{group}.{name}", 2, 8)
+        for key, group in (("coat", "hair"), ("iris", "iris"), ("blanket", "cloth")):
+            known = (v.d.get("palette", {}).get(group) or {})
+            for item in (bd or {}).get(key, []) or []:
+                if item not in known:
+                    v.p.append(f"`beast.{key}` names {item!r}, which is not in `palette.{group}`")
+        for m in ("fur", "skin", "mouth", "eye_white", "teeth", "hoof", "leather", "metal"):
+            if m not in (v.d.get("palette", {}).get("materials") or {}):
+                v.p.append(f"`palette.materials.{m}` is missing; every beast needs it")
     elif gen == "warren":
         t = v.get("terrain", str)
         if t is not None:
@@ -489,8 +508,34 @@ def _validate_rig(v: _V):
         tab = v.get(f"palette.{group}", dict)
         for name, ramp in (tab or {}).items():
             v.colors(f"palette.{group}.{name}", 2, 8)
+    items = v.d.get("items", {}) or {}
+    shape_args = {"E": 4, "R": 5, "C": 5, "T": 6, "A": 6}
+    all_mats = set(rig.FIXED_MATERIALS) | {"cloth_a", "cloth_b", "hair"} | set((v.d.get("palette", {}).get("materials") or {}))
+    for name, spec in items.items():
+        shapes = spec.get("shapes") if isinstance(spec, dict) else None
+        if not shapes:
+            v.p.append(f"`items.{name}` needs a `shapes` list")
+            continue
+        for i, sh in enumerate(shapes):
+            k = sh.get("shape") if isinstance(sh, dict) else None
+            if k not in shape_args:
+                v.p.append(f"`items.{name}.shapes[{i}]`: `shape` must be one of E, R, C, T, A")
+                continue
+            at = sh.get("at")
+            if not isinstance(at, list) or len(at) != shape_args[k] or not all(isinstance(x, int) and not isinstance(x, bool) for x in at):
+                v.p.append(f"`items.{name}.shapes[{i}]`: a {k} needs `at` with {shape_args[k]} whole numbers")
+            if sh.get("mat") not in all_mats:
+                near = difflib.get_close_matches(str(sh.get("mat")), sorted(all_mats), 1)
+                v.p.append(f"`items.{name}.shapes[{i}]`: material {sh.get('mat')!r} is unknown" + (f" — did you mean {near[0]!r}?" if near else ""))
+            if sh.get("feat", "held") not in rig.LOD:
+                v.p.append(f"`items.{name}.shapes[{i}]`: feature {sh.get('feat')!r} is not on the LOD ladder")
+    held_names = tuple(rig.HELD) + tuple(items)
     vocab = {"age": tuple(rig.AGES), "build": tuple(rig.BUILDS), "hair": rig.HAIR, "top": rig.TOPS, "bottom": rig.BOTTOMS,
-             "headwear": rig.HEADWEAR, "held": rig.HELD, "offhand": rig.HELD, "back": rig.BACK, "expression": rig.EXPRESSIONS}
+             "headwear": rig.HEADWEAR, "held": held_names, "offhand": held_names, "back": rig.BACK, "expression": rig.EXPRESSIONS}
+    for section in ("role",):
+        sig = (v.d.get(section, {}) or {}).get("signature")
+        if sig is not None and sig not in rig.LOD:
+            v.p.append(f"`role.signature` {sig!r} must be a feature on the LOD ladder, such as 'held' or 'headwear'")
     names = {"cloth_a": "cloth", "cloth_b": "cloth", "hair_color": "hair", "iris": "iris"}
     for section in ("species", "role"):
         sec = v.d.get(section, {}) or {}
@@ -514,6 +559,57 @@ def _validate_rig(v: _V):
             r = sec.get(key)
             if r is not None and (not isinstance(r, list) or len(r) != 2 or not all(isinstance(x, int) for x in r) or r[0] > r[1]):
                 v.p.append(f"`{section}.{key}` must be [low, high] whole numbers")
+
+
+TEAMS_SCHEMA = "pixelgoblin/teams@1"
+
+
+def teams() -> dict:
+    """Every team (clan colours) on the search path, by name."""
+    out: dict = {}
+    for root in search_path():
+        for p in sorted(Path(root).rglob("*.teams.toml")):
+            raw = _read_toml(p)
+            if raw.get("schema") != TEAMS_SCHEMA:
+                continue
+            for name, spec in (raw.get("teams") or {}).items():
+                out[name] = dict(spec, name=name, source=raw.get("id", str(p)))
+    return out
+
+
+def validate_team(name: str, spec: dict, cloth: dict) -> list[str]:
+    probs = []
+    for k in ("a", "b"):
+        v = spec.get(k)
+        if isinstance(v, list):
+            if not 2 <= len(v) <= 8 or not all(isinstance(c, str) and re.fullmatch(r"#[0-9a-fA-F]{6}", c) for c in v):
+                probs.append(f"team {name}: `{k}` as a ramp needs 2 to 8 colours written like \"#a0b1c2\"")
+        elif v not in cloth:
+            near = difflib.get_close_matches(str(v), list(cloth), 1)
+            probs.append(f"team {name}: `{k}` {v!r} is not in palette.cloth" + (f" — did you mean {near[0]!r}?" if near else ""))
+    return probs
+
+
+def with_team(tf: TypeFile, team: str | dict) -> TypeFile:
+    """The same character in a team's colours. The team is applied AFTER the
+    character is decided, so the type hash (and with it every random stream)
+    stays the role's own: a goblin keeps its face in every clan."""
+    spec = teams()[team] if isinstance(team, str) else team
+    data = json.loads(json.dumps(tf.data))
+    cloth = data.setdefault("palette", {}).setdefault("cloth", {})
+    probs = validate_team(spec.get("name", "team"), spec, cloth)
+    if probs:
+        raise TypeFileError(probs, tf.source)
+    t = {"name": spec.get("name", "team"), "label": spec.get("label", spec.get("name", "team"))}
+    for k in ("a", "b"):
+        v = spec[k]
+        if isinstance(v, list):
+            key = f"team_{t['name']}_{k}"
+            cloth[key] = v
+            v = key
+        t[k] = v
+    data["team"] = t
+    return TypeFile(data, tf.type_hash, f"{tf.source}+team:{t['name']}")
 
 
 def compose(base_id: str, overlay_id: str) -> TypeFile:

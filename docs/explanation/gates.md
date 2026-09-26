@@ -7,7 +7,7 @@ PixelGoblin ports the self-checking discipline from SPIRE (Shibbieness / M MAOU 
 | SPIRE rule | Here |
 |---|---|
 | Plan gates (G) and build gates (B) are separate namespaces | `tests/gate.py`; each B declares the Gs it covers |
-| A gate must be able to fail | `tests/falsify.py`: 34 mutations, each naming the gate that must catch it |
+| A gate must be able to fail | `tests/falsify.py`: 43 mutations, each naming the gate that must catch it |
 | Restore on start (SIGKILL cannot be caught) | `falsify.py` restores `.falsify_backup/` before doing anything |
 | No assertion over an empty population | `Check.population()`; every absence check builds a control first |
 | Counts are derived, never typed | `tests/FLOOR.json` ratchet; lowering needs a witness and a reason |
@@ -49,6 +49,9 @@ PixelGoblin ports the self-checking discipline from SPIRE (Shibbieness / M MAOU 
 | B15 | brood inherits from both parents; count ratchet | G24 |
 | B16 | characters: every feature is on the LOD ladder, two legs at every tier for every role (with three-leg and merged-leg controls), era colour budgets, coherence floors, the chibi rule, the rim on dark ground | G25 |
 | B17 | scenes are deterministic and keyed to their role files, every Warren room is reachable, names are seeds, `_add` appends, overlays keep the role, GIFs keep every frame, cards show six tiers | G26 |
+| B18 | views: orthographic agreement (heights, widths, depths), the model's front against the drawing, faces hidden from behind, a full turn returns to the front, the side walk moves in depth | G27 |
+| B19 | city: deterministic census, adding or removing a citizen changes nobody else, children inherit from their parents, households share subspecies and clan, the village holds its bands | G28 |
+| B20 | 8 px icons are unique, 8-bit eyes use the outline colour, data items draw, clans keep the type hash, riders sit on mounts, zoom sizes, props gain detail with size | G29 |
 
 —Shibbieness
 —Claude

@@ -9,7 +9,7 @@ Type files are TOML. Every field is a whole number, text, true/false, a list or 
 | `schema` | yes | `"pixelgoblin/type@1"` |
 | `id` | yes | dotted name, unique, no spaces |
 | `tag` | yes | dotted tag; its root must be in `types/tags.toml` |
-| `generator` | yes | `mask`, `lsystem`, `parallax`, `autotile`, `uikit`, `rig`, `scene`, `warren` |
+| `generator` | yes | `mask`, `lsystem`, `parallax`, `autotile`, `uikit`, `rig`, `beast`, `scene`, `warren` |
 | `license` | yes | the licence of the **sprites** this file makes |
 | `size` | yes | `[width, height]`, 4 to 512 (to 2048 for `scene` and `parallax`). For a `rig` it is the largest tier it may be drawn at; for a `warren` it is the map in tiles |
 | `extends` | no | id of a parent type; tables merge, lists replace, and a key ending in `_add` (for example `accessories_add`) appends to the parent's list |
@@ -76,6 +76,37 @@ Vocabulary (a misspelling is refused with a "did you mean"):
 | `back` | `none`, `backpack`, `quiver`, `cape`, `big_pack`, `fur` |
 | accessories | `beard`, `necklace`, `earrings`, `glasses`, `goggles`, `scarf`, `pauldrons`, `belt`, `pouches`, `bracers`, `tusks`, `fins`, `tattoo` |
 | `expression` | `neutral`, `happy`, `curious`, `confident`, `thoughtful`, `annoyed`, `angry`, `surprised`, `playful` |
+
+### Items written as data (`[items.<name>]`)
+
+A rig type can add held items without code. Each item is a list of shapes in hundredths of the item scale (which follows head size), relative to the hand. x is mirrored for the left hand.
+
+| Key | Meaning |
+|---|---|
+| `shape` | `E` ellipse `[cx, cy, rx, ry]`, `R` rounded box `[x0, y0, x1, y1, radius]`, `C` capsule `[x0, y0, x1, y1, r]`, `T` triangle `[x0, y0, x1, y1, x2, y2]`, `A` ring `[cx, cy, rx, ry, thickness, half]` |
+| `at` | the numbers above, whole numbers |
+| `mat` | a material: `wood`, `metal`, `cloth_a`, `leather`... |
+| `layer` | stacks shapes (0 is the item's base) |
+| `feat` | its rung on the LOD ladder: `held` (16 px) or `held.large` (8 px) |
+| `snap` | `true` keeps it at least one pixel thick at every tier |
+
+Name the item in `[role] held` or `offhand` like a built-in one. The miner's pickaxe and the fisher's rod are examples.
+
+### Signatures
+
+`[role] signature = "held"` (or `headwear`, `back`, `beard`, `top`) names the one feature drawn even at 8 px, snapped to a pixel and on top. Without it, the signature is the first of: held item, headwear, back item, beard, top. Its colours are also the last to merge in a small era palette.
+
+## `beast` — mounts, built as solids
+
+`[beast]`: `kind` (`boar` or `wolf`); ranges `length`, `height`, `girth`, `head`, `snout`, `ear`, `tail`; `tusk_chance` and `saddle_chance` (%); lists `coat` (from `palette.hair`), `iris` (from `palette.iris`), `blanket` (from `palette.cloth`). `palette.materials` needs `fur`, `skin`, `mouth`, `eye_white`, `teeth`, `hoof`, `leather` and `metal`. A beast is drawn in a cube twice the goblin's, so a rider fits on top at the same scale (`pixelgoblin ride`).
+
+## Clans (`*.teams.toml`, schema `pixelgoblin/teams@1`)
+
+`[teams.<name>]`: `label`, and `a` and `b` for the two cloth colours. Each is a name from `palette.cloth` or a new ramp of 2 to 8 colours. A clan changes only the clothes, after the character is decided, so the type hash and every random stream stay the role's own.
+
+## Cities (`*.city.toml`, schema `pixelgoblin/city@1`)
+
+`scene` (a scene id), `clans` (a list of team names), `[census]` (job weights for grown citizens), `[children]`, `[elders]`, `[subspecies]` and `[bands]` (weights). A names file beside it (`*.names.txt`) is the default population. See `docs/howto/build-a-city.md`.
 
 ## `scene` — a place with its people
 

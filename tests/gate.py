@@ -136,7 +136,7 @@ def expected_size(tf) -> tuple[int, int]:
     """What `size` means depends on the generator: pixels for most; for a rig the
     largest tier it may be drawn at (frames come out at its default tier); for a
     Warren, the map in tiles."""
-    if tf.generator == "rig":
+    if tf.generator in ("rig", "beast"):
         t = tf.data.get("tier", 64)
         return t, t
     if tf.generator == "warren":
@@ -558,7 +558,7 @@ def _repo_files() -> list[Path]:
             and p.suffix not in (".png", ".gif")]
 
 
-@gate("B13", "cross-language parity (JavaScript editor core, rig, scene)", ["G20"])
+@gate("B13", "cross-language parity (JavaScript: core, rig, views, beasts, city)", ["G20"])
 def b13(c: Check):
     sys.path.insert(0, str(ROOT / "tools"))
     import build_editor
@@ -610,6 +610,39 @@ def b13(c: Check):
                 cases.append({"type": tf.data, "seed": str(s)})
                 want.append({"type_hash": tf.type_hash, "hashes": [f.pixel_hash() for f in gen.frames(tf, s)],
                              "share": sharecode.encode(tf.type_hash, s)})
+    # views, beasts, riders, zoom, clans and a whole city
+    from pixelgoblin import cards, city
+    from pixelgoblin.gen import beast, rig3d
+    teams = typefile.teams()
+    for i, rid in enumerate(["blacksmith", "guard", "shaman", "scout", "miner", "fisher", "chiefs_consort", "musician"]):
+        tf = typefile.load("boc.goblin." + rid)
+        team = sorted(teams)[i % len(teams)] if i % 2 else None
+        t2 = typefile.with_team(tf, team) if team else tf
+        g = rig.genome(t2.data, rig.streams_for(t2, i + 3))
+        views = [["front", 32, None, None, {}], ["side_right", 32, None, None, {"stride": 2}], ["iso_sw", 64, None, None, {}],
+                 ["top", 16, None, None, {}], ["front", 64, 123, 17, {}], ["back", 64, None, None, {}]]
+        cases.append({"kind": "view", "type": types[tf.id], "team": team, "seed": i + 3, "views": views})
+        want.append({"hashes": [rig3d.render_view(t2.data, g, tt, v, y, p, pose=ps).pixel_hash() for v, tt, y, p, ps in views]})
+    for bid in ("boc.mount.boar", "boc.mount.wolf"):
+        tf = typefile.load(bid)
+        bg = beast.genome(tf.data, beast.streams_for(tf, 2))
+        views = [["side_right", 64, {}], ["iso_sw", 32, {"stride": 1}], ["front", 32, {}]]
+        cases.append({"kind": "beast", "type": types[bid], "seed": 2, "views": views})
+        want.append({"genome": bg, "hashes": [beast.render(tf.data, bg, tt, v, pose=ps).pixel_hash() for v, tt, ps in views]})
+    rtf, btf = typefile.load("boc.goblin.rider"), typefile.load("boc.mount.boar")
+    cases.append({"kind": "mounted", "type": types[rtf.id], "seed": 2, "beast": types[btf.id], "beast_seed": 1, "views": [["side_right", 64], ["iso_ne", 32]]})
+    want.append({"hashes": [beast.mounted(rtf, 2, btf, 1, tt, v).pixel_hash() for v, tt in (("side_right", 64), ("iso_ne", 32))]})
+    ztf = typefile.load("boc.goblin.shaman")
+    cases.append({"kind": "zoom", "type": ztf.data, "seed": 5, "from": 16, "to": 128, "steps": 9})
+    want.append({"hashes": [f.pixel_hash() for f in cards.zoom(ztf, 5, 16, 128, 9)]})
+    cty = city.load_city("boc.city.goblintown")
+    names = (ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text()
+    people = city.census(cty, city.parse_names(names))
+    img = city.village(cty, people, 1)
+    cases.append({"kind": "city", "city": {k: v for k, v in cty.items() if k != "_hash"}, "names": names, "seed": 1, "sprites": 10})
+    want.append({"people": [[p["name"], p["role"], p["sub"], p["team"], p["household"], p["age_group"], p["band"], p["parents"],
+                             p.get("inherited"), p["outdoors"]] for p in people],
+                 "hashes": [img.pixel_hash()] + [city.sprite(p, 32).pixel_hash() for p in people[:10]]})
     fam_tf = typefile.load("boc.goblin.hunter")
     fam = brood.family(fam_tf, (5, 6, 7, 8), 3)
     cases.append({"kind": "family", "type": fam_tf.data, "founders": [5, 6, 7, 8], "seed": 3})
@@ -617,7 +650,8 @@ def b13(c: Check):
                  + [gen.frames(fam_tf, fam["grandchild"]["seed"], fam["grandchild"]["overrides"])[0].pixel_hash()],
                  "inherited": fam["grandchild"]["inherited"]})
     c.population(len(cases), "parity cases")
-    r = subprocess.run([node, str(ROOT / "editor" / "parity.mjs")], input=json.dumps({"types": types, "cases": cases}),
+    owns = {tf.id: typefile._read_toml(Path(tf.source)) for tf in all_types() if ".sub." in tf.id}
+    r = subprocess.run([node, str(ROOT / "editor" / "parity.mjs")], input=json.dumps({"types": types, "owns": owns, "teams": typefile.teams(), "cases": cases}),
                        capture_output=True, text=True)
     if r.returncode != 0:
         c.ok(False, f"node parity run failed: {r.stderr[-500:]}")
@@ -625,7 +659,7 @@ def b13(c: Check):
     got = json.loads(r.stdout)
     c.ok(len(got) == len(cases), "node answered every case")
     for case, w, o in zip(cases, want, got):
-        name = f"{case['type'].get('id')} seed {case.get('seed')}"
+        name = f"{case['kind'] if 'kind' in case else 'frames'} {case.get('type', {}).get('id', '')} seed {case.get('seed')}"
         for k, v in w.items():
             c.ok(o.get(k) == v, f"JS {k} == Python: {name}")
     c.ok(transpile_rig.main() != transpile_rig.main().replace("F(", "Math.floor(", 1), "control: a changed geometry file is detected as stale", negative=True)
@@ -731,7 +765,7 @@ def b16(c: Check):
     # style-matched 256 px reference. Floors were MEASURED over every role at
     # seed 0 (docs/explanation/tier-chain.md) and set just under the minimum;
     # the averages are the real claim, the minimums catch a broken role.
-    floors = {8: (30, 35, 55, 80), 16: (60, 55, 75, 75), 32: (78, 78, 88, 88), 64: (88, 82, 93, 93), 128: (92, 92, 94, 94)}
+    floors = {8: (30, 35, 55, 75), 16: (60, 55, 75, 75), 32: (78, 78, 88, 88), 64: (88, 82, 93, 93), 128: (92, 92, 94, 94)}
     sample = rigs[::3]
     got = {t: [] for t in floors}
     for tf in sample:
@@ -815,6 +849,150 @@ def b17(c: Check):
     c.ok(spr.w > 256 and len(info["chain"]) == 6, "the character card shows six tiers")
 
 
+@gate("B18", "views: one lifted model, seen from anywhere", ["G27"])
+def b18(c: Check):
+    from pixelgoblin.gen import rig, rig3d
+    roles = [t for t in all_types() if t.generator == "rig" and ".sub." not in t.id and t.data.get("label")]
+    c.population(len(roles), "rig roles")
+    ious, mats = [], []
+    for tf in roles[::3]:
+        g = rig.genome(tf.data, rig.streams_for(tf, 0))
+        o = rig3d.orthographic_check(tf.data, g, 32)
+        c.ok(o["heights_agree"] and o["widths_agree"] and o["depths_agree"],
+             f"{tf.id}: front/side share heights, front/top widths, side/top depths ({o['front']}, {o['side']}, {o['top']})")
+        fa = rig3d.front_agreement(tf.data, g, 32)
+        ious.append(fa["iou"])
+        mats.append(fa["material"])
+        c.ok(fa["iou"] >= 90 and fa["material"] >= 75, f"{tf.id}: the model's front reproduces the drawing (iou {fa['iou']}, material {fa['material']})")
+    c.ok(sum(ious) // len(ious) >= 95 and sum(mats) // len(mats) >= 88, f"average front agreement iou {sum(ious) // len(ious)} (>= 95), material {sum(mats) // len(mats)} (>= 88)")
+    c.ok(not rig3d.views_agree((0, 9, 2, 30), (3, 20, 2, 31), (0, 9, 3, 20), 32)["heights_agree"], "control: a side view one row taller is caught", negative=True)
+    c.ok(not rig3d.views_agree((0, 9, 2, 30), (3, 20, 2, 30), (0, 9, 4, 20), 32)["depths_agree"], "control: a top view one row shallower is caught", negative=True)
+    tf = typefile.load("boc.goblin.blacksmith")
+    g = rig.genome(tf.data, rig.streams_for(tf, 7))
+    a, b = rig3d.render_view(tf.data, g, 32, "iso_sw"), rig3d.render_view(tf.data, g, 32, "iso_sw")
+    c.ok(a.pixel_hash() == b.pixel_hash(), "views are deterministic")
+    c.ok(rig3d.render_view(tf.data, g, 32, yaw=360, pitch=0).pixel_hash() == rig3d.render_view(tf.data, g, 32, "front").pixel_hash(), "a full turn is the front again")
+    c.ok((a.w, a.h) == (32, rig3d.canvas_size(32, 30)[1]) and a.h > 32, "a tilted view is taller than wide, so a standing character fits")
+    bald = dict(g, hair="none", headwear="none", back="none", accessories=[])  # nothing behind the head to hide a mistake
+    front = rig3d.render_view(tf.data, bald, 64, "front", want_map=True)[1]
+    back = rig3d.render_view(tf.data, bald, 64, "back", want_map=True)[1]
+    c.ok("iris" in front and "iris" not in back, "eyes are painted on the front of a bald head: seen from behind they are hidden")
+    c.ok(rig3d.render_view(tf.data, g, 64, "back").pixel_hash() != rig3d.render_view(tf.data, g, 64, "front").pixel_hash(), "control: the back is not the front", negative=True)
+    walk = [rig3d.render_view(tf.data, g, 32, "side_right", pose=p).pixel_hash() for p in ({"stride": 2}, {"stride": -2})]
+    c.ok(walk[0] != walk[1], "the side walk cycle moves the legs in depth")
+    for name in rig3d.VIEWS:
+        s = rig3d.render_view(tf.data, g, 32, name)
+        c.ok(s.used_colors() > 0, f"view {name} draws the character")
+
+
+@gate("B19", "city: a population from a list of names", ["G28"])
+def b19(c: Check):
+    from pixelgoblin import city
+    cty = city.load_city("boc.city.goblintown")
+    text = (ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text()
+    names = city.parse_names(text)
+    c.population(len(names), "citizens")
+    a, b = city.census(cty, names), city.census(cty, names)
+    c.ok(city.public(a) == city.public(b), "the census is deterministic")
+    key = lambda ps: {p["name"]: (p["role"], p["sub"], p["team"], p["band"], p["seed"]) for p in ps}
+    base = key(a)
+    more = key(city.census(cty, names + city.parse_names("Zorbo Newcomer : trader")))
+    c.ok(all(more[n] == v for n, v in base.items()), "adding a citizen changes nobody else")
+    singles = [n for n in names if sum(1 for m in names if m["household"] == n["household"]) == 1]
+    c.population(len(singles), "people living alone")
+    fewer = key(city.census(cty, [n for n in names if n is not singles[0]]))
+    c.ok(all(fewer[n] == v for n, v in base.items() if n != singles[0]["name"]), "removing a citizen changes nobody else")
+    kids = [p for p in a if p["parents"]]
+    c.population(len(kids), "children with parents")
+    for p in kids:
+        c.ok(len(p["parents"]) == 2 and set(p["overrides"]) | {k for k, v in p["inherited"].items() if v == "mutation"} == set(city.INHERITED),
+             f"{p['name']} inherits face, hair and build from {p['parents']}")
+    houses = {}
+    for p in a:
+        houses.setdefault(p["household"], set()).add((p["sub"], p["team"]))
+    c.ok(all(len(v) == 1 for v in houses.values()), "a household shares a subspecies and a clan")
+    c.ok(any(p["team"] == "ashfang" for p in a if p["household"] == "Ashfang"), "a household named after a clan belongs to it")
+    parsed = city.parse_names("Nib Reedwhistle (child)\nGrub : miner")
+    c.ok(parsed[0]["tag"] == "child" and parsed[1]["role"] == "miner" and parsed[1]["household"] == "Grub", "the names list reads tags and pinned jobs")
+    c.ok(city.parse_names("Nib Reedwhistle")[0]["tag"] is None, "control: no tag unless written", negative=True)
+    img = city.village(cty, a, 1)
+    out = sum(p["outdoors"] for p in a)
+    c.ok(0 < out <= sum(b["count"] for b in typefile.load(cty["scene"]).data["crowd"]) and img.used_colors() > 0,
+         f"{out} citizens drawn in the village, the rest indoors")
+
+
+@gate("B20", "signatures, items as data, clans, mounts, zoom, props", ["G29"])
+def b20(c: Check):
+    from pixelgoblin import cards
+    from pixelgoblin.gen import beast, rig, scene
+    roles = [typefile.load(p) for p in typefile.type_files(ROOT / "flavors" / "boc" / "village" / "roles")]
+    c.population(len(roles), "roles")
+    # every role's 8 px icon differs from every other's
+    worst = 64
+    for seed in (0, 1, 2):
+        ims = []
+        for tf in roles:
+            s = rig.render(tf.data, rig.genome(tf.data, rig.streams_for(tf, seed)), 8)[0]
+            ims.append([s.palette[i] if i else None for i in s.px])
+        for i in range(len(ims)):
+            for j in range(i + 1, len(ims)):
+                worst = min(worst, sum(1 for p, q in zip(ims[i], ims[j]) if p != q))
+    c.ok(worst >= 4, f"no two roles share an 8 px icon: at least {worst} of 64 pixels differ (floor 4)")
+    c.ok(sum(1 for p, q in zip(ims[0], ims[0]) if p != q) == 0, "control: an icon compared with itself differs nowhere", negative=True)
+    smith = typefile.load("boc.goblin.blacksmith")
+    gs = rig.genome(smith.data, rig.streams_for(smith, 3))
+    c.ok(rig.signature(smith.data, gs) == "held" and rig.signature(smith.data, dict(gs, held="none")) != "held", "a role's signature is what sets it apart")
+    # 8-bit eyes use the outline colour, so they survive three colours
+    spr, _, mats, _ = rig.render(smith.data, gs, 64, "8-bit", want_map=True)
+    eyes = [i for i, m in enumerate(mats) if m == "iris"]
+    c.population(len(eyes), "eye pixels")
+    c.ok(all(spr.palette[spr.px[i]] == spr.palette[1] for i in eyes), "8-bit eyes are drawn in the outline colour")
+    # items written as data
+    miner = typefile.load("boc.goblin.miner")
+    gm = rig.genome(miner.data, rig.streams_for(miner, 1))
+    c.ok(gm["held"] == "pickaxe" and "held_spec" in gm, "the miner's pickaxe comes from its type file, not from code")
+    c.ok("held.large" in rig.render(miner.data, gm, 64)[1], "a data item draws like a built-in one")
+    bad = json.loads(json.dumps(miner.data))
+    bad["items"]["pickaxe"]["shapes"][0]["mat"] = "woood"
+    c.ok(any("did you mean 'wood'" in p for p in typefile.validate(bad)), "control: a misspelled item material is refused with a suggestion", negative=True)
+    # clans change clothes, never the character
+    t = typefile.with_team(smith, "ashfang")
+    gt = rig.genome(t.data, rig.streams_for(t, 3))
+    c.ok(t.type_hash == smith.type_hash, "a clan keeps the role's type hash (and every random stream)")
+    c.ok({k: v for k, v in gt.items() if k not in ("cloth_a", "cloth_b", "team")} == {k: v for k, v in gs.items() if k not in ("cloth_a", "cloth_b")},
+         "the same face, build and job in clan colours")
+    try:
+        typefile.with_team(smith, {"name": "x", "a": "plaid", "b": "red"})
+        c.ok(False, "control: an unknown clan colour must be refused", negative=True)
+    except typefile.TypeFileError:
+        c.ok(True, "control: an unknown clan colour is refused", negative=True)
+    # mounts and riders
+    boar, rider = typefile.load("boc.mount.boar"), typefile.load("boc.goblin.rider")
+    bg = beast.genome(boar.data, beast.streams_for(boar, 1))
+    c.ok(bg == beast.genome(boar.data, beast.streams_for(boar, 1)), "a beast genome is deterministic")
+    alone = beast.render(boar.data, bg, 64, "side_right")
+    ridden = beast.mounted(rider, 2, boar, 1, 64, "side_right")
+    c.ok(alone.used_colors() > 0 and ridden.pixel_hash() != alone.pixel_hash(), "a rider sits on the mount")
+    top_alone = min(i // 64 for i in range(len(alone.px)) if alone.px[i])
+    top_ridden = min(i // 64 for i in range(len(ridden.px)) if ridden.px[i])
+    c.ok(top_ridden < top_alone, "the rider rises above the mount's back")
+    # zoom
+    fr = cards.zoom(smith, 3, 16, 128, 9)
+    c.ok(len(fr) == 9 and all((f.w, f.h) == (128, 128) for f in fr), "the zoom has every frame at the portrait's size")
+    plan = rig.zoom_plan(16, 128, 9)
+    c.ok(all(plan[i][0] <= plan[i + 1][0] for i in range(8)) and plan[0][0] == 16 and plan[-1][0] == 128, "zoom sizes grow from the crowd tier to the portrait")
+    # props gain detail with size
+    from pixelgoblin.gen.scene import _Canvas, _hut_detail
+    small, big = _Canvas(80, 80), _Canvas(80, 80)
+    for cv in (small, big):
+        cv.ramp("wood", ["#000000", "#111111", "#222222", "#333333", "#444444"])
+        cv.ramp("roof", ["#500000", "#600000", "#700000", "#800000", "#900000"])
+    _hut_detail(small, 40, 60, 10, 20, 1, 5, 6, 5)
+    _hut_detail(big, 40, 60, 40, 20, 1, 5, 6, 5)
+    c.ok(small.spr.used_colors() == 0 and big.spr.used_colors() >= 3, "a hut 10 px wide adds no detail; at 40 px it has planks, a door and shingles")
+    c.ok(scene.PROP_LOD["door"] < scene.PROP_LOD["shingles"], "props have their own detail ladder")
+
+
 # ---------------------------------------------------------------- data
 KNOWN_VECTOR = [124836505, 3156578125, 2270891520, 2401556266, 1551397785, 3265571350]
 KNOWN_DERIVE = "adf503f219d8b52bd2b3f532b882caa2"
@@ -873,6 +1051,8 @@ REQUIRED_DOCS = [
     "docs/explanation/decisions.md",
     "docs/explanation/stack.md",
     "docs/explanation/tier-chain.md",
+    "docs/explanation/views.md",
+    "docs/howto/build-a-city.md",
 ]
 
 

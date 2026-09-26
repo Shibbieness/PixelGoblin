@@ -1,0 +1,30 @@
+# Fisher: works the pool under the waterfalls. Added in session 4; the rod is data.
+schema = "pixelgoblin/type@1"
+id = "boc.goblin.fisher"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin.fisher"
+license = "Proprietary"
+label = "Fisher"
+
+[role]
+age = ["adult", "elder"]
+build = ["slim", "average"]
+top = ["wrap", "vest", "tunic"]
+bottom = ["shorts", "trousers"]
+cloth_a = ["teal", "blue", "green"]
+cloth_b = ["leather"]
+headwear = ["cap", "headscarf", "none"]
+hair = ["short", "ponytail", "none"]
+hair_color = ["black", "white", "brown"]
+held = ["fishing_rod"]
+offhand = ["basket", "none"]
+expression = ["happy", "thoughtful", "neutral"]
+accessories = [{ item = "scarf", chance = 40 }]
+signature = "held"
+
+[items.fishing_rod]
+shapes = [
+  { shape = "C", at = [0, 30, 28, -150, 3], mat = "wood", feat = "held.large", snap = true },
+  { shape = "C", at = [28, -150, 44, -55, 1], mat = "paper", feat = "held", snap = true },
+  { shape = "E", at = [44, -50, 7, 9], mat = "cloth_a", layer = 1, feat = "held" },
+]

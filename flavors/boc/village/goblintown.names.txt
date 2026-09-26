@@ -1,0 +1,38 @@
+# One citizen per line. A shared last name is a household: the first two grown
+# members are parents, later ones their children. ": role" pins a job;
+# "(child)" or "(elder)" says who is young or old.
+Grubnak Ashfang : blacksmith
+Mizzle Ashfang : craftswoman
+Tok Ashfang
+Pip Ashfang
+Old Pell Reedwhistle : elder_scholar
+Nib Reedwhistle
+Sorra Reedwhistle
+Wiggun Reedwhistle
+Brakka Stonejaw : guard
+Hesk Stonejaw
+Durl Stonejaw
+Yarrow Mossfoot : gatherer
+Fenn Mossfoot : hunter
+Tilly Mossfoot
+Quib
+Snaggle
+Morwick : shaman
+Lark Tinwhistle : tinkerer
+Zib Tinwhistle
+Crumb Tinwhistle
+Vessa Gildclaw : trader
+Orm Gildclaw
+Kettle Gildclaw
+Blint Deepdelve : miner
+Ruk Deepdelve : miner
+Pebble Deepdelve
+Nettle
+Gubb : cook
+Skree : scout
+Harrow : rider
+Maddoc Brewbelly : brewer
+Fizz Brewbelly
+Loam Riverreed : fisher
+Wren Riverreed
+Minnow Riverreed

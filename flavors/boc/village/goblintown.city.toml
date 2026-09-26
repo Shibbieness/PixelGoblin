@@ -1,0 +1,54 @@
+# Goblintown: the census a list of names is dealt from. Weights, not quotas:
+# each citizen's role is drawn from their own name's stream.
+schema = "pixelgoblin/city@1"
+id = "boc.city.goblintown"
+scene = "boc.scene.village"
+clans = ["ashfang", "mossback", "tidecaller", "gildhand", "duskveil", "skyrope"]
+
+[census]
+blacksmith = 3
+craftswoman = 3
+trader = 4
+hunter = 3
+gatherer = 4
+guard = 3
+scout = 2
+tinkerer = 2
+brewer = 2
+musician = 2
+cook = 3
+artist = 1
+shaman = 1
+arcanist = 1
+warrior_light = 2
+warrior_heavy = 1
+rider = 1
+assassin = 1
+miner = 3
+fisher = 3
+mother = 2
+father = 2
+
+[children]
+child_boy = 3
+child_girl = 3
+teenager = 2
+
+[elders]
+elder = 3
+elder_scholar = 1
+shaman = 1
+
+[subspecies]
+common = 8
+forest = 2
+river = 2
+cave = 1
+swamp = 1
+mountain = 1
+
+# which depth band of the scene a citizen stands in (far, mid, near)
+[bands]
+far = 4
+mid = 4
+near = 1

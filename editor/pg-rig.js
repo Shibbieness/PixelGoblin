@@ -162,12 +162,16 @@ const PGRig = ((PG) => {
     g.held = _pick(it, get(role, "held", ["none"]));
     g.offhand = _pick(it, get(role, "offhand", ["none"]));
     g.back = _pick(it, get(role, "back", ["none"]));
+    const items = get(data, "items", {});
+    for (const slot of ["held", "offhand"]) if (Object.prototype.hasOwnProperty.call(items, g[slot])) g[slot + "_spec"] = items[g[slot]].shapes;
     const ac = S.rng("g/accessories");
     const acc = [];
     for (const entry of get(role, "accessories", []).concat(get(sp, "accessories", []))) {
       if (ac.chance(get(entry, "chance", 100))) acc.push(entry.item);
     }
     g.accessories = Array.from(new Set(acc)).sort(cmpStr);
+    const team = get(data, "team", null);
+    if (team) { g.cloth_a = team.a; g.cloth_b = team.b; g.team = team.name; }
     return g;
   }
 
@@ -184,13 +188,79 @@ const PGRig = ((PG) => {
     m.iris = pal.iris[g.iris];
     return m;
   }
+  // shapes drawn at tier N: the LOD ladder, the signature promoted to 8 px (rig.visible_shapes)
+  function visibleShapes(data, g, N, pose, styleTier, lodTier, only) {
+    const px = F(D, N), style_px = styleTier ? F(D, styleTier) : null;
+    const sig = signature(data, g), sigs = [sig, sig + ".large"];
+    const shapes = build_shapes(g, px, pose || {}, style_px).filter((sh) => (sigs.includes(sh.feat) ? 8 : get(LOD, sh.feat, 8)) <= (lodTier || N) && (!only || only.includes(sh.feat)));
+    const small = (styleTier || N) < 32;
+    for (const sh of shapes) if (sigs.includes(sh.feat) && small) { sh.snap = true; sh.z += 100; }
+    return { shapes, sigs };
+  }
+  // everything after the raster, shared by the front drawing and every view (rig.finish)
+  function finish(data, g, W, H, N, era, pixMat, shade, depth, rim, sigMats) {
+    const E_ = ERAS[era];
+    const mats = _materials(data, g), names = Object.keys(mats).sort(cmpStr);
+    const pal = [[0, 0, 0, 0], PG.hexToRgba(rim ? get(data.palette, "rim", "#e9e3cf") : get(data.palette, "outline", "#140e10"))];
+    const offs = {}, lens = {};
+    for (const nm of names) { offs[nm] = pal.length; lens[nm] = mats[nm].length; for (const c of mats[nm]) pal.push(PG.hexToRgba(c)); }
+    const spr = new PG.Sprite(W, H, pal);
+    shade = Array.from(shade);
+    if (N >= 32) {
+      const dark = [];
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const m = pixMat[y * W + x];
+        if (m === "") continue;
+        for (const [dx, dy] of [[0, -1], [-1, 0], [1, 0]]) {
+          const xx = x + dx, yy = y + dy;
+          if (xx >= 0 && xx < W && yy >= 0 && yy < H) {
+            const q = pixMat[yy * W + xx];
+            if (q !== "" && depth[yy * W + xx] < depth[y * W + x] && q !== m) { dark.push(y * W + x); break; }
+          }
+        }
+      }
+      for (const i of dark) shade[i] = Math.max(0, shade[i] - 1);
+    }
+    for (let i = 0; i < W * H; i++) {
+      const m = pixMat[i];
+      if (m !== "") {
+        spr.px[i] = offs[m] + Math.min(shade[i], lens[m] - 1);
+        if (era === "8-bit" && (m === "iris" || m === "mouth")) spr.px[i] = 1;
+      }
+    }
+    if (N >= 16) {
+      const rings = N >= 256 ? 2 : 1;
+      const selout = E_.outline === "selout" && N >= 32 && !rim;
+      const filled = Array.from(pixMat, (m) => m !== "");
+      for (let ring = 0; ring < rings; ring++) {
+        const marks = [];
+        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+          if (filled[y * W + x]) continue;
+          for (const [dx, dy] of [[0, -1], [-1, 0], [1, 0], [0, 1]]) {
+            const xx = x + dx, yy = y + dy;
+            if (xx >= 0 && xx < W && yy >= 0 && yy < H && filled[yy * W + xx]) {
+              const m = pixMat[yy * W + xx];
+              let idx = 1;
+              if (selout && ring === 0 && m !== "") idx = offs[m];
+              marks.push([y * W + x, idx]);
+              break;
+            }
+          }
+        }
+        for (const [i, idx] of marks) { spr.px[i] = idx; filled[i] = true; }
+      }
+    }
+    const heavy = new Set();
+    for (const nm of ["iris"].concat(sigMats || [])) if (nm in offs) for (let k = 0; k < lens[nm]; k++) heavy.add(offs[nm] + k);
+    _eraReduce(spr, E_.max_colors, era === "8-bit", heavy);
+    return spr;
+  }
   function render(data, g, tier, opts = {}) {
     const era = opts.era || get(DEFAULT_CHAIN, tier, "hd");
     const E_ = ERAS[era];
     const N = tier, px = F(D, N);
-    const styleTier = opts.style_tier || null, lodTier = opts.lod_tier || N, only = opts.only_feats || null, rim = !!opts.rim;
-    const style_px = styleTier ? F(D, styleTier) : null;
-    const shapes = build_shapes(g, px, opts.pose || {}, style_px).filter((sh) => get(LOD, sh.feat, 8) <= lodTier && (only === null || only.includes(sh.feat)));
+    const vis = visibleShapes(data, g, N, opts.pose, opts.style_tier || null, opts.lod_tier || null, opts.only_feats || null);
+    const shapes = vis.shapes;
     const order = shapes.map((_, i) => i).sort((i, j) => shapes[i].z - shapes[j].z || i - j);
     const owner = new Int32Array(N * N).fill(-1);
     const geo = [];
@@ -211,14 +281,10 @@ const PGRig = ((PG) => {
       sh.bbox = [bx0, by0, bx1, by1];
     }
     const drawn = order.map((i) => shapes[i]);
-    const mats = _materials(data, g);
-    const names = Object.keys(mats).sort(cmpStr);
-    const pal = [[0, 0, 0, 0], PG.hexToRgba(rim ? get(data.palette, "rim", "#e9e3cf") : get(data.palette, "outline", "#140e10"))];
-    const offs = {}, lens = {};
-    for (const nm of names) { offs[nm] = pal.length; lens[nm] = mats[nm].length; for (const c of mats[nm]) pal.push(PG.hexToRgba(c)); }
+    const mats = _materials(data, g), lens = {};
+    for (const k of Object.keys(mats)) lens[k] = mats[k].length;
     const bands = Math.min(TIER_BANDS[N], E_.bands);
     const dither = E_.dither && N >= 128;
-    const spr = new PG.Sprite(N, N, pal);
     const shade = new Int32Array(N * N);
     for (let y = 0; y < N; y++) {
       const v = F((2 * y + 1) * px, 2);
@@ -233,68 +299,23 @@ const PGRig = ((PG) => {
         const ny = Math.max(-1024, Math.min(1024, F((v - F(by0 + by1, 2)) * 1024, hhei)));
         const z = isqrt(Math.max(0, 1024 * 1024 - nx * nx - ny * ny));
         const light = F(-nx * 424 - ny * 566 + z * 707, 1024);
-        const n = lens[sh.mat], mid = F(n - 1, 2);
-        let idx;
-        if (bands === 1) idx = mid;
-        else {
-          const t16 = F((light + 1024) * bands * 16, 2049);
-          let t = dither ? F(t16 + F(BAYER4[y % 4][x % 4] - 8, 2), 16) : F(t16, 16);
-          t = Math.max(0, Math.min(bands - 1, t));
-          const lo = n >= bands ? Math.max(0, Math.min(n - bands, mid - F(bands - 1, 2))) : 0;
-          idx = Math.min(n - 1, lo + t);
-        }
-        idx = Math.max(0, Math.min(n - 1, idx + sh.bias));
-        shade[y * N + x] = idx;
+        shade[y * N + x] = shade_index(light, lens[sh.mat], bands, dither, x, y, sh.bias);
       }
     }
-    if (N >= 32) {
-      const dark = [];
-      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
-        const o = owner[y * N + x];
-        if (o < 0) continue;
-        for (const [dx, dy] of [[0, -1], [-1, 0], [1, 0]]) {
-          const xx = x + dx, yy = y + dy;
-          if (xx >= 0 && xx < N && yy >= 0 && yy < N) {
-            const p = owner[yy * N + xx];
-            if (p > o && drawn[p].mat !== drawn[o].mat) { dark.push(y * N + x); break; }
-          }
-        }
-      }
-      for (const i of dark) shade[i] = Math.max(0, shade[i] - 1);
-    }
-    for (let i = 0; i < N * N; i++) if (owner[i] >= 0) spr.px[i] = offs[drawn[owner[i]].mat] + shade[i];
-    if (N >= 16) {
-      const rings = N >= 256 ? 2 : 1;
-      const selout = E_.outline === "selout" && N >= 32 && !rim;
-      const filled = Array.from(owner, (o) => o >= 0);
-      for (let ring = 0; ring < rings; ring++) {
-        const marks = [];
-        for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
-          if (filled[y * N + x]) continue;
-          for (const [dx, dy] of [[0, -1], [-1, 0], [1, 0], [0, 1]]) {
-            const xx = x + dx, yy = y + dy;
-            if (xx >= 0 && xx < N && yy >= 0 && yy < N && filled[yy * N + xx]) {
-              const o = owner[yy * N + xx];
-              let idx = 1;
-              if (selout && ring === 0 && o >= 0) idx = offs[drawn[o].mat];
-              marks.push([y * N + x, idx]);
-              break;
-            }
-          }
-        }
-        for (const [i, idx] of marks) { spr.px[i] = idx; filled[i] = true; }
-      }
-    }
+    const pixMat = Array.from(owner, (o) => (o >= 0 ? drawn[o].mat : ""));
+    const depth = Array.from(owner, (o) => -o);
+    const sigMats = Array.from(new Set(drawn.filter((sh) => vis.sigs.includes(sh.feat)).map((sh) => sh.mat))).sort(cmpStr);
+    const spr = finish(data, g, N, N, N, era, pixMat, shade, depth, !!opts.rim, sigMats);
     const feats = Array.from(new Set(Array.from(owner).filter((o) => o >= 0).map((o) => drawn[o].feat))).sort(cmpStr);
-    _eraReduce(spr, E_.max_colors, era === "8-bit");
     const out = { sprite: spr, features: feats };
     if (opts.want_map) {
-      out.matmap = Array.from(owner, (o) => (o >= 0 ? drawn[o].mat : ""));
+      out.matmap = pixMat;
       out.featmap = Array.from(owner, (o) => (o >= 0 ? drawn[o].feat : ""));
     }
     return out;
   }
-  function _eraReduce(spr, cap, reserveOutline) {
+  function _eraReduce(spr, cap, reserveOutline, heavy) {
+    heavy = heavy || new Set();
     const counts = new Map();
     for (const i of spr.px) if (i) counts.set(i, (counts.get(i) || 0) + 1);
     const keep = Array.from(counts.keys()).sort((a, b) => a - b);
@@ -313,7 +334,7 @@ const PGRig = ((PG) => {
         if (locked.has(a) && locked.has(b)) continue;
         const ca = spr.palette[a], cb = spr.palette[b];
         const d = 2 * (ca[0] - cb[0]) ** 2 + 4 * (ca[1] - cb[1]) ** 2 + 3 * (ca[2] - cb[2]) ** 2;
-        const cost = d * Math.min(counts.get(a), counts.get(b));
+        const cost = d * Math.min(counts.get(a), counts.get(b)) * (heavy.has(a) || heavy.has(b) ? 8 : 1);
         if (best === null || cost < best[0]) best = [cost, a, b];
       }
       const [, a, b] = best;
@@ -333,7 +354,9 @@ const PGRig = ((PG) => {
     walk: [{ lift_l: 2, swing: 1 }, { bob: 1 }, { lift_r: 2, swing: -1 }, { bob: 1 }],
   };
   const STREAMS = ["g/body", "g/face", "g/hair", "g/outfit", "g/headwear", "g/items", "g/accessories"];
-  const streamsFor = (data, seed, overrides) => new PG.Streams(PG.masterSeed(PG.typeHash(data), seed), overrides);
+  // a team (clan colours) keeps the role's own hash: withTeam stores it, unlisted, in __hash
+  const hashOf = (data) => data.__hash || PG.typeHash(data);
+  const streamsFor = (data, seed, overrides) => new PG.Streams(PG.masterSeed(hashOf(data), seed), overrides);
   function rigFrames(data, seed, overrides, tier, era, anim = "idle") {
     const g = genome(data, streamsFor(data, seed, overrides));
     const t = tier || get(data, "tier", 64);
@@ -432,7 +455,28 @@ const PGRig = ((PG) => {
     }
   }
   const imulU = (a, b) => Math.imul(a, b) >>> 0;
-  function sceneFrames(d, seed, overrides, onCrowd) {
+  const PROP_LOD = { door: 14, planks: 20, window_frame: 20, shingles: 32, scallops: 60, crates: 60 };
+  function hutDetail(cv, px_, py, hw, hh, wd, nwd, rf, nrf) {
+    if (hw >= PROP_LOD.planks) for (let yy = py - hh + 2; yy < py; yy += 3) cv.rect(px_ - F(hw, 2) + 1, yy, px_ + F(hw, 2) - 1, yy + 1, wd + Math.max(0, nwd - 4));
+    if (hw >= PROP_LOD.window_frame) {
+      const y0 = py - F(hh * 6, 10), y1 = py - F(hh * 2, 10);
+      cv.rect(px_ - 2, y0 - 1, px_ + 3, y0, wd); cv.rect(px_ - 2, y1, px_ + 3, y1 + 1, wd);
+      cv.rect(px_ - 2, y0, px_ - 1, y1, wd); cv.rect(px_ + 2, y0, px_ + 3, y1, wd);
+    }
+    if (hw >= PROP_LOD.door) { const dx = px_ + F(hw, 4); cv.rect(dx, py - F(hh * 55, 100), dx + Math.max(2, F(hw, 6)), py, wd + 1); }
+    if (hw >= PROP_LOD.shingles) {
+      const top = py - hh - F(hh * 7, 10);
+      for (let yy = top + 3; yy < py - hh; yy += 3) {
+        const half = F((yy - top) * F(hw * 7, 10), Math.max(1, F(hh * 7, 10)));
+        for (let x = px_ - half + 1; x < px_ + half; x++) if (MOD(x + yy, 4) === 0) cv.put(x, yy, rf + Math.max(0, nrf - 4));
+      }
+    }
+  }
+  function stallDetail(cv, sx, sy, sw, H, aw, wd) {
+    if (sw >= PROP_LOD.scallops) { const yb = sy - F(H, 5) + F(H, 40); for (let x = sx - 2; x < sx + sw + 2; x++) if (MOD(x - sx, 4) < 2) cv.put(x, yb, aw + 1); }
+    if (sw >= PROP_LOD.crates) for (let k = 0; k < F(sw, 12); k++) { const cx = sx + 3 + k * 12; cv.rect(cx, sy - 5, cx + 5, sy - 1, wd + 2); cv.rect(cx, sy - 5, cx + 5, sy - 4, wd + 3); }
+  }
+  function sceneFrames(d, seed, overrides, onCrowd, population) {
     const [W, H] = d.size;
     const S = new PG.Streams(PG.masterSeed(sceneIdentity(d), seed), overrides);
     const P = d.palette, cv = new Canvas(W, H);
@@ -498,6 +542,7 @@ const PGRig = ((PG) => {
       cv.tri(px_ - F(hw * 7, 10), py - hh, px_ + F(hw * 7, 10), py - hh, px_, py - hh - F(hh * 7, 10), rf + P.roof.length - 2);
       cv.tri(px_ - F(hw * 7, 10), py - hh, px_, py - hh, px_, py - hh - F(hh * 7, 10), rf + P.roof.length - 3);
       cv.rect(px_ - 1, py - F(hh * 6, 10), px_ + 2, py - F(hh * 2, 10), gl + ng - 2);
+      hutDetail(cv, px_, py, hw, hh, wd, nwd, rf, P.roof.length);
       const lx = px_ + F(pw, 2) - 1;
       cv.put(lx, py - 3, wd);
       cv.ellipse(lx, py - 1, 1, 1, gl + ng - 1);
@@ -542,18 +587,30 @@ const PGRig = ((PG) => {
         cv.put(sx + 2 + k * 3, sy - 1, gl + ng - 2);
       }
       cv.ellipse(sx + F(sw, 2), sy - F(H, 5) + F(H, 20), 1, 2, gl + ng - 1);
+      stallDetail(cv, sx, sy, sw, H, aw, wd);
     }
     for (const band of d.crowd) {
       const rc = S.rng("crowd/" + band.name), tier = band.tier;
       const yLo = F(H * band.y[0], 100), yHi = F(H * band.y[1], 100);
       const placed = [];
       let pool = [];
-      for (let k = 0; k < band.count; k++) {
-        if (!pool.length) pool = band.roles.slice();
-        const role = pool.splice(rc.below(pool.length), 1)[0];
-        const cdata = resolve(role);
-        const cseed = rc.next();
-        const g = genome(cdata, streamsFor(cdata, cseed));
+      const people = population ? population.filter((p) => p.band === band.name) : null;
+      for (let k = 0; k < (people ? people.length : band.count); k++) {
+        let role, cdata, cseed, over = null;
+        if (!people) {
+          if (!pool.length) pool = band.roles.slice();
+          role = pool.splice(rc.below(pool.length), 1)[0];
+          cdata = resolve(role);
+          cseed = rc.next();
+        } else {
+          const who = people[k];
+          role = who.role;
+          cdata = who.sub ? composeId(who.role, who.sub) : resolve(who.role);
+          if (who.team) cdata = withTeam(cdata, who.team);
+          cseed = who.seed;
+          over = who.overrides || null;
+        }
+        const g = genome(cdata, streamsFor(cdata, cseed, over));
         const spr = render(cdata, g, tier, { era: band.era }).sprite;
         let x, y;
         if (band.on === "platforms" && plats.length) {
@@ -564,12 +621,12 @@ const PGRig = ((PG) => {
           x = rc.below(Math.max(1, W - F(tier, 2))) - F(tier, 4);
           y = yLo + rc.below(Math.max(1, yHi - yLo + 1)) - tier;
         }
-        placed.push([y, x, spr, role, cseed]);
+        placed.push([y, x, spr, role, cseed, people ? people[k] : null]);
       }
       placed.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-      for (const [y, x, spr, role, cseed] of placed) {
+      for (const [y, x, spr, role, cseed, who] of placed) {
         blit(cv.spr, spr, x, y);
-        if (onCrowd) onCrowd({ role, seed: cseed, tier, x, y, band: band.name });
+        if (onCrowd) onCrowd({ role, seed: cseed, tier, x, y, band: band.name, who });
       }
     }
     return [cv.spr];
@@ -615,10 +672,219 @@ const PGRig = ((PG) => {
       grandchild: { seed: grand, parents: [kid1, kid2], inherited: gRec, overrides: gOver } };
   }
 
+
+  // ---------------------------------------------------------------- teams and overlays by id
+  let teamTable = {}, ownTable = {};
+  function setTables(teams, owns) { teamTable = teams || {}; ownTable = owns || {}; }
+  function composeId(roleId, subId) { return compose(resolve(roleId), ownTable[subId], subId); }
+  function withTeam(data, team) {
+    const spec = typeof team === "string" ? teamTable[team] : team;
+    if (!spec) throw new Error("unknown team " + team);
+    const base = hashOf(data);
+    const out = JSON.parse(JSON.stringify(data));
+    const cloth = out.palette.cloth;
+    const t = { name: spec.name, label: spec.label || spec.name };
+    for (const k of ["a", "b"]) {
+      let v = spec[k];
+      if (Array.isArray(v)) { const key = "team_" + t.name + "_" + k; cloth[key] = v; v = key; }
+      t[k] = v;
+    }
+    out.team = t;
+    Object.defineProperty(out, "__hash", { value: base, enumerable: false });
+    return out;
+  }
+
+  // ---------------------------------------------------------------- views (rig3d)
+  const VIEWS = { front: [0, 0], back: [180, 0], side_left: [90, 0], side_right: [270, 0], iso_sw: [45, 30], iso_se: [315, 30],
+    iso_nw: [135, 30], iso_ne: [225, 30], top: [0, 90], three_quarter: [0, 45] };
+  const gridCache = new Map();
+  function model(data, g, tier, pose, extent) {
+    extent = extent || D;
+    const vis = visibleShapes(data, g, F(tier * D, extent), pose, null, null, null);
+    const [solids, decals] = lift(vis.shapes, g, F(extent, tier), pose || {});
+    return { solids, decals, sigs: vis.sigs };
+  }
+  function gridFor(solids, n, extent) {
+    const key = n + ":" + extent + ":" + JSON.stringify(solids.map((s) => [s.k, s.a, s.a2, s.layer, s.idx]));
+    let hit = gridCache.get(key);
+    if (!hit) {
+      if (gridCache.size > 24) gridCache.clear();
+      const grid = voxelize(solids, n, extent);
+      hit = { grid, box: occupied_box(grid, n) };
+      gridCache.set(key, hit);
+    }
+    return hit;
+  }
+  function renderView(data, g, tier, o = {}) {
+    const extent = o.extent || D;
+    const base = VIEWS[o.view || "front"];
+    const yaw = o.yaw === undefined || o.yaw === null ? base[0] : o.yaw;
+    const pitch = o.pitch === undefined || o.pitch === null ? base[1] : o.pitch;
+    const era = o.era || get(DEFAULT_CHAIN, tier, "hd");
+    let solids = o.solids, decals = o.decals, sigs = o.sigs || [];
+    if (!solids) { const m = model(data, g, tier, o.pose, extent); solids = m.solids; decals = m.decals; sigs = m.sigs; }
+    const { grid, box } = gridFor(solids, tier, extent);
+    const [W, H, hit, vox, dist] = trace(grid, tier, extent, yaw, pitch, box);
+    const E_ = ERAS[era], mats = _materials(data, g), lens = {};
+    for (const k of Object.keys(mats)) lens[k] = mats[k].length;
+    const [pixMat, shade] = paint(solids, decals, hit, vox, dist, W, H, tier, extent, yaw, pitch, Math.min(TIER_BANDS[tier], E_.bands), E_.dither && tier >= 128, lens);
+    const sigMats = Array.from(new Set(solids.filter((s) => sigs.includes(s.feat)).map((s) => s.mat))).sort(cmpStr);
+    const sprite = finish(data, g, W, H, tier, era, pixMat, shade, dist, !!o.rim, sigMats);
+    return { sprite, pixMat, featmap: Array.from(hit, (m) => (m ? solids[m - 1].feat : "")) };
+  }
+  const VIEW_POSES = { idle: POSES.idle, walk_side: [{ stride: 2 }, { bob: 1 }, { stride: -2 }, { bob: 1 }] };
+
+  // ---------------------------------------------------------------- beasts and riders (beast.py)
+  function beastGenome(data, S) {
+    const bd = get(data, "beast", {});
+    const b = S.rng("b/body");
+    const g = { kind: get(bd, "kind", "boar") };
+    g.length = _rngRange(b, get(bd, "length", [820, 960]));
+    g.height = _rngRange(b, get(bd, "height", [430, 520]));
+    g.girth = _rngRange(b, get(bd, "girth", [150, 190]));
+    const h = S.rng("b/head");
+    g.head = _rngRange(h, get(bd, "head", [120, 150]));
+    g.snout = _rngRange(h, get(bd, "snout", [60, 100]));
+    g.ear = _rngRange(h, get(bd, "ear", [40, 70]));
+    g.tail = _rngRange(h, get(bd, "tail", [60, 120]));
+    g.tusks = h.chance(get(bd, "tusk_chance", 0)) ? 1 : 0;
+    const c = S.rng("b/coat");
+    g.hair_color = _pick(c, get(bd, "coat", ["brown"]), "brown");
+    g.iris = _pick(c, get(bd, "iris", ["amber"]), "amber");
+    const t = S.rng("b/tack");
+    g.cloth_a = _pick(t, get(bd, "blanket", ["red"]), "red");
+    g.cloth_b = "leather";
+    g.saddle = t.chance(get(bd, "saddle_chance", 100)) ? 1 : 0;
+    const team = get(data, "team", null);
+    if (team) { g.cloth_a = team.a; g.team = team.name; }
+    return g;
+  }
+  function beastRender(data, bg, tier, o = {}) {
+    const solids = beast_solids(bg, F(EXT, tier), o.pose || {}, "");
+    return renderView(data, bg, tier, Object.assign({ view: "side_right" }, o, { extent: EXT, solids, decals: [] }));
+  }
+  function mountedData(riderData, beastData, bg) {
+    const data = JSON.parse(JSON.stringify(riderData));
+    const m = _materials(beastData, bg);
+    for (const k of Object.keys(m)) data.palette.materials["beast_" + k] = m[k];
+    return data;
+  }
+  function mounted(riderData, g, beastData, bg, tier, o = {}) {
+    const px = F(EXT, tier);
+    const m = model(riderData, g, tier, o.pose, EXT);
+    const [rider, rdecals] = seat_rider(m.solids, m.decals, bg, px);
+    const both = beast_solids(bg, px, o.pose || {}, "beast_").concat(rider);
+    both.sort((a, b) => a.layer - b.layer || (a.group === 0) - (b.group === 0) || a.idx - b.idx);
+    return renderView(mountedData(riderData, beastData, bg), g, tier, Object.assign({ view: "side_right" }, o, { extent: EXT, solids: both, decals: rdecals, sigs: m.sigs }));
+  }
+
+  // ---------------------------------------------------------------- sheets: expressions, teams, zoom (cards.py)
+  function zoomFrames(data, g, fromTier, toTier, steps) {
+    const cache = {};
+    const at = (t) => cache[t] || (cache[t] = render(data, g, t, {}).sprite);
+    return zoom_plan(fromTier, toTier, steps).map(([size, a, b, w]) => {
+      const out = new PG.Sprite(toTier, toTier, [[0, 0, 0, 0]]);
+      const A = at(a), B = at(b);
+      const ox = F(toTier - size, 2), oy = toTier - size;
+      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+        const src = w > BAYER4[y % 4][x % 4] ? B : A;
+        const i = src.px[F(y * src.h, size) * src.w + F(x * src.w, size)];
+        if (i) out.set(ox + x, oy + y, colorIndex(out, src.palette[i]));
+      }
+      return out;
+    });
+  }
+
+  // ---------------------------------------------------------------- city (city.py)
+  function parseNames(text) {
+    const out = [];
+    for (let line of text.split(/\r?\n/)) {
+      line = line.split("#")[0].trim();
+      if (!line) continue;
+      let role = null, tag = null;
+      const ci = line.indexOf(":");
+      if (ci >= 0) { role = line.slice(ci + 1).trim(); line = line.slice(0, ci).trim(); }
+      const m = line.match(/\((child|elder|adult)\)\s*$/);
+      if (m) { tag = m[1]; line = line.slice(0, m.index).trim(); }
+      const name = line.split(/\s+/).join(" ");
+      const words = name.split(" ");
+      out.push({ name, household: words.length > 1 ? words[words.length - 1] : name, role, tag });
+    }
+    return out;
+  }
+  const weighted = (rng, table) => { const keys = Object.keys(table).sort(cmpStr); return keys[rng.weighted(keys.map((k) => table[k]))]; };
+  function cityHash(city) { return PG.hex(PG.sha256(new TextEncoder().encode(PG.canonical(city)))); }
+  function citizenType(p) {
+    let data = p.sub ? composeId(p.role, "boc.goblin.sub." + p.sub) : resolve(p.role);
+    if (p.team) data = withTeam(data, p.team);
+    return data;
+  }
+  function census(city, names) {
+    const ch = cityHash(city), ns = get(city, "role_prefix", "boc.goblin.");
+    const houses = {}, people = [];
+    for (const n of names) {
+      const seed = seedFromName(n.name);
+      const S = new PG.Streams(PG.masterSeed(ch, seed));
+      const house = houses[n.household] || (houses[n.household] = []);
+      const H = new PG.Streams(PG.masterSeed(ch, seedFromName("house:" + n.household)));
+      const grown = house.filter((p) => p.age_group !== "child");
+      const tag = n.tag || (grown.length >= 2 ? "child" : "adult");
+      let role;
+      if (n.role) role = n.role;
+      else if (tag === "child") role = weighted(S.rng("city/role"), get(city, "children", { child_boy: 1, child_girl: 1 }));
+      else if (tag === "elder") role = weighted(S.rng("city/role"), get(city, "elders", { elder: 1 }));
+      else role = weighted(S.rng("city/role"), city.census);
+      const sub = weighted(H.rng("city/sub"), get(city, "subspecies", { common: 1 }));
+      const clans = get(city, "clans", []);
+      let team = clans.length ? clans[H.rng("city/clan").below(clans.length)] : null;
+      for (const c of clans) if (c.toLowerCase() === n.household.toLowerCase()) team = c;
+      const p = { name: n.name, seed, role: role.includes(".") ? role : ns + role, sub: sub === "common" ? null : sub, team,
+        household: n.household, age_group: tag, parents: [], band: weighted(S.rng("city/band"), get(city, "bands", { far: 3, mid: 4, near: 1 })) };
+      if (tag === "child" && grown.length >= 2) {
+        const [pa, pb] = grown;
+        p.parents = [pa.name, pb.name];
+        const pick = S.rng("city/inherit"), over = {}, record = {};
+        for (const path of ["g/body", "g/face", "g/hair"]) {
+          const r = pick.below(100);
+          if (r < 10) { record[path] = "mutation"; continue; }
+          const src = r % 2 === 0 ? pa : pb;
+          over[path] = streamsFor(citizenType(src), src.seed, src.overrides || null).seed(path);
+          record[path] = src.name;
+        }
+        p.overrides = over;
+        p.inherited = record;
+      }
+      house.push(p);
+      people.push(p);
+    }
+    return people;
+  }
+  function citizenSprite(p, tier, era) {
+    const data = citizenType(p);
+    const g = genome(data, streamsFor(data, p.seed, p.overrides || null));
+    return render(data, g, tier, { era }).sprite;
+  }
+  function cityVillage(city, people, seed, onCrowd) {
+    const sc = resolve(city.scene);
+    const cap = {};
+    for (const b of sc.crowd) cap[b.name] = b.count;
+    const shown = [];
+    for (const p of people) {
+      if ((cap[p.band] || 0) > 0) {
+        cap[p.band] -= 1;
+        shown.push({ role: p.role, seed: p.seed, band: p.band, overrides: p.overrides || null, sub: p.sub ? "boc.goblin.sub." + p.sub : null, team: p.team, name: p.name });
+        p.outdoors = true;
+      } else p.outdoors = false;
+    }
+    return sceneFrames(sc, seed, null, onCrowd, shown)[0];
+  }
+
   PG.register("rig", (data, seed, overrides) => rigFrames(data, seed, overrides), () => STREAMS.slice());
   PG.register("scene", (data, seed, overrides) => sceneFrames(data, seed, overrides),
     (data) => ["clouds", "ridge/0", "ridge/1", "falls", "trees", "platforms", "stalls"].concat(data.crowd.map((b) => "crowd/" + b.name)));
   return { TIERS, LOD, ERAS, DEFAULT_CHAIN, EXPRESSIONS, POSES, genome, render, chain, rigFrames, streamsFor, legsCheck, legCount,
-    ladder, compose, merge, setResolver, sceneFrames, sceneIdentity, seedFromName, lineage, family, F, MOD };
+    ladder, compose, merge, setResolver, sceneFrames, sceneIdentity, seedFromName, lineage, family, F, MOD,
+    VIEWS, VIEW_POSES, model, renderView, signature, zoomFrames, zoom_plan, setTables, withTeam, composeId,
+    beastGenome, beastRender, mounted, EXT, parseNames, census, citizenSprite, cityVillage, cityHash, isin, camera, canvas_size };
 })(PG);
 if (typeof module !== "undefined") module.exports = PGRig;

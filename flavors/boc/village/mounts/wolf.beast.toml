@@ -1,0 +1,54 @@
+# Warg: a long-legged wolf mount for scouts and hunters. Built as 3D solids,
+# so its natural view is the side (a sidescroller) and every other view comes free.
+schema = "pixelgoblin/type@1"
+id = "boc.mount.wolf"
+tag = "creature.beast.wolf"
+generator = "beast"
+license = "Proprietary"
+label = "Warg"
+size = [256, 256]
+tier = 64
+
+[beast]
+kind = "wolf"
+length = [880, 1000]
+height = [520, 600]
+girth = [120, 150]
+head = [110, 135]
+snout = [70, 105]
+ear = [45, 70]
+tail = [60, 110]
+tusk_chance = 0
+coat = ["ash", "bristle", "rust"]
+iris = ["amber"]
+blanket = ["red", "blue", "green", "purple"]
+saddle_chance = 70
+
+[palette]
+outline = "#140e10"
+
+[palette.materials]
+fur = ["#26262a", "#3c3c42", "#56565e", "#76767e", "#9a9aa2"]      # grey hide
+skin = ["#5a3a36", "#7e524a", "#a06a60", "#c28a7e", "#dcaea0"]     # snout
+mouth = ["#1a0e0e", "#2e1818", "#4a2828"]
+eye_white = ["#c8c0a8", "#e0d8c4", "#f4eee0"]
+teeth = ["#b8ae90", "#ddd4b8", "#f4efdc"]
+hoof = ["#140e0c", "#241a16", "#382a24"]
+leather = ["#43220e", "#5d371f", "#754b2f", "#926342", "#c4936d"]
+metal = ["#201f1d", "#504c49", "#5e5a56", "#8c8885", "#b6b4b2"]
+
+[palette.cloth]
+red = ["#4e1310", "#65201a", "#7b2f27", "#974134", "#c46656"]
+blue = ["#1c2c48", "#2a4468", "#34567b", "#5f86b4", "#8fb4df"]
+green = ["#1e3016", "#2f4a20", "#4a6a2e", "#6f8f44", "#9fb86a"]
+purple = ["#351a40", "#503163", "#734b93", "#976baf", "#d0a0e4"]
+leather = ["#43220e", "#5d371f", "#754b2f", "#926342", "#c4936d"]
+
+[palette.hair]
+bristle = ["#120c0a", "#221814", "#34261e", "#4a382c", "#60503e"]
+rust = ["#3a160a", "#5c2610", "#80381a", "#a4522a", "#c47444"]
+ash = ["#2a2826", "#44403c", "#625c56", "#827a72", "#a49a90"]
+
+[palette.iris]
+amber = ["#6a3a08", "#b8700e", "#f0b030"]
+red = ["#5a0a0a", "#a81818", "#e84a3a"]

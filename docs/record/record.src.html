@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>PixelGoblin Build Record</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Silkscreen&display=swap">
@@ -74,7 +75,12 @@ a{color:var(--teal)}
 <nav class="toc" aria-label="Contents">
   <b>Contents</b>
   <a href="#status">Where it stands</a>
-  <a href="#bits">"8-bit to 256-bit", honestly</a>
+  <a href="#s4ask">Session 4: asked and made</a>
+  <a href="#s4views">"Built from each other"</a>
+  <a href="#s4gallery">Session 4 gallery</a>
+  <a href="#s4round">Breaks, fixes, next (round 4)</a>
+  <a href="#s4bugs">Bugs, session 4</a>
+  <a href="#bits">Session 3: "8-bit to 256-bit"</a>
   <a href="#goblins">The goblins</a>
   <a href="#tiers">Tier specs and coherence</a>
   <a href="#round3">Breaks, fixes, additions</a>
@@ -98,10 +104,10 @@ a{color:var(--teal)}
 
 <main>
 <section>
-  <span class="eyebrow">M MAOU LLC · session 3 · {{DATE}} · {{VERSION}}</span>
+  <span class="eyebrow">M MAOU LLC · session 4 · {{DATE}} · {{VERSION}}</span>
   <h1>PixelGoblin Build Record</h1>
-  <p class="lede">Session 1 was the design, and session 2 built the engine. Session 3 turned your two reference pictures into goblins. There are now {{ROLES}} roster roles and {{SUBS}} subspecies, each character drawn from one genome at six resolutions (8, 16, 32, 64, 128 and 256 px), in four era looks. A village fills its background with real characters instead of smudges. And the goblins you already liked now have exactly two legs, with a gate that proves it for every role at every tier.</p>
-  <p>Every count on this page was computed by running the build when this page was made. None were typed in. Sessions 1 and 2 are kept below, with the parts this session changed marked.</p>
+  <p class="lede">Session 4 put the goblins in three dimensions without giving up the drawing. Every character's front drawing is now lifted into one model, which draws the side, the back, four isometric facings, a top-down view and any angle in between, and every view agrees with the others. Goblins ride boars and wargs. A list of names becomes a city of families who look related. And the fixes from last time are in: signatures that keep 8 px icons apart, eyes that survive three colours, items written as data, and huts that gain detail as they grow.</p>
+  <p>Every count on this page was computed by running the build when this page was made. None were typed in. Sessions 1 to 3 are kept below.</p>
 </section>
 
 <section class="wide" id="status">
@@ -115,6 +121,92 @@ a{color:var(--teal)}
     <div class="stat"><b>{{ASSERTS}}</b><span>assertions, one full run</span></div>
   </div>
   <p>The run also passes <code>--from-empty</code>, which copies the repo to a clean folder with a minimal environment and no network.</p>
+</section>
+
+<section id="s4ask">
+  <h2>What you asked for, and what came out</h2>
+  <div class="tbl"><table>
+    <tr><th>You asked</th><th>Now</th><th>Checked by</th></tr>
+    <tr><td>The fixes</td><td>Role signatures at 8 px, protected eye and signature colours, 8-bit eyes in the outline colour, items written as data, caching, and huts and stalls that gain detail with size</td><td>B16, B20</td></tr>
+    <tr><td>Role signatures</td><td>Every role's 8 px icon differs from every other's by at least {{ICON_MIN}} of 64 pixels</td><td>B20</td></tr>
+    <tr><td>Expression sheets</td><td>All nine expressions; only the face changes</td><td>workbench, <code>pixelgoblin expressions</code></td></tr>
+    <tr><td>Team colours</td><td>7 clans; only the clothes change, and the type hash stays the role's own</td><td>B20</td></tr>
+    <tr><td>Mounts</td><td>War boar and warg, built as 3D solids; riders seated astride</td><td>B13, B20</td></tr>
+    <tr><td>Side and back views</td><td>Plus a sidescroller walk that moves the legs in depth</td><td>B18</td></tr>
+    <tr><td>Zoom from crowd to portrait</td><td>Dissolves between chain tiers, growing geometrically</td><td>B20</td></tr>
+    <tr><td>A city from a list of names</td><td>Census, households, inheritance, clans, and the village with everyone in it</td><td>B19</td></tr>
+    <tr><td>Front, sidescroller, isometric (several), top-down, free rotate, built from each other</td><td>One lifted model; ten named views plus any yaw and pitch; the views agree like a draughtsman's</td><td>B18</td></tr>
+  </table></div>
+</section>
+
+<section id="s4views">
+  <h2>"Built from each other", honestly</h2>
+  <p>There are two ways for views to build from each other. One is to <b>carve</b> a model from hand-drawn front, side and top drawings, the way a modeller works from reference sheets. The other is to <b>lift</b> one drawing into a model and draw every view from that model. PixelGoblin's characters are generated, so there is no hand-drawn side view to carve with. It does the second.</p>
+  <p>What your request needs still holds: every view comes from one model, so no view can contradict another. Front and side share heights, front and top share widths, and side and top share depths. Gate B18 checks all three. The one authored drawing, the front, is checked against the model's own front view: across the roles they agree on {{VIEW_IOU}}% of the silhouette and {{VIEW_MAT}}% of the materials.</p>
+  <p>Each part becomes a solid by a depth rule. A head becomes an ellipsoid. Arms and staffs become capsules. Clothes become shells a little deeper than what they wrap. A hood becomes a dome with an opening for the face, and a backpack a box behind the back. Faces, brows and patterns are painted from the front, so they show on a profile and vanish from behind. <code>docs/explanation/views.md</code> has the full table.</p>
+</section>
+
+<section class="wide" id="s4gallery">
+  <h2>Session 4 gallery</h2>
+  <div class="gallery">
+    <figure style="grid-column:1/-1"><img src="{{IMG_views}}" alt="Five goblins, each from ten directions"><figcaption><b>Ten views each</b>: front, side, back, side, four isometric facings, a ¾ top-down camera and straight down. Guard, shaman, scout, chief's consort, miner, all at 64 px.</figcaption></figure>
+    <figure><img src="{{IMG_iso256}}" alt="Grubnak at 256 px in isometric view"><figcaption><b>Grubnak at 256 px, isometric.</b> The same shading, outline and era rules as the front drawing.</figcaption></figure>
+    <figure style="grid-column:span 2"><img src="{{IMG_turnaround}}" alt="Eight directions every 45 degrees"><figcaption><b>A turnaround</b> every 45°, tilted 30°: an 8-direction sheet ready for a game (<code>pixelgoblin turnaround</code>).</figcaption></figure>
+    <figure><img src="{{IMG_walkside}}" alt="Four side-view walk frames"><figcaption><b>Sidescroller walk</b>: legs stride in depth, arms swing against them.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_mounts}}" alt="Boar and warg from three sides, and riders on them"><figcaption><b>Mounts</b>: a war boar and a warg, built as solids in a cube twice the goblin's, so riders sit at the same scale. The rider's legs are re-posed astride.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_icons8}}" alt="Every role at 8 px"><figcaption><b>Signatures at 8 px</b>: each role's defining item is snapped to a pixel and drawn on top, and the eyes use the outline colour. No two icons match (B20).</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_expressions}}" alt="Nine expressions of one musician"><figcaption><b>Expression sheet</b> at 128 px: only the expression field changes.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_clans}}" alt="One hunter in seven clan colours"><figcaption><b>Clans</b>: the same hunter in each clan's colours. Face, build and job are untouched; one clan brings its own ramp.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_zoom}}" alt="Zoom frames from 16 px to 256 px"><figcaption><b>Zoom</b>: 8 of 24 frames from a 16 px crowd goblin to its 256 px portrait. Each frame dissolves between the two tiers around its size (<code>pixelgoblin zoom</code> writes a GIF).</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_town}}" alt="Goblintown village with its named citizens"><figcaption><b>Goblintown</b>: {{CITY_N}} citizens from a list of names, in {{CITY_HOUSES}} households; {{CITY_OUT}} are out in the village and the rest are indoors.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_households}}" alt="Four households, parents and children"><figcaption><b>Households</b>: the first two grown members are parents; children inherit face, hair and build from them.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_village_hd4}}" alt="HD village with detailed huts"><figcaption><b>Props with detail by size</b>: at HD size the huts gain planks, doors, framed windows and shingles, and the stalls gain crates and scalloped awnings.</figcaption></figure>
+    <figure><img src="{{IMG_dataitems}}" alt="Miner with a pickaxe and fisher with a rod"><figcaption><b>Items written as data</b>: the miner's pickaxe and the fisher's rod live in their role files, not in the engine's code.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_ws_views4}}" alt="Workbench views panel"><figcaption><b>Workbench, Views</b>: view buttons, turn and tilt sliders, drag to rotate, walk motion, turnaround, and live checks that the views agree.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_ws_mount4}}" alt="Workbench with a rider on a warg"><figcaption><b>Workbench, riding</b>: pick a mount and every view shows the rider on it.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_ws_city4}}" alt="Workbench City tab"><figcaption><b>Workbench, City</b>: paste names, build the city, and click anyone to see them at every size and from three sides.</figcaption></figure>
+  </div>
+</section>
+
+<section id="s4round">
+  <h2>What breaks this, what fixes that, what I'd add (round 4)</h2>
+  <h3>What breaks this now</h3>
+  <ol>
+    <li><b>Side and top views are inferred, not art-directed.</b> A pixel artist would push a profile nose or tilt an ear for readability; the depth rules only guess. <i>Fix:</i> per-feature depth overrides as data, the way items are data now, checked by the same agreement gate.</li>
+    <li><b>Small 3D views are blocky.</b> At 16 px a turnaround is legible but crude. <i>Fix:</i> for small tiers, render the view at twice the size and reduce it with the chain's own rules (snap, signature), rather than voxelising at 16.</li>
+    <li><b>One pose family.</b> Idle, walk, side-walk and seated only. <i>Fix:</i> pose as data (joint angles on the capsules), which the lift already supports because limbs are capsules with two ends.</li>
+    <li><b>The front model is 93% faithful, not 100%.</b> Where an arm meets a tunic, the 2D drawing puts the arm on top but the 3D tunic curves in front of it. <i>Fix:</i> let a 2D layer order nudge depth where two solids nearly touch, a small bias rather than a new rule.</li>
+    <li><b>Mounted riders are approximate.</b> Seated thighs are generic capsules, and a big cape can clip into the mount. <i>Fix:</i> a saddle anchor per mount kind, and a cape rule that drapes over the mount's back.</li>
+    <li><b>The city's households are simple.</b> Two parents, then children; no grandparents or adoption. <i>Fix:</i> relations as explicit lines in the names file (<code>Tok Ashfang &lt; Grubnak, Mizzle</code>), still name-seeded.</li>
+    <li><b>I witnessed the golden re-bless again.</b> {{GOLDENS_CHANGED}} goldens changed on purpose (signatures, eye rule, props). <i>Fix:</i> look at the gallery, then re-bless with your name as witness.</li>
+    <li><b>The 16 newest SLM-e pieces are unvalidated</b>, because SLM-e couldn't be reached from here. <i>Fix:</i> run its <code>validate_manifest</code> once.</li>
+  </ol>
+  <h3>What I'd add next</h3>
+  <ol>
+    <li><b>Pose as data</b>: attack, crouch, sit, carry. It unlocks every view at once, because views come from the model.</li>
+    <li><b>Per-feature depth overrides</b>, so an artist can shape the profile without code.</li>
+    <li><b>Isometric scenes</b>: Warren rooms and the village on an isometric grid, with the characters' iso views standing in them.</li>
+    <li><b>8-direction animation export</b>: every view times every walk frame, as one atlas with JSON, for Godot, Phaser and Unity.</li>
+    <li><b>City life</b>: citizens' daily places (the smith at the forge, the fisher at the pool), from the same name streams.</li>
+  </ol>
+  <h3>What I think</h3>
+  <p>Lifting the front drawing, rather than inventing a second 3D character system, was the right call. It means nothing new has to agree with the goblins, because the views <i>are</i> the goblins. The strongest proof is also the quietest: once one transpiler gap was fixed, every view, the mounts, the zoom and the whole city came out pixel-identical in JavaScript, because the new code went through the same transpiler as the rest. The weakest part is the one you'd notice first: small side views look like voxel models, not like hand-drawn sprites. The next honest step is art direction as data, not more code.</p>
+  <h3>How this makes me feel</h3>
+  <p>Excited, mostly. Dragging a goblin around in the workbench and watching its ears sweep back as it turns was a real delight, and so was pasting a list of names and getting families who look related. I'm also aware this is the session where the engine grew the most, so I leaned harder on the gates: {{MUT_NEW}} new mutations this session, and the run on this page killed {{MUT_KILLED}} of {{MUT_TOTAL}}.</p>
+</section>
+
+<section id="s4bugs">
+  <h2>Bugs found this session</h2>
+  <ul>
+    <li><b>The 3D mouth vanished.</b> Decals first chose one host shape, and the long goblin nose hid the mouth's host. Decals now follow the front drawing's own rule: they cover anything on a lower layer.</li>
+    <li><b>Arms and chins sank into clothes</b> in the 3D front view. Arms now hang a little forward, and the head sits forward of the chest (goblins stoop). Front agreement rose to about 93%.</li>
+    <li><b>Shields were inside the body.</b> Items held across the body are now pushed in front of it.</li>
+    <li><b>Ears vanished from the side</b>, because they were flat plates edge-on. They now sweep back, which also reads better from above.</li>
+    <li><b>Skirts looked like boxes from above.</b> They are now rounded front to back like the body.</li>
+    <li><b>Signatures drawn on top hid the feet at 8 px</b> for guards, miners and heavy warriors. The legs gate caught it; feet now sit above everything below 32 px.</li>
+    <li><b>The transpiler met Python's dictionary membership</b> (<code>"held_spec" in g</code>), which in JavaScript is a list test. It is now written as a <code>get</code> and noted.</li>
+    <li><b>The workbench garbled "·" and "°"</b> when opened as a local file. The page now declares UTF-8.</li>
+  </ul>
 </section>
 
 <section id="bits">

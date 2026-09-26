@@ -4,7 +4,7 @@
 
 ## Where things stand (v0u1p0)
 
-The **prototype** is built and gated: Python reference engine, CLI, browser editor with a parity-checked JavaScript core, Vanilla Core flavor, a character rig drawn at six resolution tiers (8 to 256 px), a village scene composer, Warren dungeons, and 18 build gates. Plan gates G01 to G26 below are the prototype's exit criteria. `BUILD_STATUS.md` shows which pass.
+The **prototype** is built and gated: Python reference engine, CLI, browser editor with a parity-checked JavaScript core, Vanilla Core flavor, a character rig drawn at six resolution tiers (8 to 256 px) and from any direction, mounts, a village scene composer, a city built from a list of names, Warren dungeons, and 21 build gates. Plan gates G01 to G29 below are the prototype's exit criteria. `BUILD_STATUS.md` shows which pass.
 
 ## Plan gates for the prototype
 
@@ -36,6 +36,9 @@ The **prototype** is built and gated: Python reference engine, CLI, browser edit
 | G24 | Brood is deterministic and inherits from both parents |
 | G25 | A character is one genome drawn at 8, 16, 32, 64, 128 and 256 px: two legs at every tier, era colour budgets hold, every feature has a rung on the LOD ladder, and silhouette and material coherence stay above the measured floors |
 | G26 | Scenes are deterministic and keyed to their characters' type files; every Warren room is reachable; names are seeds; overlays keep the role; animated GIFs keep every frame |
+| G27 | Every view is a projection of one lifted model: front and side share heights, front and top widths, side and top depths; the model's front reproduces the drawing; faces are hidden from behind |
+| G28 | A city from a list of names is deterministic; adding or removing a citizen changes nobody else; children inherit from their household's parents; a household shares subspecies and clan |
+| G29 | No two roles share an 8 px icon; 8-bit eyes survive; items written as data draw; clans change only clothes; riders sit on mounts; zooms grow from crowd to portrait; props gain detail with size |
 
 ## Standalone phases
 

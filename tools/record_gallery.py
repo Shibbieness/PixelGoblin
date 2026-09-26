@@ -105,5 +105,66 @@ def main() -> int:
     return 0
 
 
+
+
+def session4(out: Path) -> None:
+    """Views, mounts, clans, expressions, zoom, the city, props, icons."""
+    from pixelgoblin import cards, city
+    from pixelgoblin.gen import beast, rig3d
+    out.mkdir(parents=True, exist_ok=True)
+    names = ["front", "side_right", "back", "side_left", "iso_sw", "iso_se", "iso_ne", "iso_nw", "three_quarter", "top"]
+    items = []
+    for rid, seed in (("guard", 0), ("shaman", 1), ("scout", 0), ("chiefs_consort", 0), ("miner", 1)):
+        tf = typefile.load("boc.goblin." + rid)
+        g = rig.genome(tf.data, rig.streams_for(tf, seed))
+        for v in names:
+            items.append((v.replace("_", " ") if rid == "guard" else "", rig3d.render_view(tf.data, g, 64, v)))
+    cards.labelled(items, 92, 10).save(out / "views.png", 2)
+    smith = typefile.load("boc.goblin.blacksmith")
+    grub = seed_from_name("Grubnak")
+    g = rig.genome(smith.data, rig.streams_for(smith, grub))
+    rig3d.render_view(smith.data, g, 256, "iso_sw").save(out / "iso256.png", 1)
+    labelled([(f"{y} deg", rig3d.render_view(smith.data, g, 64, yaw=y, pitch=30)) for y in rig3d.TURNAROUND], 92, 8).save(out / "turnaround.png", 2)
+    walk = [rig3d.render_view(smith.data, g, 64, "side_right", pose=p) for p in ({"stride": 2}, {"bob": 1}, {"stride": -2}, {"bob": 1})]
+    labelled([(f"walk {i + 1}", s) for i, s in enumerate(walk)], 64, 4).save(out / "walkside.png", 3)
+    boar, wolf, rider = typefile.load("boc.mount.boar"), typefile.load("boc.mount.wolf"), typefile.load("boc.goblin.rider")
+    mitems = []
+    for tf in (boar, wolf):
+        bg = beast.genome(tf.data, beast.streams_for(tf, 1))
+        for v in ("side_right", "iso_sw", "front"):
+            mitems.append((tf.data["label"] + " " + v.replace("_", " "), beast.render(tf.data, bg, 128, v)))
+    for tf, v in ((boar, "side_right"), (boar, "iso_sw"), (wolf, "side_left"), (wolf, "iso_ne")):
+        mitems.append(("rider " + v.replace("_", " "), beast.mounted(rider, 2, tf, 1, 128, v)))
+    labelled(mitems, 136, 5).save(out / "mounts.png", 1)
+    mus = typefile.load("boc.goblin.musician")
+    cards.labelled(cards.expressions(mus, 4, 128), 128, 9).save(out / "expressions.png", 1)
+    hunter = typefile.load("boc.goblin.hunter")
+    row = cards.team_row(hunter, 2, 64)
+    cards.labelled(row, 64, len(row)).save(out / "clans.png", 2)
+    zf = cards.zoom(typefile.load("boc.goblin.shaman"), 5, 16, 256, 24)
+    labelled([(f"{k + 1}", zf[k]) for k in (0, 3, 6, 9, 12, 15, 18, 23)], 256, 8).save(out / "zoom.png", 1)
+    cty = city.load_city("boc.city.goblintown")
+    people = city.census(cty, city.parse_names((ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text()))
+    city.village(cty, people, 1).save(out / "town.png", 3)
+    houses = {}
+    for p in people:
+        houses.setdefault(p["household"], []).append(p)
+    fam = []
+    for h in ("Ashfang", "Reedwhistle", "Stonejaw", "Deepdelve"):
+        for p in houses[h]:
+            fam.append((p["name"].split(" ")[0] + ("\nchild" if p["parents"] else "\n" + p["role"].split(".")[-1].replace("_", " ")), city.sprite(p, 64)))
+    labelled(fam, 64, 7, 2).save(out / "households.png", 2)
+    from pixelgoblin import gen as G
+    G.frames(typefile.load("boc.scene.village.hd"), 1)[0].save(out / "village_hd4.png", 1)
+    ids = role_ids()
+    labelled([(typefile.load(i).data.get("label", "")[:9], draw(typefile.load(i), 7, 8).scaled(4)) for i in ids], 32, 15).save(out / "icons8.png", 3)
+    mi, fi = typefile.load("boc.goblin.miner"), typefile.load("boc.goblin.fisher")
+    labelled([("miner", draw(mi, 1, 128)), ("fisher", draw(fi, 1, 128))], 128, 2).save(out / "dataitems.png", 1)
+    print(f"{out}  session 4 images")
+
+
 if __name__ == "__main__":
+    if "--session4" in sys.argv:
+        session4(Path(sys.argv[1]))
+        sys.exit(0)
     sys.exit(main())

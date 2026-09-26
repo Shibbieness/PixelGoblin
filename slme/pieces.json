@@ -587,11 +587,126 @@
   }
  },
  {
+  "id": "pixelgoblin.solver.views",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Views: the front drawing lifted into solids, seen from any yaw and pitch (side, back, isometric, top-down)",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "front-only sprites, or hand-drawn turnarounds",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.rig3d:render_view"
+  },
+  "input_schema": {
+   "data": "object",
+   "genome": "object",
+   "tier": "integer",
+   "yaw": "integer",
+   "pitch": "integer"
+  },
+  "output_schema": {
+   "sprite": "object"
+  }
+ },
+ {
+  "id": "pixelgoblin.validator.orthographic",
+  "type": "VALIDATOR",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Views agree like a draughtsman's: front/side heights, front/top widths, side/top depths",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "views drift apart unnoticed",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.rig3d:orthographic_check"
+  },
+  "input_schema": {
+   "data": "object",
+   "genome": "object",
+   "tier": "integer"
+  },
+  "output_schema": {
+   "heights_agree": "boolean"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.beast",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Mounts built as 3D solids, and riders seated on them, from any view",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "riders without mounts",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.gen.beast:mounted"
+  },
+  "input_schema": {
+   "rider": "object",
+   "mount": "object",
+   "tier": "integer"
+  },
+  "output_schema": {
+   "sprite": "object"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.city",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "A population from a list of names: census, households, inheritance, clans, village placement",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "hand-assigned NPCs",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.city:census"
+  },
+  "input_schema": {
+   "city": "object",
+   "names": "array"
+  },
+  "output_schema": {
+   "people": "array"
+  }
+ },
+ {
+  "id": "pixelgoblin.solver.zoom",
+  "type": "SOLVER",
+  "version": "v0u1p0",
+  "source_capsule": "pixelgoblin",
+  "summary": "Zoom from a crowd sprite to its portrait, dissolving between chain tiers",
+  "deterministic": true,
+  "needs_model": false,
+  "degrades_to": "a hard cut between sizes",
+  "cost_class": "free",
+  "invoke": {
+   "lang": "python",
+   "entry": "pixelgoblin.cards:zoom"
+  },
+  "input_schema": {
+   "type": "object",
+   "seed": "integer"
+  },
+  "output_schema": {
+   "frames": "array"
+  }
+ },
+ {
   "id": "pixelgoblin.gate.build",
   "type": "GATE",
   "version": "v0u1p0",
   "source_capsule": "pixelgoblin",
-  "summary": "Eighteen build gates with falsification, vacuity guards and a count ratchet",
+  "summary": "Twenty-one build gates with falsification, vacuity guards and a count ratchet",
   "deterministic": true,
   "needs_model": false,
   "degrades_to": "unverified build",

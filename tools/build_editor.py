@@ -37,7 +37,15 @@ def main() -> int:
             types.append(entry)
     tax = typefile.taxonomy()
     tags = [{"name": name, "profile": typefile.profile_for(name)} for name in tax.get("tag", {})]
-    presets = {"version": VERSION, "credit": CREDIT, "types": types, "tags": tags}
+    from pixelgoblin import city
+    cities = []
+    for root in typefile.search_path():
+        for cp in sorted(Path(root).rglob("*.city.toml")):
+            d = city.load_city(str(cp))
+            d.pop("_hash", None)
+            names = cp.with_name(cp.name.replace(".city.toml", ".names.txt"))
+            cities.append({"data": d, "names": names.read_text() if names.exists() else ""})
+    presets = {"version": VERSION, "credit": CREDIT, "types": types, "tags": tags, "teams": typefile.teams(), "cities": cities}
     src = (ROOT / "editor" / "src.html").read_text()
     html = src.replace("/*__PG_CORE__*/", engine_script()).replace("/*__PRESETS__*/", json.dumps(presets, ensure_ascii=False))
     (ROOT / "editor" / "pixelgoblin.html").write_text(html)

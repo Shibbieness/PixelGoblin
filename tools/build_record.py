@@ -62,6 +62,15 @@ LOG = [
     ("feet", "Feet moved to the 8 px rung, drawn in front of items below 32 px: 1,900 leg checks, 0 failures."),
     ("gates", "B16 (characters) and B17 (scenes, dungeons, outputs) added; 11 new mutations; goldens re-blessed with a recorded witness."),
     ("workbench", "Characters and Village tabs: animated chains, genome, ladder, family tree, roster, click-a-goblin-in-the-crowd."),
+    ("session 4", "Mark asks for the fixes, signatures, expressions, team colours, mounts, side and back views, zoom, a city from names, and views built from each other."),
+    ("fixes", "Role signatures at 8 px; iris and signature colours protected; 8-bit eyes in the outline colour; items as data (miner, fisher)."),
+    ("views", "Front drawing lifted into solids and decals, voxelised, ray-marched at any yaw and pitch. First 3D front agreed 90% on materials."),
+    ("agreement", "Decals by layer, head forward, arms forward, shields in front, ears swept back, skirts rounded: 93% front agreement; views agree orthographically."),
+    ("mounts", "War boar and warg built as solids in a 2048 cube; riders seated astride; decal groups keep a rider's face off the boar."),
+    ("city", "Names to census, households, inheritance, clans and village; adding a citizen changes nobody else."),
+    ("transpiler", "Extended (while, break, augmented assignment, dict, list, bytearray, is None) to carry views, beasts and zoom to JavaScript: parity on the first run after one fix."),
+    ("props", "Huts and stalls gain doors, planks, window frames, shingles, scallops and crates by size."),
+    ("gates", "B18 views, B19 city, B20 signatures/items/clans/mounts/zoom/props; 9 more mutations; goldens re-blessed with a recorded witness."),
 ]
 
 
@@ -97,6 +106,25 @@ def main() -> int:
             for t in (8, 16, 32, 64):
                 legs_n += 1
                 legs_bad += not rig.legs_check(tf.data, g, t)["ok"]
+    from pixelgoblin import city as _city
+    from pixelgoblin.gen import rig3d
+    fa = [rig3d.front_agreement(tf.data, rig.genome(tf.data, rig.streams_for(tf, 0)), 32) for tf in rigs]
+    view_iou = sum(f["iou"] for f in fa) // len(fa)
+    view_mat = sum(f["material"] for f in fa) // len(fa)
+    icon_min = 64
+    roles8 = [typefile.load(p) for p in typefile.type_files(ROOT / "flavors" / "boc" / "village" / "roles")]
+    for seed in (0, 1, 2):
+        ims = []
+        for tf in roles8:
+            s8 = rig.render(tf.data, rig.genome(tf.data, rig.streams_for(tf, seed)), 8)[0]
+            ims.append([s8.palette[i] if i else None for i in s8.px])
+        for i in range(len(ims)):
+            for j in range(i + 1, len(ims)):
+                icon_min = min(icon_min, sum(1 for p, q in zip(ims[i], ims[j]) if p != q))
+    cty = _city.load_city("boc.city.goblintown")
+    people = _city.census(cty, _city.parse_names((ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text()))
+    _city.village(cty, people, 1)
+    hist = json.loads(gate.GOLDENS.read_text())["history"]
     coh_rows = "\n".join(
         f"    <tr><td>{t} px</td><td class=\"num\">{sum(c['iou'] for c in v) // len(v)}</td><td class=\"num\">{min(c['iou'] for c in v)}</td>"
         f"<td class=\"num\">{sum(c['material'] for c in v) // len(v)}</td><td class=\"num\">{min(c['material'] for c in v)}</td></tr>"
@@ -106,10 +134,13 @@ def main() -> int:
     allg = {g for r in results.values() for g in r["covers"]}
     conv = json.loads((gallery / "conv.json").read_text()) if (gallery / "conv.json").exists() else {"colors": "8"}
     subs = {
-        "DATE": "2026-09-25", "VERSION": VERSION,
+        "DATE": "2026-09-26", "VERSION": VERSION,
         "ROLES": str(len(typefile.type_files(ROOT / "flavors" / "boc" / "village" / "roles"))),
         "SUBS": str(len(typefile.type_files(ROOT / "flavors" / "boc" / "village" / "subspecies"))),
         "FLAVOR_TYPES": str(gate.derived_counts()["flavor_types"]),
+        "VIEW_IOU": str(view_iou), "VIEW_MAT": str(view_mat), "ICON_MIN": str(icon_min),
+        "CITY_N": str(len(people)), "CITY_HOUSES": str(len({p["household"] for p in people})), "CITY_OUT": str(sum(p["outdoors"] for p in people)),
+        "GOLDENS_CHANGED": str(len(hist[-1]["changed"])), "MUT_NEW": str(fres["total"] - 34),
         "COH_ROWS": coh_rows, "COH_N": str(len(rigs)), "LEGS_N": f"{legs_n:,}", "LEGS_BAD": str(legs_bad),
         "GATES_PASSED": str(sum(r["passed"] for r in results.values())), "GATES_TOTAL": str(len(results)),
         "PLAN_COVERED": str(len(covered)), "PLAN_TOTAL": str(len(allg)),

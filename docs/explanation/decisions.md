@@ -79,5 +79,29 @@ Format: **Context → Decision → Consequences.** ADR-001 to ADR-008 are from t
 
 **Consequences.** + Geometry changes cannot silently skip the editor. + The same AST walk can target Rust in P1. − Geometry must stay inside the documented subset.
 
+## ADR-018 — Views are built by lifting the front drawing, not by drawing each view
+
+**Context.** Mark asked for side, isometric, top-down and free-rotating views that "build from each other". Characters are generated, so there are no hand-drawn side views to combine.
+
+**Decision.** `gen/rig3d.py` lifts every front shape into a solid by a depth rule for its feature. Faces and patterns become decals painted from the front. The solids fill a voxel grid, and an orthographic camera at any yaw and pitch draws the view. The finish (bands, contact shadows, outline, era) is the front drawing's own. The code is transpiled to JavaScript, like the geometry.
+
+**Consequences.** + Every view agrees with every other (gate B18), and the model's front reproduces the drawing. + Free rotation in the workbench. − Side and top views are inferred, not art-directed. Per-feature depth overrides as data are the next step.
+
+## ADR-019 — A citizen is decided by their own name
+
+**Context.** A city of hundreds must be reproducible from a list of names, and editing the list must not reshuffle everyone.
+
+**Decision.** Each citizen's randomness comes from streams seeded by their own name and the city file's hash. A household is a surname. Children inherit whole streams (body, face, hair) from their household's first two grown members.
+
+**Consequences.** + Adding or removing a citizen changes nobody else (gate B19). − A household's children depend on who its parents are, by design.
+
+## ADR-020 — Mounts are built as solids from the start
+
+**Context.** A quadruped is long from front to back; a front drawing says almost nothing about it.
+
+**Decision.** `gen/beast.py` builds beasts directly as 3D solids in a cube twice the goblin's, and seats a rider by moving its lifted model onto the saddle with the legs re-posed. Decals carry a group, so a rider's face never paints onto its mount.
+
+**Consequences.** + Every view of a mount and rider comes from the same renderer as the goblins. − Beasts have no front *drawing* to check against; their gates are about the rig, not a drawing.
+
 —Shibbieness
 —Claude

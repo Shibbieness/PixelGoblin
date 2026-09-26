@@ -206,6 +206,7 @@ pixelgoblin card boc.goblin.village_chief --name Grubnak --out chief_card.png
 - `--tier` — rig tier (8 to 256 px)
 - `--era` — era palette rule, like 8-bit or 16-bit
 - `--rim` — light rim instead of dark outline (for dark backgrounds)
+- `--team` — clan colours, like ashfang (see *.teams.toml)
 
 ## `chain`
 
@@ -223,6 +224,7 @@ pixelgoblin chain boc.goblin.blacksmith --seed 3 --out smith/   (+ --sub snow, -
 - `--tier` — rig tier (8 to 256 px)
 - `--era` — era palette rule, like 8-bit or 16-bit
 - `--rim` — light rim instead of dark outline (for dark backgrounds)
+- `--team` — clan colours, like ashfang (see *.teams.toml)
 
 ## `roster`
 
@@ -260,6 +262,7 @@ pixelgoblin gif boc.goblin.musician --seed 2 --anim walk --tier 64 --out walk.gi
 - `--tier` — rig tier (8 to 256 px)
 - `--era` — era palette rule, like 8-bit or 16-bit
 - `--rim` — light rim instead of dark outline (for dark backgrounds)
+- `--team` — clan colours, like ashfang (see *.teams.toml)
 
 ## `squint`
 
@@ -276,6 +279,7 @@ pixelgoblin squint boc.goblin.assassin --seed 1 --tier 32
 - `--tier` — rig tier (8 to 256 px)
 - `--era` — era palette rule, like 8-bit or 16-bit
 - `--rim` — light rim instead of dark outline (for dark backgrounds)
+- `--team` — clan colours, like ashfang (see *.teams.toml)
 
 ## `family`
 
@@ -303,3 +307,145 @@ pixelgoblin watch ./dropzone --once     (frog.png + frog.tag containing creature
 - `--once` — scan once and exit (otherwise keep watching)
 - `--every` — seconds between scans
 - `--scale`
+
+## `view`
+
+One character (or beast) from any direction: side, back, isometric, top-down or free rotation.
+
+```
+pixelgoblin view boc.goblin.guard --name Brakka --view iso_sw --tier 64 --out brakka_iso.png --scale 4   (or --yaw 120 --pitch 20)
+```
+
+- `type`
+- `--seed`
+- `--view`
+- `--yaw` — free rotation: 0 front, 90 facing left, 180 back, 270 facing right
+- `--pitch` — tilt: 0 level, 30 isometric, 90 straight down
+- `--anim` — write a GIF of this motion instead of a still
+- `--out`
+- `--scale`
+- `--name` — a name instead of a seed: the same name is always the same character
+- `--sub` — variant overlay, like snow or cave (or a full type id)
+- `--tier` — rig tier (8 to 256 px)
+- `--era` — era palette rule, like 8-bit or 16-bit
+- `--rim` — light rim instead of dark outline (for dark backgrounds)
+- `--team` — clan colours, like ashfang (see *.teams.toml)
+
+## `turnaround`
+
+Eight directions (every 45 degrees) on one sheet, for 8-way sprites.
+
+```
+pixelgoblin turnaround boc.goblin.scout --seed 3 --pitch 30 --tier 64 --out scout_8dir.png --scale 2
+```
+
+- `type`
+- `--seed`
+- `--pitch`
+- `--out`
+- `--scale`
+- `--name` — a name instead of a seed: the same name is always the same character
+- `--sub` — variant overlay, like snow or cave (or a full type id)
+- `--tier` — rig tier (8 to 256 px)
+- `--era` — era palette rule, like 8-bit or 16-bit
+- `--rim` — light rim instead of dark outline (for dark backgrounds)
+- `--team` — clan colours, like ashfang (see *.teams.toml)
+
+## `expressions`
+
+Expression sheet: the same face with every expression.
+
+```
+pixelgoblin expressions boc.goblin.musician --seed 4 --tier 128 --out faces.png
+```
+
+- `type`
+- `--seed`
+- `--out`
+- `--scale`
+- `--name` — a name instead of a seed: the same name is always the same character
+- `--sub` — variant overlay, like snow or cave (or a full type id)
+- `--tier` — rig tier (8 to 256 px)
+- `--era` — era palette rule, like 8-bit or 16-bit
+- `--rim` — light rim instead of dark outline (for dark backgrounds)
+- `--team` — clan colours, like ashfang (see *.teams.toml)
+
+## `clans`
+
+The same character in every clan's colours.
+
+```
+pixelgoblin clans boc.goblin.guard --seed 2 --out clans.png --scale 2
+```
+
+- `type`
+- `--seed`
+- `--out`
+- `--scale`
+- `--name` — a name instead of a seed: the same name is always the same character
+- `--sub` — variant overlay, like snow or cave (or a full type id)
+- `--tier` — rig tier (8 to 256 px)
+- `--era` — era palette rule, like 8-bit or 16-bit
+- `--rim` — light rim instead of dark outline (for dark backgrounds)
+- `--team` — clan colours, like ashfang (see *.teams.toml)
+
+## `zoom`
+
+Animated zoom from a crowd-sized sprite to the portrait, dissolving between chain tiers.
+
+```
+pixelgoblin zoom boc.goblin.shaman --seed 5 --from 16 --to 256 --out zoom.gif
+```
+
+- `type`
+- `--seed`
+- `--from`
+- `--to`
+- `--steps`
+- `--ms`
+- `--out`
+- `--scale`
+- `--name` — a name instead of a seed: the same name is always the same character
+- `--sub` — variant overlay, like snow or cave (or a full type id)
+- `--tier` — rig tier (8 to 256 px)
+- `--era` — era palette rule, like 8-bit or 16-bit
+- `--rim` — light rim instead of dark outline (for dark backgrounds)
+- `--team` — clan colours, like ashfang (see *.teams.toml)
+
+## `ride`
+
+A rider on a mount, from any direction, at the mount's scale.
+
+```
+pixelgoblin ride boc.goblin.rider boc.mount.boar --seed 2 --mount-seed 1 --view side_right --tier 128 --out rider.png --scale 2
+```
+
+- `type` — the rider's type
+- `mount` — the mount's type, like boc.mount.boar
+- `--seed`
+- `--mount-seed`
+- `--view`
+- `--yaw`
+- `--pitch`
+- `--out`
+- `--scale`
+- `--name` — a name instead of a seed: the same name is always the same character
+- `--sub` — variant overlay, like snow or cave (or a full type id)
+- `--tier` — rig tier (8 to 256 px)
+- `--era` — era palette rule, like 8-bit or 16-bit
+- `--rim` — light rim instead of dark outline (for dark backgrounds)
+- `--team` — clan colours, like ashfang (see *.teams.toml)
+
+## `city`
+
+A whole population from a list of names: census, households and the village with them in it.
+
+```
+pixelgoblin city boc.city.goblintown flavors/boc/village/goblintown.names.txt --out town/
+```
+
+- `city` — city file or id, like boc.city.goblintown
+- `names` — text file, one citizen per line
+- `--seed` — village seed
+- `--tier` — size of the household sheet
+- `--out` — output folder

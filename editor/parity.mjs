@@ -11,9 +11,39 @@ const { PG, PGRig } = new Function(script + "\n;return { PG, PGRig };")();
 const input = JSON.parse(readFileSync(0, "utf8"));
 const types = input.types || {};
 PGRig.setResolver((id) => { if (!types[id]) throw new Error("unknown type " + id); return types[id]; });
+PGRig.setTables(input.teams || {}, input.owns || {});
+const typeOf = (c) => {
+  let d = c.overlay ? PGRig.compose(c.type, c.overlay.own, c.overlay.id) : c.type;
+  if (c.team) d = PGRig.withTeam(d, c.team);
+  return d;
+};
 const out = input.cases.map((c) => {
+  if (c.kind === "view") {
+    const data = typeOf(c);
+    const g = PGRig.genome(data, PGRig.streamsFor(data, c.seed));
+    return { hashes: c.views.map(([v, t, yaw, pitch, pose]) => PGRig.renderView(data, g, t, { view: v, yaw, pitch, pose }).sprite.pixelHash()) };
+  }
+  if (c.kind === "beast") {
+    const g = PGRig.beastGenome(c.type, PGRig.streamsFor(c.type, c.seed));
+    return { genome: g, hashes: c.views.map(([v, t, pose]) => PGRig.beastRender(c.type, g, t, { view: v, pose }).sprite.pixelHash()) };
+  }
+  if (c.kind === "mounted") {
+    const g = PGRig.genome(c.type, PGRig.streamsFor(c.type, c.seed));
+    const bg = PGRig.beastGenome(c.beast, PGRig.streamsFor(c.beast, c.beast_seed));
+    return { hashes: c.views.map(([v, t]) => PGRig.mounted(c.type, g, c.beast, bg, t, { view: v }).sprite.pixelHash()) };
+  }
+  if (c.kind === "zoom") {
+    const g = PGRig.genome(c.type, PGRig.streamsFor(c.type, c.seed));
+    return { hashes: PGRig.zoomFrames(c.type, g, c.from, c.to, c.steps).map((f) => f.pixelHash()) };
+  }
+  if (c.kind === "city") {
+    const people = PGRig.census(c.city, PGRig.parseNames(c.names));
+    const img = PGRig.cityVillage(c.city, people, c.seed);
+    return { people: people.map((p) => [p.name, p.role, p.sub, p.team, p.household, p.age_group, p.band, p.parents, p.inherited || null, p.outdoors]),
+             hashes: [img.pixelHash()].concat(people.slice(0, c.sprites).map((p) => PGRig.citizenSprite(p, 32).pixelHash())) };
+  }
   if (c.kind === "rig") {
-    const data = c.overlay ? PGRig.compose(c.type, c.overlay.own, c.overlay.id) : c.type;
+    const data = typeOf(c);
     const g = PGRig.genome(data, PGRig.streamsFor(data, c.seed));
     const r = {};
     r.type_hash = PG.typeHash(data);

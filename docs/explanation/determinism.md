@@ -13,7 +13,7 @@
 ## How we know
 
 - **B01** checks xoshiro128** against the published reference sequence, and runs one sprite in three processes with different hash seeds.
-- **B03** compares 208 golden hashes.
+- **B03** compares 224 golden hashes.
 - **B13** runs the JavaScript core under node and compares every golden, type hash and share code with Python.
 
 ## When it may change

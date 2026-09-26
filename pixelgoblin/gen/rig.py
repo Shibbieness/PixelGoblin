@@ -263,12 +263,19 @@ def genome(data: dict, S: Streams) -> dict:
     g["held"] = _pick(it, role.get("held", ["none"]))
     g["offhand"] = _pick(it, role.get("offhand", ["none"]))
     g["back"] = _pick(it, role.get("back", ["none"]))
+    items = data.get("items", {})
+    for slot in ("held", "offhand"):  # items written as data travel with the genome
+        if g[slot] in items:
+            g[slot + "_spec"] = items[g[slot]]["shapes"]
     ac = S.rng("g/accessories")
     acc = []
     for entry in role.get("accessories", []) + sp.get("accessories", []):
         if ac.chance(entry.get("chance", 100)):
             acc.append(entry["item"])
     g["accessories"] = sorted(set(acc))
+    team = data.get("team")
+    if team:  # clan colours are applied after the character is decided (typefile.with_team)
+        g["cloth_a"], g["cloth_b"], g["team"] = team["a"], team["b"], team["name"]
     return g
 
 
@@ -327,10 +334,11 @@ def build_shapes(g: dict, px: int, pose: dict, style_px: int | None = None) -> l
     for side, lift in ((-1, lift_l), (1, lift_r)):
         fx = CX + side * lx
         s.append(C(CX + side * lx, hip_y - leg_r // 2, fx, GROUND - foot_h - lift, leg_r, "skin", 10, "legs"))
-        # below 32 px the feet are drawn in front of everything: a held spear or
+        # below 32 px the feet are drawn in front of everything, even a role's
+        # signature item: a held spear or
         # shield covering both feet makes an 8 px character float
         s.append(E(fx + side * leg_r // 3, GROUND - foot_h // 2 - lift, leg_r * 14 // 10, foot_h * 6 // 10 + 1, "leather",
-                   12 if tier >= 32 else 60, "feet"))
+                   12 if tier >= 32 else 200, "feet"))
     if bottom == "trousers" or bottom == "shorts":
         knee = hip_y + (leg_len * 45 // 100 if bottom == "trousers" else leg_len * 30 // 100)
         for side, lift in ((-1, lift_l), (1, lift_r)):
@@ -414,8 +422,14 @@ def build_shapes(g: dict, px: int, pose: dict, style_px: int | None = None) -> l
             s.append(C((sx + 2 * hx) // 3, (sy + 2 * hy) // 3, hx, hy - arm_r, arm_r * 11 // 10, "leather", 31, "bracers"))
         s.append(E(hx, hy, arm_r * 13 // 10, arm_r * 13 // 10, "skin", 33, "hands"))
         hands[side] = (hx, hy)
-    _held(s, g["held"], hands[-1], -1, tw, head_h, px)
-    _held(s, g["offhand"], hands[1], 1, tw, head_h, px)
+    if g.get("held_spec", None) is not None:
+        _held_data(s, g["held_spec"], hands[-1], -1, head_h, px)
+    else:
+        _held(s, g["held"], hands[-1], -1, tw, head_h, px)
+    if g.get("offhand_spec", None) is not None:
+        _held_data(s, g["offhand_spec"], hands[1], 1, head_h, px)
+    else:
+        _held(s, g["offhand"], hands[1], 1, tw, head_h, px)
 
     # --- head
     ear_len = min(head_w * g["ear_len"] // 100, 496 - head_w // 2)  # ear tips stay on the canvas
@@ -645,6 +659,55 @@ def _held(s, kind, hand, side, tw, hh, px):
         s.append(E(hx - side * L // 12, hy - L // 6, L // 12, L // 12, "brass", z + 3, "held"))
 
 
+def _held_data(s, spec, hand, side, hh, px):
+    """An item written as data: shapes in hundredths of the item scale L,
+    relative to the hand, with x mirrored for the left hand. See the `items`
+    table in docs/reference/type-files.md."""
+    hx, hy = hand
+    L = hh * 13 // 10
+    for sh in spec:
+        k = sh["shape"]
+        a = sh["at"]
+        z = 34 + sh.get("layer", 0)
+        mat = sh["mat"]
+        feat = sh.get("feat", "held")
+        snap = sh.get("snap", False)
+        if k == "E":
+            s.append(E(hx + side * a[0] * L // 100, hy + a[1] * L // 100, a[2] * L // 100, a[3] * L // 100, mat, z, feat, snap=snap))
+        elif k == "R":
+            s.append(R(hx + side * a[0] * L // 100, hy + a[1] * L // 100, hx + side * a[2] * L // 100, hy + a[3] * L // 100, a[4] * L // 100, mat, z, feat, snap=snap))
+        elif k == "C":
+            s.append(C(hx + side * a[0] * L // 100, hy + a[1] * L // 100, hx + side * a[2] * L // 100, hy + a[3] * L // 100, max(1, a[4] * L // 100), mat, z, feat, snap=snap))
+        elif k == "T":
+            s.append(T(hx + side * a[0] * L // 100, hy + a[1] * L // 100, hx + side * a[2] * L // 100, hy + a[3] * L // 100,
+                       hx + side * a[4] * L // 100, hy + a[5] * L // 100, mat, z, feat, snap=snap))
+        elif k == "A":
+            s.append(A(hx + side * a[0] * L // 100, hy + a[1] * L // 100, a[2] * L // 100, a[3] * L // 100, max(px, a[4] * L // 100), a[5], mat, z, feat, snap=snap))
+
+
+# ---------------------------------------------------------------- signatures
+SIGNATURE_ORDER = ("held", "headwear", "back", "beard", "top")
+
+
+def signature(data: dict, g: dict) -> str:
+    """The one feature that says who this is, drawn even at 8 px. A role can name
+    it (`signature = "headwear"` in [role]); otherwise it is the first of: what
+    they hold, what they wear on their head, what they carry on their back, a
+    beard, their top."""
+    sig = data.get("role", {}).get("signature")
+    if sig:
+        return sig
+    if g["held"] != "none":
+        return "held"
+    if g["headwear"] != "none":
+        return "headwear"
+    if g["back"] != "none":
+        return "back"
+    if "beard" in g["accessories"]:
+        return "beard"
+    return "top"
+
+
 # ---------------------------------------------------------------- render
 def _materials(data: dict, g: dict) -> dict:
     pal = data["palette"]
@@ -656,17 +719,119 @@ def _materials(data: dict, g: dict) -> dict:
     return m
 
 
+def visible_shapes(data: dict, g: dict, N: int, pose: dict | None = None, style_tier: int | None = None,
+                   lod_tier: int | None = None, only_feats: tuple | None = None):
+    """The shapes drawn at tier N: the LOD ladder, the role's signature promoted
+    to the 8 px rung (snapped and on top below 32 px). Shared by every view."""
+    px = D // N
+    style_px = D // style_tier if style_tier else None
+    sig = signature(data, g)
+    sigs = (sig, sig + ".large")
+    shapes = [sh for sh in build_shapes(g, px, pose or {}, style_px) if (8 if sh.feat in sigs else LOD.get(sh.feat, 8)) <= (lod_tier or N)
+              and (only_feats is None or sh.feat in only_feats)]
+    small = (style_tier or N) < 32
+    for sh in shapes:  # below 32 px the signature is snapped to a whole pixel and drawn on top
+        if sh.feat in sigs and small:
+            sh.snap = True
+            sh.z += 100
+    return shapes, sigs
+
+
+def shade_index(light: int, n: int, bands: int, dither: bool, x: int, y: int, bias: int) -> int:
+    """A light value (-1024..1024) to a step on an n-colour ramp."""
+    mid = (n - 1) // 2
+    if bands == 1:
+        idx = mid
+    else:
+        t16 = (light + 1024) * bands * 16 // 2049
+        t = (t16 + (BAYER4[y % 4][x % 4] - 8) // 2) // 16 if dither else t16 // 16
+        t = max(0, min(bands - 1, t))
+        lo = max(0, min(n - bands, mid - (bands - 1) // 2)) if n >= bands else 0
+        idx = min(n - 1, lo + t)
+    return max(0, min(n - 1, idx + bias))
+
+
+def finish(data: dict, g: dict, W: int, H: int, N: int, era: str, pix_mat: list, shade: list, depth: list,
+           rim: bool = False, sig_mats: tuple = ()) -> Sprite:
+    """Everything after the raster, shared by the front drawing and every 3D
+    view: palette, contact shadows, the 8-bit eye rule, outline, era budget.
+    `pix_mat` is each pixel's material ("" for empty), `shade` its ramp step,
+    `depth` its distance (smaller is nearer) for contact shadows."""
+    E_ = ERAS[era]
+    mats = _materials(data, g)
+    names = sorted(mats)
+    # rim: a light outline for sprites that will sit on dark ground (Squint finds these)
+    pal = [TRANSPARENT, hex_to_rgba(data["palette"].get("rim", "#e9e3cf") if rim else data["palette"].get("outline", "#140e10"))]
+    offs, lens = {}, {}
+    for nm in names:
+        offs[nm] = len(pal)
+        lens[nm] = len(mats[nm])
+        pal += [hex_to_rgba(c) for c in mats[nm]]
+    spr = Sprite(W, H, pal)
+    shade = list(shade)
+    # contact shadow: a pixel just below/beside a part that sits in front of it darkens one step
+    if N >= 32:
+        dark = []
+        for y in range(H):
+            for x in range(W):
+                m = pix_mat[y * W + x]
+                if m == "":
+                    continue
+                for dx, dy in ((0, -1), (-1, 0), (1, 0)):
+                    xx, yy = x + dx, y + dy
+                    if 0 <= xx < W and 0 <= yy < H:
+                        q = pix_mat[yy * W + xx]
+                        if q != "" and depth[yy * W + xx] < depth[y * W + x] and q != m:
+                            dark.append(y * W + x)
+                            break
+        for i in dark:
+            shade[i] = max(0, shade[i] - 1)
+    for i in range(W * H):
+        m = pix_mat[i]
+        if m != "":
+            spr.px[i] = offs[m] + min(shade[i], lens[m] - 1)
+            if era == "8-bit" and m in ("iris", "mouth"):
+                spr.px[i] = 1  # NES practice: eyes and mouth in the outline colour, so they survive 3 colours
+    # outline
+    if N >= 16:
+        rings = 2 if N >= 256 else 1
+        selout = E_["outline"] == "selout" and N >= 32 and not rim
+        filled = [m != "" for m in pix_mat]
+        for ring in range(rings):
+            marks = []
+            for y in range(H):
+                for x in range(W):
+                    if filled[y * W + x]:
+                        continue
+                    for dx, dy in ((0, -1), (-1, 0), (1, 0), (0, 1)):
+                        xx, yy = x + dx, y + dy
+                        if 0 <= xx < W and 0 <= yy < H and filled[yy * W + xx]:
+                            m = pix_mat[yy * W + xx]
+                            idx = 1
+                            if selout and ring == 0 and m != "":
+                                idx = offs[m]
+                            marks.append((y * W + x, idx))
+                            break
+            for i, idx in marks:
+                spr.px[i] = idx
+                filled[i] = True
+    heavy = set()
+    for nm in ("iris",) + tuple(sig_mats):
+        if nm in offs:
+            heavy |= set(range(offs[nm], offs[nm] + lens[nm]))
+    _era_reduce(spr, E_["max_colors"], reserve_outline=(era == "8-bit"), heavy=heavy)
+    return spr
+
+
 def render(data: dict, g: dict, tier: int, era: str | None = None, pose: dict | None = None, want_map: bool = False,
            style_tier: int | None = None, lod_tier: int | None = None, only_feats: tuple | None = None, rim: bool = False):
-    """Draw genome g at a tier. Returns the sprite and the features that made it
-    onto the canvas (the evidence for the character card)."""
+    """Draw genome g at a tier, from the front. Returns the sprite and the
+    features that made it onto the canvas (the evidence for the character card)."""
     era = era or DEFAULT_CHAIN.get(tier, "hd")
     E_ = ERAS[era]
     N = tier
     px = D // N
-    style_px = D // style_tier if style_tier else None
-    shapes = [sh for sh in build_shapes(g, px, pose or {}, style_px) if LOD.get(sh.feat, 8) <= (lod_tier or N)
-              and (only_feats is None or sh.feat in only_feats)]
+    shapes, sigs = visible_shapes(data, g, N, pose, style_tier, lod_tier, only_feats)
     order = sorted(range(len(shapes)), key=lambda i: (shapes[i].z, i))
     owner = [-1] * (N * N)
     geo = []
@@ -685,18 +850,9 @@ def render(data: dict, g: dict, tier: int, era: str | None = None, pose: dict | 
                     owner[y * N + x] = len(geo) - 1
         sh.bbox = (bx0, by0, bx1, by1)
     drawn = [shapes[i] for i in order]
-    mats = _materials(data, g)
-    names = sorted(mats)
-    # rim: a light outline for sprites that will sit on dark ground (Squint finds these)
-    pal = [TRANSPARENT, hex_to_rgba(data["palette"].get("rim", "#e9e3cf") if rim else data["palette"].get("outline", "#140e10"))]
-    offs, lens = {}, {}
-    for nm in names:
-        offs[nm] = len(pal)
-        lens[nm] = len(mats[nm])
-        pal += [hex_to_rgba(c) for c in mats[nm]]
+    lens = {k: len(v) for k, v in _materials(data, g).items()}
     bands = min(TIER_BANDS[N], E_["bands"])
     dither = E_["dither"] and N >= 128
-    spr = Sprite(N, N, pal)
     shade = [0] * (N * N)
     for y in range(N):
         v = (2 * y + 1) * px // 2
@@ -712,73 +868,24 @@ def render(data: dict, g: dict, tier: int, era: str | None = None, pose: dict | 
             ny = max(-1024, min(1024, (v - (by0 + by1) // 2) * 1024 // hhei))
             z = isqrt(max(0, 1024 * 1024 - nx * nx - ny * ny))
             light = (-nx * 424 - ny * 566 + z * 707) // 1024
-            n = lens[sh.mat]
-            mid = (n - 1) // 2
-            if bands == 1:
-                idx = mid
-            else:
-                t16 = (light + 1024) * bands * 16 // 2049
-                t = (t16 + (BAYER4[y % 4][x % 4] - 8) // 2) // 16 if dither else t16 // 16
-                t = max(0, min(bands - 1, t))
-                lo = max(0, min(n - bands, mid - (bands - 1) // 2)) if n >= bands else 0
-                idx = min(n - 1, lo + t)
-            idx = max(0, min(n - 1, idx + sh.bias))
-            shade[y * N + x] = idx
-    # contact shadow: a pixel just below/beside a part that sits in front of it darkens one step
-    if N >= 32:
-        dark = []
-        for y in range(N):
-            for x in range(N):
-                o = owner[y * N + x]
-                if o < 0:
-                    continue
-                for dx, dy in ((0, -1), (-1, 0), (1, 0)):
-                    xx, yy = x + dx, y + dy
-                    if 0 <= xx < N and 0 <= yy < N:
-                        p = owner[yy * N + xx]
-                        if p > o and drawn[p].mat != drawn[o].mat:
-                            dark.append(y * N + x)
-                            break
-        for i in dark:
-            shade[i] = max(0, shade[i] - 1)
-    for i in range(N * N):
-        o = owner[i]
-        if o >= 0:
-            spr.px[i] = offs[drawn[o].mat] + shade[i]
-    # outline
-    if N >= 16:
-        rings = 2 if N >= 256 else 1
-        selout = E_["outline"] == "selout" and N >= 32 and not rim
-        filled = [o >= 0 for o in owner]
-        for ring in range(rings):
-            marks = []
-            for y in range(N):
-                for x in range(N):
-                    if filled[y * N + x]:
-                        continue
-                    for dx, dy in ((0, -1), (-1, 0), (1, 0), (0, 1)):
-                        xx, yy = x + dx, y + dy
-                        if 0 <= xx < N and 0 <= yy < N and filled[yy * N + xx]:
-                            o = owner[yy * N + xx]
-                            idx = 1
-                            if selout and ring == 0 and o >= 0:
-                                idx = offs[drawn[o].mat]
-                            marks.append((y * N + x, idx))
-                            break
-            for i, idx in marks:
-                spr.px[i] = idx
-                filled[i] = True
+            shade[y * N + x] = shade_index(light, lens[sh.mat], bands, dither, x, y, sh.bias)
+    pix_mat = [drawn[o].mat if o >= 0 else "" for o in owner]
+    depth = [-o for o in owner]
+    sig_mats = tuple(sorted({sh.mat for sh in drawn if sh.feat in sigs}))
+    spr = finish(data, g, N, N, N, era, pix_mat, shade, depth, rim, sig_mats)
     feats = sorted({drawn[o].feat for o in owner if o >= 0})
-    _era_reduce(spr, E_["max_colors"], reserve_outline=(era == "8-bit"))
     if want_map:
-        return spr, feats, [drawn[o].mat if o >= 0 else "" for o in owner], [drawn[o].feat if o >= 0 else "" for o in owner]
+        return spr, feats, pix_mat, [drawn[o].feat if o >= 0 else "" for o in owner]
     return spr, feats
 
 
-def _era_reduce(spr: Sprite, cap: int, reserve_outline: bool) -> None:
+def _era_reduce(spr: Sprite, cap: int, reserve_outline: bool, heavy: set | None = None) -> None:
     """Merge colours until the era's per-sprite budget holds. Integer-only and
     deterministic: always merge the cheapest pair (weighted RGB distance times
-    the smaller pixel count), keeping the more used colour."""
+    the smaller pixel count), keeping the more used colour. Identity colours
+    (`heavy`: the iris and the role's signature) cost 8 times more to merge,
+    so they are the last to go."""
+    heavy = heavy or set()
     counts: dict[int, int] = {}
     for i in spr.px:
         if i:
@@ -798,7 +905,7 @@ def _era_reduce(spr: Sprite, cap: int, reserve_outline: bool) -> None:
                     continue
                 ca, cb = spr.palette[a], spr.palette[b]
                 d = 2 * (ca[0] - cb[0]) ** 2 + 4 * (ca[1] - cb[1]) ** 2 + 3 * (ca[2] - cb[2]) ** 2
-                cost = d * min(counts[a], counts[b])
+                cost = d * min(counts[a], counts[b]) * (8 if a in heavy or b in heavy else 1)
                 if best is None or cost < best[0]:
                     best = (cost, a, b)
         _, a, b = best
@@ -876,6 +983,34 @@ def coherence(data: dict, g: dict, tier: int, ref_tier: int = 256) -> dict:
                 both += 1
                 agree += mref == ms
     return {"tier": tier, "iou": inter * 100 // max(1, union), "material": agree * 100 // max(1, both)}
+
+
+POW2_16 = [4096, 4277, 4467, 4664, 4871, 5087, 5312, 5547, 5793, 6049, 6317, 6597, 6889, 7194, 7512, 7845]  # 2^(i/16) x4096
+
+
+def zoom_plan(from_tier, to_tier, steps):
+    """A smooth zoom between two chain tiers: for each frame, the display size
+    and the two tiers dissolved into it, with the share (0..16) of the larger.
+    Sizes grow geometrically, so the zoom feels even."""
+    doublings = 0
+    t = from_tier
+    while t < to_tier:
+        t *= 2
+        doublings += 1
+    plan = []
+    for k in range(steps):
+        e = k * doublings * 16 // max(1, steps - 1)  # sixteenths of a doubling
+        size = from_tier * (1 << (e // 16)) * POW2_16[e % 16] // 4096
+        size = min(to_tier, max(from_tier, size))
+        a = from_tier
+        while a * 2 <= size and a * 2 <= to_tier:
+            a *= 2
+        b = min(to_tier, a * 2)
+        w = 16 if a == size and b == a else (size - a) * 16 // a
+        if b == a:
+            w = 0
+        plan.append([size, a, b, min(16, w)])
+    return plan
 
 
 LEG_FEATS = ("legs", "feet", "bottom")

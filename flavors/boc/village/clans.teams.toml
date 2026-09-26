@@ -1,0 +1,42 @@
+# Goblin clans: team colours for any goblin role. A team changes only the
+# clothes (cloth_a and cloth_b), after the character is decided, so a goblin
+# keeps its face, build and job in every clan. `a` and `b` name a ramp in the
+# goblin's palette.cloth, or give a new ramp as a list of colours.
+schema = "pixelgoblin/teams@1"
+id = "boc.goblin.clans"
+for = "boc.goblin"
+
+[teams.ashfang]
+label = "Ashfang"
+a = "red"
+b = "black"
+
+[teams.mossback]
+label = "Mossback"
+a = "green"
+b = "leather"
+
+[teams.tidecaller]
+label = "Tidecaller"
+a = "teal"
+b = "cream"
+
+[teams.gildhand]
+label = "Gildhand"
+a = "gold"
+b = "black"
+
+[teams.duskveil]
+label = "Duskveil"
+a = "purple"
+b = "black"
+
+[teams.skyrope]
+label = "Skyrope"
+a = "blue"
+b = "cream"
+
+[teams.cinderglass]
+label = "Cinderglass"
+a = ["#3a1206", "#6e2408", "#a8420e", "#e0701c", "#f8b060"]
+b = "black"
