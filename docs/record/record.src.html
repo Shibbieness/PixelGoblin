@@ -83,9 +83,9 @@ a{color:var(--teal)}
   <a href="#bits">Session 3: "8-bit to 256-bit"</a>
   <a href="#goblins">The goblins</a>
   <a href="#tiers">Tier specs and coherence</a>
-  <a href="#round3">Breaks, fixes, additions</a>
-  <a href="#changed3">Changed this session</a>
-  <a href="#bugs3">Bugs this session</a>
+  <a href="#round3">Breaks, fixes (session 3)</a>
+  <a href="#changed3">Changed in session 3</a>
+  <a href="#bugs3">Bugs in session 3</a>
   <a href="#name">The name</a>
   <a href="#built">Session 2 gallery</a>
   <a href="#changed">What changed, flagged</a>
@@ -299,7 +299,7 @@ a{color:var(--teal)}
 </section>
 
 <section id="changed3">
-  <h2>What changed this session, flagged</h2>
+  <h2>What changed in session 3, flagged</h2>
   <div class="tbl"><table>
     <tr><th>Before</th><th>Now</th><th>Why</th></tr>
     <tr><td>"8 to 256-bit" as sizes</td><td><b>Tiers (sizes) and eras (looks), kept separate</b></td><td>"Bit" names a console generation, not a size; 128- and 256-bit had no pixel style of their own (above).</td></tr>
@@ -523,7 +523,7 @@ PYTHONHASHSEED=0 python3 tests/gate.py --from-empty</code></pre>
 
 <section id="critique">
   <h2>Critique, round 2 (session 2)</h2>
-  <p class="callout">Round 3 is at the top, under <a href="#round3">Breaks, fixes, additions</a>. Everything in round 2's "nearly free" list, the <code>parts_add</code> fix, Warren, the CRUCIBLE ramps and the lineage view were built this session.</p>
+  <p class="callout">Round 3 is at the top, under <a href="#round3">Breaks, fixes (session 3)</a>. Everything in round 2's "nearly free" list, the <code>parts_add</code> fix, Warren, the CRUCIBLE ramps and the lineage view were built this session.</p>
   <h3>What breaks this now</h3>
   <ol>
     <li><b>Speed.</b> Python is fine for tools and load-time generation, and too slow for per-frame crowds. <i>Fix:</i> cache by (type hash, seed); P1 Rust core.</li>

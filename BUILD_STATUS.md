@@ -4,7 +4,7 @@ PixelGoblin v0u1p0 · engine major 0
 
 Written only when every build gate ran. Counts below are derived by the run, not typed.
 
-- Build gates passed: 20 of 21
+- Build gates passed: 21 of 21
 - Plan gates covered by passing build gates: 29 of 29
 - Assertions: 1261
 
@@ -20,7 +20,7 @@ Written only when every build gate ran. Counts below are derived by the run, not
 | B07 | I/O, export, provenance, share codes | G14, G23 | PASS |
 | B08 | two verdicts, never merged | G15 | PASS |
 | B09 | hazard layer: flashing and licences | G16, G17 | PASS |
-| B10 | falsification (mutation testing) | — | FAIL |
+| B10 | falsification (mutation testing) | — | PASS |
 | B11 | Vanilla Core flavor contract | G18 | PASS |
 | B12 | scrub (vanilla vs flavor) and leak guard | G19 | PASS |
 | B13 | cross-language parity (JavaScript: core, rig, views, beasts, city) | G20 | PASS |
