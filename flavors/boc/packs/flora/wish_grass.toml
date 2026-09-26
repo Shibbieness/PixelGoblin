@@ -1,0 +1,28 @@
+# Wish-grass: Legendary Fey Forest reagent.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.wish_grass"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [16, 16]
+label = "Wish-grass"
+axiom = "X"
+iterations = 2
+step = [1, 2]
+leaf_radius = 0
+fruit_chance = 10
+trunk_width = 1
+biome = "forest"
+
+[provenance]
+source = "book-of-cities: flora (forest)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F[+FX][-FX]", weight = 2 }, { to = "F[+FX]FX", weight = 1 }, { to = "F[-FX]FX", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#d4a82e"
+bark = ["#131f0c", "#4c873d", "#95cd90"]
+leaf = ["#3c6126", "#5eaa43", "#94c98a", "#d2e9d0"]

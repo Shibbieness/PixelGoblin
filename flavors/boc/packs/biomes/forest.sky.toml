@@ -1,0 +1,41 @@
+# Forest: Tree-dominated regions from temperate to jungle, haunted and fey.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.forest.sky"
+tag = "env"
+generator = "parallax"
+license = "Proprietary"
+size = [160, 90]
+label = "Forest sky"
+stars = 0
+
+[provenance]
+source = "book-of-cities: biomes (Forest)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+sky = ["#275a85", "#3976c0", "#7897cd", "#b0bfe2", "#e8ebf6"]
+star = "#fff4e0"
+
+[[layers]]
+name = "far"
+colors = ["#0b1207", "#305627", "#4d9c47"]
+base = 60
+periods = [40, 12]
+amps = [12, 4]
+scroll = 20
+
+[[layers]]
+name = "mid"
+colors = ["#121007", "#686830", "#acb662"]
+base = 74
+periods = [26, 9]
+amps = [8, 3]
+scroll = 50
+
+[[layers]]
+name = "ground"
+colors = ["#120a08", "#150e0a", "#694e35"]
+base = 88
+periods = [16, 5]
+amps = [3, 2]
+scroll = 100

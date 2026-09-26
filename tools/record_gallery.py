@@ -163,7 +163,40 @@ def session4(out: Path) -> None:
     print(f"{out}  session 4 images")
 
 
+def session5(out: Path) -> None:
+    """Resource packs, folk and traits, Goblin Grounds."""
+    from pixelgoblin import cards, sandbox
+    from pixelgoblin.gen import rig3d
+    from pixelgoblin.tiles import autotile
+    out.mkdir(parents=True, exist_ok=True)
+    packs = {p["id"]: p for p in typefile.packs()}
+    folk = []
+    for rid in packs["boc.pack.races"]["types"]:
+        tf = typefile.compose("boc.goblin.guard", rid)
+        g = rig.genome(tf.data, rig.streams_for(tf, 3))
+        folk.append((typefile.load(rid).data["label"][:11], rig.render(tf.data, g, 64)[0]))
+    cards.labelled(folk, 64, 10).save(out / "folk.png", 2)
+    stacks = []
+    for name, sub, role in (("Thrain", "dwarf,axis_flame", "blacksmith"), ("Aelwyn", "elf,axis_frost", "hunter"), ("Ushra", "orc,axis_ferocity", "warrior_heavy"),
+                            ("Pip", "halfling", "cook"), ("Nerissa", "merfolk,axis_water", "fisher"), ("Vex", "drow,axis_shadow", "assassin")):
+        tf = typefile.compose(f"boc.goblin.{role}", sub)
+        g = rig.genome(tf.data, rig.streams_for(tf, seed_from_name(name)))
+        stacks.append((f"{name}", rig3d.render_view(tf.data, g, 64, "iso_sw")))
+    labelled(stacks, 92, 6).save(out / "stacks.png", 2)
+    for pid, fname, cell, cols, sc in (("boc.pack.flora", "flora", 48, 15, 2), ("boc.pack.fauna", "fauna", 32, 14, 3), ("boc.pack.ores", "ores", 16, 20, 4)):
+        items = [(typefile.load(t).data.get("label", "")[:9], gen.frames(typefile.load(t), 1)[0]) for t in packs[pid]["types"]]
+        for k, sheet in enumerate(cards.labelled_pages(items, cell, cols)):
+            sheet.save(out / f"{fname}{'' if k == 0 else k + 1}.png", sc)
+    skies = [t for t in packs["boc.pack.biomes"]["types"] if t.endswith(".sky")]
+    labelled([(typefile.load(t).data["label"][:14], gen.frames(typefile.load(t), 1)[0]) for t in skies], 160, 3).save(out / "biomes.png", 1)
+    sandbox.render(sandbox.world("mountain", 3)).save(out / "grounds_map.png", 2)
+    print(f"{out}  session 5 images")
+
+
 if __name__ == "__main__":
+    if "--session5" in sys.argv:
+        session5(Path(sys.argv[1]))
+        sys.exit(0)
     if "--session4" in sys.argv:
         session4(Path(sys.argv[1]))
         sys.exit(0)

@@ -1,0 +1,60 @@
+# Carp (freshwater)
+schema = "pixelgoblin/type@1"
+id = "boc.fish.carp"
+tag = "creature"
+generator = "mask"
+license = "Proprietary"
+size = [20, 20]
+label = "Carp"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "underwater"
+
+[provenance]
+source = "book-of-cities: fish (underwater)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#25140a", "#764a1f", "#bc893f", "#d7be8a"]
+
+[[palette.ramps]]
+name = "coat_alt"
+weight = 1
+colors = ["#5a390f", "#b1811e", "#d7bc5e", "#ebe3b0"]
+
+[body]
+anchor = [3, 4]
+template = [
+  "......#",
+  ".....##",
+  "....###",
+  "...####",
+  "..#####",
+  "..#####",
+  "...####",
+  "....###",
+  ".....##",
+  "....###",
+  "...1.##",
+]
+
+[features]
+eyes = 1
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 3
+frame_ms = 220
+
+[[parts]]
+name = "fins"
+chance = 70
+anchor = [7, 8]
+template = ["1..", "#1.", ".#."]
+ramp = "coat_alt"

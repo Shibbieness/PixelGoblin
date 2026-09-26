@@ -1,0 +1,18 @@
+# Swamp: Water-saturated lowlands: marsh, bog, blighted and mana-swamps.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.swamp.ground"
+tag = "terrain"
+generator = "autotile"
+license = "Proprietary"
+size = [16, 16]
+label = "Swamp ground"
+tile = 16
+
+[provenance]
+source = "book-of-cities: biomes (Swamp)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#120a07"
+highlight = "#eff5f0"
+fill = ["#1d2917", "#416236", "#64955b", "#91ba8e"]

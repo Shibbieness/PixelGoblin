@@ -1,0 +1,32 @@
+# PixelGoblin as a VI Builder ML Process (LATTICE/BLOOM Stage 6 process_record shape).
+# The factory fills process_id, build_timestamp, staleness_state and provenance; these are
+# PixelGoblin's own proposed values. Local-first: no endpoint needs a network.
+process_record:
+  id: pixelgoblin-engine-v0u1p0
+  kind: tool
+  tier: 2b
+  name: PixelGoblin
+  cognitive_character: deterministic synthesis; the same words always make the same pixels
+  optimal_for: characters at every size and from any side, resource packs, cities from names, sandbox worlds
+  weak_for: hand-drawn art direction; anything that needs a model
+  voice: plain, short sentences (for Mark)
+  cals_route: pixel-art
+  endpoints:
+    - kind: query
+      handler: "mcp:pixelgoblin_list | cli:python3 -m pixelgoblin list"
+    - kind: status
+      handler: "mcp:pixelgoblin_selftest | cli:python3 -m pixelgoblin validate types flavors"
+    - kind: shutdown
+      handler: "mcp: close stdin | cli: exits on completion"
+  origin:
+    daemon: pixelgoblin-mcp (stdio, standard library)
+    corpus: types/ + flavors/ (including flavors/boc/packs/)
+    pipeline: tools/package.py
+    slm_spec_anchor: null
+  provenance:
+    forged: 2026-09-26
+    base_model: null
+    training_corpus_size: 0
+  castle_assignments:
+    - Pixel Art Castle (proposed)
+  tags: ["#vi-builder-tier4", "#cals-namespace"]

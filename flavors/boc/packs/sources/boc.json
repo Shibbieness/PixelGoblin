@@ -1,0 +1,3812 @@
+{
+ "source_files": [
+  "SKILL.md",
+  "PseudoSKILL.md",
+  "updates/misc/pending-core-updates-20260425.md",
+  "build/docs/index-and-glossary.md",
+  "build/docs/stage-0-foundation.md",
+  "build/docs/stage-2-city-generation.md",
+  "build/docs/stage-4-economy-items.md",
+  "build/docs/stage-5-quests-blessings-events.md",
+  "build/docs/stage-6-dungeon-generation.md",
+  "build/docs/stage-6-5-interiors.md",
+  "build/docs/stage-7-wilderness.md"
+ ],
+ "meta": {
+  "source": "Book of Cities PseudoSkill v1.0.0",
+  "author": "Shibbieness (Mark)",
+  "organization": "M MAOU LLC",
+  "notes": "Colors mostly not stated in source; entries with inferred_colors=true use plausible palettes. Race height/build/ears largely inferred from stated doorway/ceiling scales and genre convention. 'Goblin improvised-into-comfort' is canonical vocabulary (never 'cluttered')."
+ },
+ "races": [
+  {
+   "id": "human",
+   "name": "Human",
+   "summary": "Reference baseline race; stone-and-timber, moderate on every axis.",
+   "height": "medium",
+   "build": "average",
+   "ears": "round",
+   "skin_colors": [
+    "fair",
+    "tan",
+    "brown"
+   ],
+   "features": [],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "elf",
+   "name": "Elf",
+   "summary": "Long-lived, calligraphic, nature-integrated builders of grown wood and crystal.",
+   "height": "tall",
+   "build": "slight",
+   "ears": "pointed",
+   "skin_colors": [
+    "pale",
+    "fair",
+    "golden"
+   ],
+   "features": [],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "dwarf",
+   "name": "Dwarf",
+   "summary": "Long-lived clan-bound forge folk who carve cities into mountains (1.6m ceilings).",
+   "height": "short",
+   "build": "stocky",
+   "ears": "round",
+   "skin_colors": [
+    "ruddy",
+    "tan",
+    "brown"
+   ],
+   "features": [
+    "beard"
+   ],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "orc",
+   "name": "Orc",
+   "summary": "Honor-coded martial race; functional, heavy, defensible architecture.",
+   "height": "tall",
+   "build": "heavy",
+   "ears": "pointed",
+   "skin_colors": [
+    "grey-green",
+    "olive",
+    "grey"
+   ],
+   "features": [],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "goblin",
+   "name": "Goblin",
+   "summary": "Small (~1.2m) tinkerers whose homes are improvised-into-comfort; core race on surface and in dungeons.",
+   "height": "short",
+   "build": "slight",
+   "ears": "long",
+   "skin_colors": [
+    "green",
+    "olive",
+    "yellow-green"
+   ],
+   "features": [],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "halfling",
+   "name": "Halfling",
+   "summary": "Small hearth-loving folk of round rooms, textiles and big pantries (1.5m ceilings).",
+   "height": "short",
+   "build": "average",
+   "ears": "round",
+   "skin_colors": [
+    "fair",
+    "rosy",
+    "tan"
+   ],
+   "features": [],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "gnome",
+   "name": "Gnome",
+   "summary": "Eccentric mechanical tinkerers with workshop space in nearly every room.",
+   "height": "short",
+   "build": "slight",
+   "ears": "round",
+   "skin_colors": [
+    "fair",
+    "tan",
+    "ruddy"
+   ],
+   "features": [],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "tiefling",
+   "name": "Tiefling",
+   "summary": "Infernal-aesthetic scholarly folk; dark, precise geometric decor, comfortable in low light.",
+   "height": "medium",
+   "build": "average",
+   "ears": "pointed",
+   "skin_colors": [
+    "red",
+    "purple",
+    "dark grey"
+   ],
+   "features": [],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "dungeon_dweller",
+   "name": "Dungeon Dweller",
+   "summary": "Any origin race that stayed underground; identity tied to the dungeon, not the origin race.",
+   "height": "medium",
+   "build": "average",
+   "ears": "round",
+   "skin_colors": [
+    "pale",
+    "grey",
+    "ashen"
+   ],
+   "features": [],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "infernal",
+   "name": "Infernal",
+   "summary": "Hierarchical contract-bound race of the infernal realm; metallic reds and blacks, scorched paper.",
+   "height": "tall",
+   "build": "average",
+   "ears": "pointed",
+   "skin_colors": [
+    "crimson",
+    "black",
+    "ash"
+   ],
+   "features": [],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "divine",
+   "name": "Divine",
+   "summary": "Race of illuminated gold-and-halo civic order; everything slightly too perfect.",
+   "height": "tall",
+   "build": "slight",
+   "ears": "round",
+   "skin_colors": [
+    "gold",
+    "ivory",
+    "luminous white"
+   ],
+   "features": [],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "half_elf",
+   "name": "Half-Elf",
+   "summary": "Mixed-race; blended elven and human aesthetics per upbringing.",
+   "height": "medium",
+   "build": "slight",
+   "ears": "pointed",
+   "skin_colors": [
+    "fair",
+    "tan"
+   ],
+   "features": [],
+   "variant_of": "elf",
+   "inferred_colors": true
+  },
+  {
+   "id": "half_orc",
+   "name": "Half-Orc",
+   "summary": "Mixed-race; blended orcish and human aesthetics per upbringing.",
+   "height": "medium",
+   "build": "stocky",
+   "ears": "pointed",
+   "skin_colors": [
+    "grey-green",
+    "tan"
+   ],
+   "features": [],
+   "variant_of": "orc",
+   "inferred_colors": true
+  },
+  {
+   "id": "wood_elf",
+   "name": "Wood Elf",
+   "summary": "Wilderness forest-integrated elves, less civic.",
+   "height": "tall",
+   "build": "slight",
+   "ears": "pointed",
+   "skin_colors": [
+    "tan",
+    "olive",
+    "bark brown"
+   ],
+   "features": [],
+   "variant_of": "elf",
+   "inferred_colors": true
+  },
+  {
+   "id": "mountain_dwarf",
+   "name": "Mountain Dwarf",
+   "summary": "Wilderness dwarf clans of the mountain heights.",
+   "height": "short",
+   "build": "stocky",
+   "ears": "round",
+   "skin_colors": [
+    "ruddy",
+    "weathered tan"
+   ],
+   "features": [
+    "beard"
+   ],
+   "variant_of": "dwarf",
+   "inferred_colors": true
+  },
+  {
+   "id": "coastal_halfling",
+   "name": "Coastal Halfling",
+   "summary": "Seafaring halfling clans; Feral-Coast lines can dive reefs unaided.",
+   "height": "short",
+   "build": "average",
+   "ears": "round",
+   "skin_colors": [
+    "sun-browned",
+    "tan"
+   ],
+   "features": [],
+   "variant_of": "halfling",
+   "inferred_colors": true
+  },
+  {
+   "id": "wild_orc",
+   "name": "Wild Orc",
+   "summary": "Tribal orcs of plains and hills.",
+   "height": "tall",
+   "build": "heavy",
+   "ears": "pointed",
+   "skin_colors": [
+    "olive",
+    "grey-green"
+   ],
+   "features": [],
+   "variant_of": "orc",
+   "inferred_colors": true
+  },
+  {
+   "id": "gnome_tinker",
+   "name": "Gnome-Tinker",
+   "summary": "Gnomes who keep wilderness workshops.",
+   "height": "short",
+   "build": "slight",
+   "ears": "round",
+   "skin_colors": [
+    "fair",
+    "tan"
+   ],
+   "features": [],
+   "variant_of": "gnome",
+   "inferred_colors": true
+  },
+  {
+   "id": "hill_goblin",
+   "name": "Hill-Goblin",
+   "summary": "Surface goblin variant preferring remote hill country.",
+   "height": "short",
+   "build": "slight",
+   "ears": "long",
+   "skin_colors": [
+    "green",
+    "moss"
+   ],
+   "features": [],
+   "variant_of": "goblin",
+   "inferred_colors": true
+  },
+  {
+   "id": "wanderer_human",
+   "name": "Wanderer-Human",
+   "summary": "Human nomad peoples with distinct culture.",
+   "height": "medium",
+   "build": "average",
+   "ears": "round",
+   "skin_colors": [
+    "tan",
+    "brown"
+   ],
+   "features": [],
+   "variant_of": "human",
+   "inferred_colors": true
+  },
+  {
+   "id": "lake_tending_human",
+   "name": "Lake-Tending Human",
+   "summary": "Human lineage of tended lakes; Swimming Grace, Cold Water Adaptation.",
+   "height": "medium",
+   "build": "average",
+   "ears": "round",
+   "skin_colors": [
+    "fair",
+    "tan"
+   ],
+   "features": [],
+   "variant_of": "human",
+   "inferred_colors": true
+  },
+  {
+   "id": "coastal_temple_elf",
+   "name": "Coastal-Temple Elf",
+   "summary": "Elves of water temples; strongest lines have inborn Water-Breathing.",
+   "height": "tall",
+   "build": "slight",
+   "ears": "pointed",
+   "skin_colors": [
+    "pale",
+    "sea-grey"
+   ],
+   "features": [],
+   "variant_of": "elf",
+   "inferred_colors": true
+  },
+  {
+   "id": "flooded_dungeon_adapted_dwarf",
+   "name": "Flooded-Dungeon Adapted Dwarf",
+   "summary": "Dwarves of flooded holds; Pressure Resistance, heavy Salt Tolerance.",
+   "height": "short",
+   "build": "stocky",
+   "ears": "round",
+   "skin_colors": [
+    "pale",
+    "ruddy"
+   ],
+   "features": [
+    "beard"
+   ],
+   "variant_of": "dwarf",
+   "inferred_colors": true
+  },
+  {
+   "id": "tide_reader_goblin",
+   "name": "Tide-Reader Goblin",
+   "summary": "Coastal goblin variant with inherited Tide-Reading.",
+   "height": "short",
+   "build": "slight",
+   "ears": "long",
+   "skin_colors": [
+    "sea-green",
+    "olive"
+   ],
+   "features": [],
+   "variant_of": "goblin",
+   "inferred_colors": true
+  },
+  {
+   "id": "surface_goblin",
+   "name": "Surface Goblin",
+   "summary": "Goblins of surface hamlets to metropolises; many small windows, gardens.",
+   "height": "short",
+   "build": "slight",
+   "ears": "long",
+   "skin_colors": [
+    "green",
+    "olive"
+   ],
+   "features": [],
+   "variant_of": "goblin",
+   "inferred_colors": true
+  },
+  {
+   "id": "dungeon_goblin",
+   "name": "Dungeon Goblin",
+   "summary": "Warren goblins lit by tended glow-fungi (blue-cap); shaft-and-ladder homes.",
+   "height": "short",
+   "build": "slight",
+   "ears": "long",
+   "skin_colors": [
+    "pale green",
+    "grey-green"
+   ],
+   "features": [],
+   "variant_of": "goblin",
+   "inferred_colors": true
+  },
+  {
+   "id": "duergar",
+   "name": "Duergar",
+   "summary": "Deep-dwarves: tougher, darker, more clan-bound cousins of surface dwarves.",
+   "height": "short",
+   "build": "stocky",
+   "ears": "round",
+   "skin_colors": [
+    "ash grey",
+    "dark grey"
+   ],
+   "features": [
+    "beard"
+   ],
+   "variant_of": "dwarf",
+   "inferred_colors": true
+  },
+  {
+   "id": "drow",
+   "name": "Drow",
+   "summary": "Matriarchal spider-worshipping elves of hierarchical spire-cities.",
+   "height": "medium",
+   "build": "slight",
+   "ears": "pointed",
+   "skin_colors": [
+    "obsidian",
+    "dark purple",
+    "slate"
+   ],
+   "features": [],
+   "variant_of": "elf",
+   "inferred_colors": true
+  },
+  {
+   "id": "cave_orc",
+   "name": "Cave-Orc",
+   "summary": "Larger-than-surface orcs of warlord-warrens with ritual combat.",
+   "height": "huge",
+   "build": "heavy",
+   "ears": "pointed",
+   "skin_colors": [
+    "grey",
+    "dark green"
+   ],
+   "features": [],
+   "variant_of": "orc",
+   "inferred_colors": true
+  },
+  {
+   "id": "crystal_clan",
+   "name": "Crystal-clan",
+   "summary": "Rare crystalline humanoids of geode-settlements.",
+   "height": "medium",
+   "build": "stocky",
+   "ears": "none",
+   "skin_colors": [
+    "quartz white",
+    "amethyst",
+    "translucent"
+   ],
+   "features": [
+    "crystal"
+   ],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "dungeon_ratfolk",
+   "name": "Dungeon-Ratfolk",
+   "summary": "Ratmen of layered market-burrows and secretive networks.",
+   "height": "short",
+   "build": "slight",
+   "ears": "round",
+   "skin_colors": [
+    "brown",
+    "grey"
+   ],
+   "features": [
+    "fur",
+    "tail"
+   ],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "kuo_toa",
+   "name": "Kuo-toa",
+   "summary": "Fish-folk of flooded deep areas and underwater wilds.",
+   "height": "medium",
+   "build": "average",
+   "ears": "fins",
+   "skin_colors": [
+    "grey-green",
+    "slimy blue"
+   ],
+   "features": [
+    "scales",
+    "gills"
+   ],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "merfolk",
+   "name": "Merfolk",
+   "summary": "Fully aquatic humanoids with fish-like lower body; desiccate out of water.",
+   "height": "medium",
+   "build": "average",
+   "ears": "fins",
+   "skin_colors": [
+    "sea-green",
+    "blue",
+    "silver"
+   ],
+   "features": [
+    "scales",
+    "tail",
+    "gills"
+   ],
+   "variant_of": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "sea_elf",
+   "name": "Sea-Elf",
+   "summary": "Aquatic elven variant; refined, water-breathing, keepers of sunken libraries.",
+   "height": "tall",
+   "build": "slight",
+   "ears": "pointed",
+   "skin_colors": [
+    "pale blue",
+    "sea-green"
+   ],
+   "features": [
+    "gills"
+   ],
+   "variant_of": "elf",
+   "inferred_colors": true
+  },
+  {
+   "id": "drowned_hall_dwarf",
+   "name": "Drowned-Hall Dwarf",
+   "summary": "Aquatic dwarves who engineer sealed air halls; pressure-immune, cold-adapted, do not breathe water.",
+   "height": "short",
+   "build": "stocky",
+   "ears": "round",
+   "skin_colors": [
+    "pale",
+    "blue-grey"
+   ],
+   "features": [
+    "beard"
+   ],
+   "variant_of": "dwarf",
+   "inferred_colors": true
+  },
+  {
+   "id": "river_halfling",
+   "name": "River-Halfling",
+   "summary": "Freshwater halflings living on houseboats.",
+   "height": "short",
+   "build": "average",
+   "ears": "round",
+   "skin_colors": [
+    "tan",
+    "river-brown"
+   ],
+   "features": [],
+   "variant_of": "halfling",
+   "inferred_colors": true
+  },
+  {
+   "id": "selkie_folk",
+   "name": "Selkie-folk",
+   "summary": "Rare shapechanging human/elf variant living between sea and land.",
+   "height": "medium",
+   "build": "slight",
+   "ears": "round",
+   "skin_colors": [
+    "seal grey",
+    "pale"
+   ],
+   "features": [
+    "fur"
+   ],
+   "variant_of": "human",
+   "inferred_colors": true
+  }
+ ],
+ "biomes": [
+  {
+   "id": "forest",
+   "name": "Forest",
+   "summary": "Tree-dominated regions from temperate to jungle, haunted and fey.",
+   "sky": [
+    "pale blue"
+   ],
+   "ground": [
+    "dark loam",
+    "moss green"
+   ],
+   "foliage": [
+    "deep green",
+    "olive"
+   ],
+   "terrain": "grass",
+   "inferred_colors": true,
+   "sub_types": [
+    "Temperate Forest",
+    "Deep Forest",
+    "Boreal Forest",
+    "Jungle",
+    "Haunted Forest",
+    "Fey Forest",
+    "Enchanted Grove"
+   ]
+  },
+  {
+   "id": "mountain",
+   "name": "Mountain",
+   "summary": "Elevated rocky regions: hills to snow peaks, volcanic and crystal.",
+   "sky": [
+    "cold blue",
+    "white"
+   ],
+   "ground": [
+    "grey stone",
+    "slate"
+   ],
+   "foliage": [
+    "dark green",
+    "heather purple"
+   ],
+   "terrain": "rock",
+   "inferred_colors": true,
+   "sub_types": [
+    "Hills",
+    "Foothills",
+    "Proper Mountains",
+    "High Mountains",
+    "Volcanic Mountains",
+    "Crystal Peaks"
+   ]
+  },
+  {
+   "id": "coast",
+   "name": "Coast",
+   "summary": "Land-sea interface: beaches, cliffs, mangroves, frozen coasts.",
+   "sky": [
+    "bright blue"
+   ],
+   "ground": [
+    "sand",
+    "wet grey rock"
+   ],
+   "foliage": [
+    "sea green",
+    "kelp brown"
+   ],
+   "terrain": "sand",
+   "inferred_colors": true,
+   "sub_types": [
+    "Sandy Beach",
+    "Rocky Coast",
+    "Mangrove Coast",
+    "Frozen Coast",
+    "Cliff Coast",
+    "Archipelago Edge"
+   ]
+  },
+  {
+   "id": "swamp",
+   "name": "Swamp",
+   "summary": "Water-saturated lowlands: marsh, bog, blighted and mana-swamps.",
+   "sky": [
+    "hazy grey-green"
+   ],
+   "ground": [
+    "peat brown",
+    "murky green"
+   ],
+   "foliage": [
+    "olive",
+    "dark green"
+   ],
+   "terrain": "swamp",
+   "inferred_colors": true,
+   "sub_types": [
+    "Freshwater Marsh",
+    "Deep Swamp",
+    "Bog",
+    "Blighted Swamp",
+    "Mana-Swamp",
+    "Salt Marsh"
+   ]
+  },
+  {
+   "id": "plain",
+   "name": "Plain",
+   "summary": "Open grassland, prairie, steppe and flowering meadows.",
+   "sky": [
+    "wide blue"
+   ],
+   "ground": [
+    "tan",
+    "golden brown"
+   ],
+   "foliage": [
+    "yellow-green",
+    "gold"
+   ],
+   "terrain": "grass",
+   "inferred_colors": true,
+   "sub_types": [
+    "Rolling Grassland",
+    "Open Prairie",
+    "Steppe",
+    "High Plains",
+    "Flowering Meadows",
+    "Windblown Plains"
+   ]
+  },
+  {
+   "id": "desert",
+   "name": "Desert",
+   "summary": "Arid sand, rock, salt flats, glass desert and oases.",
+   "sky": [
+    "pale yellow",
+    "hot blue"
+   ],
+   "ground": [
+    "sand gold",
+    "orange"
+   ],
+   "foliage": [
+    "dusty green"
+   ],
+   "terrain": "sand",
+   "inferred_colors": true,
+   "sub_types": [
+    "Sand Desert",
+    "Rocky Desert",
+    "Cold Desert",
+    "Salt Flats",
+    "Glass Desert",
+    "Oasis-System"
+   ]
+  },
+  {
+   "id": "tundra",
+   "name": "Tundra",
+   "summary": "Cold permafrost, glacier edge and frozen taiga.",
+   "sky": [
+    "pale grey",
+    "aurora green"
+   ],
+   "ground": [
+    "snow white",
+    "ice blue"
+   ],
+   "foliage": [
+    "grey-green",
+    "rust"
+   ],
+   "terrain": "snow",
+   "inferred_colors": true,
+   "sub_types": [
+    "Arctic Tundra",
+    "Alpine Tundra",
+    "Subarctic",
+    "Glacier Edge",
+    "Frozen Taiga"
+   ]
+  },
+  {
+   "id": "badlands",
+   "name": "Badlands",
+   "summary": "Eroded canyon lands, plateaus, volcanic ash and scarred battlefields.",
+   "sky": [
+    "dusty orange"
+   ],
+   "ground": [
+    "red rock",
+    "ash grey"
+   ],
+   "foliage": [
+    "dry olive",
+    "brown"
+   ],
+   "terrain": "rock",
+   "inferred_colors": true,
+   "sub_types": [
+    "Canyon Lands",
+    "Broken Plateau",
+    "Volcanic Badlands",
+    "Magical Scarred Lands",
+    "Ancient Battlefields",
+    "Waste"
+   ]
+  },
+  {
+   "id": "underwater",
+   "name": "Underwater",
+   "summary": "Aquatic sub-space: reefs, kelp forests, open/deep ocean, trenches, lakes, sunken ruins, mana tide.",
+   "sky": [
+    "teal",
+    "deep blue"
+   ],
+   "ground": [
+    "sand",
+    "coral pink",
+    "dark silt"
+   ],
+   "foliage": [
+    "kelp brown",
+    "sea green"
+   ],
+   "terrain": "water",
+   "inferred_colors": true,
+   "sub_types": [
+    "Shallow Reef",
+    "Kelp Forest",
+    "Open Ocean",
+    "Deep Ocean",
+    "Trench",
+    "Freshwater Lake",
+    "Freshwater River",
+    "Subterranean Lake",
+    "Sunken Ruins",
+    "Mana Tide"
+   ]
+  }
+ ],
+ "flora": [
+  {
+   "id": "elder",
+   "name": "Elder",
+   "biome": "forest",
+   "form": "shrub",
+   "colors": [
+    "dark purple",
+    "cream"
+   ],
+   "notes": "Elderberry and elderflower; medicinal.",
+   "inferred_colors": true
+  },
+  {
+   "id": "yarrow",
+   "name": "Yarrow",
+   "biome": "forest",
+   "form": "flower",
+   "colors": [
+    "white",
+    "green"
+   ],
+   "notes": "Common herb that stops bleeding.",
+   "inferred_colors": true
+  },
+  {
+   "id": "comfrey",
+   "name": "Comfrey",
+   "biome": "forest",
+   "form": "shrub",
+   "colors": [
+    "green",
+    "purple"
+   ],
+   "notes": "Bone-knit herb.",
+   "inferred_colors": true
+  },
+  {
+   "id": "wild_raspberry",
+   "name": "Wild Raspberry",
+   "biome": "forest",
+   "form": "shrub",
+   "colors": [
+    "red",
+    "green"
+   ],
+   "notes": "Wild raspberry/blackberry fruit.",
+   "inferred_colors": true
+  },
+  {
+   "id": "wild_apple",
+   "name": "Wild Apple",
+   "biome": "forest",
+   "form": "tree",
+   "colors": [
+    "red",
+    "green"
+   ],
+   "notes": "Fruit of wild apple trees.",
+   "inferred_colors": true
+  },
+  {
+   "id": "mandrake",
+   "name": "Mandrake",
+   "biome": "forest",
+   "form": "crop",
+   "colors": [
+    "brown",
+    "green"
+   ],
+   "notes": "Rare alchemy root.",
+   "inferred_colors": true
+  },
+  {
+   "id": "wolfsbane",
+   "name": "Wolfsbane",
+   "biome": "forest",
+   "form": "flower",
+   "colors": [
+    "violet",
+    "blue"
+   ],
+   "notes": "Toxic aconite.",
+   "inferred_colors": true
+  },
+  {
+   "id": "foxglove",
+   "name": "Foxglove",
+   "biome": "forest",
+   "form": "flower",
+   "colors": [
+    "pink",
+    "purple"
+   ],
+   "notes": "Cardiac reagent.",
+   "inferred_colors": true
+  },
+  {
+   "id": "oak",
+   "name": "Oak",
+   "biome": "forest",
+   "form": "tree",
+   "colors": [
+    "dark green",
+    "brown"
+   ],
+   "notes": "Structural binding wood.",
+   "inferred_colors": true
+  },
+  {
+   "id": "birch",
+   "name": "Birch",
+   "biome": "forest",
+   "form": "tree",
+   "colors": [
+    "white",
+    "green"
+   ],
+   "notes": "Birch-bark parchment source.",
+   "inferred_colors": true
+  },
+  {
+   "id": "ancient_oak",
+   "name": "Ancient-oak",
+   "biome": "forest",
+   "form": "tree",
+   "colors": [
+    "deep green",
+    "dark brown"
+   ],
+   "notes": "Deep Forest tree-core material.",
+   "inferred_colors": true
+  },
+  {
+   "id": "wyrdwood",
+   "name": "Wyrdwood",
+   "biome": "forest",
+   "form": "tree",
+   "colors": [
+    "violet-green",
+    "dark bark"
+   ],
+   "notes": "Legendary rare Deep Forest wood.",
+   "inferred_colors": true
+  },
+  {
+   "id": "moonleaf",
+   "name": "Moonleaf",
+   "biome": "forest",
+   "form": "shrub",
+   "colors": [
+    "silver",
+    "pale blue"
+   ],
+   "notes": "Blooms at night.",
+   "inferred_colors": true
+  },
+  {
+   "id": "silver_fern",
+   "name": "Silver-Fern",
+   "biome": "forest",
+   "form": "shrub",
+   "colors": [
+    "silver",
+    "pale green"
+   ],
+   "notes": "Rare Deep Forest fern.",
+   "inferred_colors": true
+  },
+  {
+   "id": "cloudberry",
+   "name": "Cloudberry",
+   "biome": "forest",
+   "form": "shrub",
+   "colors": [
+    "amber",
+    "green"
+   ],
+   "notes": "Rare northern boreal fruit.",
+   "inferred_colors": true
+  },
+  {
+   "id": "orchid",
+   "name": "Orchid",
+   "biome": "forest",
+   "form": "flower",
+   "colors": [
+    "magenta",
+    "white"
+   ],
+   "notes": "Jungle beauty flora.",
+   "inferred_colors": true
+  },
+  {
+   "id": "vine_of_strangling",
+   "name": "Vine-of-strangling",
+   "biome": "forest",
+   "form": "vine",
+   "colors": [
+    "dark green"
+   ],
+   "notes": "Predatory jungle vine; minor hazard.",
+   "inferred_colors": true
+  },
+  {
+   "id": "ghost_bark_tree",
+   "name": "Ghost-bark tree",
+   "biome": "forest",
+   "form": "tree",
+   "colors": [
+    "pale grey",
+    "white"
+   ],
+   "notes": "Pale Haunted Forest tree."
+  },
+  {
+   "id": "wailing_willow",
+   "name": "Wailing-willow",
+   "biome": "forest",
+   "form": "tree",
+   "colors": [
+    "grey-green",
+    "pale"
+   ],
+   "notes": "Haunted Forest; dramatic.",
+   "inferred_colors": true
+  },
+  {
+   "id": "wraith_rose",
+   "name": "Wraith-Rose",
+   "biome": "forest",
+   "form": "flower",
+   "colors": [
+    "pale white",
+    "grey"
+   ],
+   "notes": "Spirit-touched rose.",
+   "inferred_colors": true
+  },
+  {
+   "id": "fey_bloom",
+   "name": "Fey-bloom",
+   "biome": "forest",
+   "form": "flower",
+   "colors": [
+    "iridescent",
+    "pink",
+    "teal"
+   ],
+   "notes": "Shifts appearance between observations.",
+   "inferred_colors": true
+  },
+  {
+   "id": "wish_grass",
+   "name": "Wish-grass",
+   "biome": "forest",
+   "form": "grass",
+   "colors": [
+    "gold",
+    "pale green"
+   ],
+   "notes": "Legendary Fey Forest reagent.",
+   "inferred_colors": true
+  },
+  {
+   "id": "druid_oak",
+   "name": "Druid-oak",
+   "biome": "forest",
+   "form": "tree",
+   "colors": [
+    "deep green",
+    "gold"
+   ],
+   "notes": "One protected tree at each Enchanted Grove centre.",
+   "inferred_colors": true
+  },
+  {
+   "id": "mountain_mint",
+   "name": "Mountain-mint",
+   "biome": "mountain",
+   "form": "shrub",
+   "colors": [
+    "mint green"
+   ],
+   "notes": "Alpine herb.",
+   "inferred_colors": true
+  },
+  {
+   "id": "highland_heather",
+   "name": "Highland heather",
+   "biome": "mountain",
+   "form": "shrub",
+   "colors": [
+    "purple",
+    "pink"
+   ],
+   "notes": "Hills heather.",
+   "inferred_colors": true
+  },
+  {
+   "id": "ice_bloom",
+   "name": "Ice-bloom",
+   "biome": "mountain",
+   "form": "flower",
+   "colors": [
+    "ice blue",
+    "white"
+   ],
+   "notes": "Grows only at high elevation.",
+   "inferred_colors": true
+  },
+  {
+   "id": "peak_lichen",
+   "name": "Peak-lichen",
+   "biome": "mountain",
+   "form": "grass",
+   "colors": [
+    "grey-green",
+    "orange"
+   ],
+   "notes": "Ancient slow-growing lichen.",
+   "inferred_colors": true
+  },
+  {
+   "id": "firebloom",
+   "name": "Firebloom",
+   "biome": "mountain",
+   "form": "flower",
+   "colors": [
+    "orange",
+    "red"
+   ],
+   "notes": "Grows near lava flows.",
+   "inferred_colors": true
+  },
+  {
+   "id": "ash_orchid",
+   "name": "Ash-orchid",
+   "biome": "mountain",
+   "form": "flower",
+   "colors": [
+    "grey",
+    "ember orange"
+   ],
+   "notes": "Rare flower in volcanic ash.",
+   "inferred_colors": true
+  },
+  {
+   "id": "crystal_sprig",
+   "name": "Crystal-sprig",
+   "biome": "mountain",
+   "form": "shrub",
+   "colors": [
+    "clear",
+    "pale violet"
+   ],
+   "notes": "Mineral-heavy Crystal Peaks plant.",
+   "inferred_colors": true
+  },
+  {
+   "id": "salt_grass",
+   "name": "Salt-grass",
+   "biome": "coast",
+   "form": "grass",
+   "colors": [
+    "pale green",
+    "tan"
+   ],
+   "notes": "Beach-hardy.",
+   "inferred_colors": true
+  },
+  {
+   "id": "tide_flower",
+   "name": "Tide-flower",
+   "biome": "coast",
+   "form": "flower",
+   "colors": [
+    "sea blue",
+    "white"
+   ],
+   "notes": "Edge-of-tide blooms.",
+   "inferred_colors": true
+  },
+  {
+   "id": "mangrove_root",
+   "name": "Mangrove-root",
+   "biome": "coast",
+   "form": "tree",
+   "colors": [
+    "brown",
+    "dark green"
+   ],
+   "notes": "Mangrove coast.",
+   "inferred_colors": true
+  },
+  {
+   "id": "pearl_moss",
+   "name": "Pearl-moss",
+   "biome": "coast",
+   "form": "grass",
+   "colors": [
+    "pearl white",
+    "pale green"
+   ],
+   "notes": "Rare tidepool moss; faint luminescence.",
+   "inferred_colors": true
+  },
+  {
+   "id": "cypress",
+   "name": "Cypress",
+   "biome": "swamp",
+   "form": "tree",
+   "colors": [
+    "dark green",
+    "grey-brown"
+   ],
+   "notes": "Dominant swamp tree.",
+   "inferred_colors": true
+  },
+  {
+   "id": "cattail",
+   "name": "Cattail",
+   "biome": "swamp",
+   "form": "reed",
+   "colors": [
+    "brown",
+    "green"
+   ],
+   "notes": "Common shallow-water reed.",
+   "inferred_colors": true
+  },
+  {
+   "id": "swamp_iris",
+   "name": "Swamp-iris",
+   "biome": "swamp",
+   "form": "flower",
+   "colors": [
+    "purple",
+    "yellow"
+   ],
+   "notes": "Rare bloom.",
+   "inferred_colors": true
+  },
+  {
+   "id": "sundew",
+   "name": "Sundew",
+   "biome": "swamp",
+   "form": "flower",
+   "colors": [
+    "red",
+    "green"
+   ],
+   "notes": "Carnivorous; alchemical.",
+   "inferred_colors": true
+  },
+  {
+   "id": "mana_bloom",
+   "name": "Mana-bloom",
+   "biome": "swamp",
+   "form": "flower",
+   "colors": [
+    "violet",
+    "cyan"
+   ],
+   "notes": "Grows in mana-swamps.",
+   "inferred_colors": true
+  },
+  {
+   "id": "blighted_moss",
+   "name": "Blighted-moss",
+   "biome": "swamp",
+   "form": "grass",
+   "colors": [
+    "sickly yellow",
+    "black"
+   ],
+   "notes": "Blighted swamp moss.",
+   "inferred_colors": true
+  },
+  {
+   "id": "prairie_sage",
+   "name": "Prairie-sage",
+   "biome": "plain",
+   "form": "shrub",
+   "colors": [
+    "silver-green"
+   ],
+   "notes": "Medicinal.",
+   "inferred_colors": true
+  },
+  {
+   "id": "bison_grass",
+   "name": "Bison-grass",
+   "biome": "plain",
+   "form": "grass",
+   "colors": [
+    "gold",
+    "green"
+   ],
+   "notes": "Grows where herds graze.",
+   "inferred_colors": true
+  },
+  {
+   "id": "lightning_daisy",
+   "name": "Lightning-daisy",
+   "biome": "plain",
+   "form": "flower",
+   "colors": [
+    "white",
+    "yellow"
+   ],
+   "notes": "Grows tallest after storms.",
+   "inferred_colors": true
+  },
+  {
+   "id": "windblown_thistle",
+   "name": "Windblown-thistle",
+   "biome": "plain",
+   "form": "flower",
+   "colors": [
+    "purple",
+    "grey-green"
+   ],
+   "notes": "Windblown plains.",
+   "inferred_colors": true
+  },
+  {
+   "id": "cactus",
+   "name": "Cactus",
+   "biome": "desert",
+   "form": "cactus",
+   "colors": [
+    "green",
+    "pink"
+   ],
+   "notes": "Saguaro/barrel/prickly-pear equivalents.",
+   "inferred_colors": true
+  },
+  {
+   "id": "desert_rose",
+   "name": "Desert-rose",
+   "biome": "desert",
+   "form": "flower",
+   "colors": [
+    "rose pink",
+    "sand"
+   ],
+   "notes": "Rare.",
+   "inferred_colors": true
+  },
+  {
+   "id": "desert_palm",
+   "name": "Desert-palm",
+   "biome": "desert",
+   "form": "tree",
+   "colors": [
+    "green",
+    "tan"
+   ],
+   "notes": "Oasis flora.",
+   "inferred_colors": true
+  },
+  {
+   "id": "star_bloom",
+   "name": "Star-bloom",
+   "biome": "desert",
+   "form": "flower",
+   "colors": [
+    "white",
+    "gold"
+   ],
+   "notes": "Appears after meteor falls.",
+   "inferred_colors": true
+  },
+  {
+   "id": "cold_willow",
+   "name": "Cold-willow",
+   "biome": "tundra",
+   "form": "shrub",
+   "colors": [
+    "grey-green"
+   ],
+   "notes": "Dwarf tree of tundra edges.",
+   "inferred_colors": true
+  },
+  {
+   "id": "ice_berry",
+   "name": "Ice-berry",
+   "biome": "tundra",
+   "form": "shrub",
+   "colors": [
+    "pale blue",
+    "white"
+   ],
+   "notes": "Rare; edible through winter.",
+   "inferred_colors": true
+  },
+  {
+   "id": "aurora_lichen",
+   "name": "Aurora-lichen",
+   "biome": "tundra",
+   "form": "grass",
+   "colors": [
+    "green",
+    "violet"
+   ],
+   "notes": "Grows where auroras are frequent.",
+   "inferred_colors": true
+  },
+  {
+   "id": "frost_flower",
+   "name": "Frost-flower",
+   "biome": "tundra",
+   "form": "flower",
+   "colors": [
+    "white",
+    "ice blue"
+   ],
+   "notes": "Rare bloom.",
+   "inferred_colors": true
+  },
+  {
+   "id": "scrub_oak",
+   "name": "Scrub-oak",
+   "biome": "badlands",
+   "form": "tree",
+   "colors": [
+    "dusty green",
+    "brown"
+   ],
+   "notes": "Tough dwarf tree.",
+   "inferred_colors": true
+  },
+  {
+   "id": "battlefield_rose",
+   "name": "Battlefield-rose",
+   "biome": "badlands",
+   "form": "flower",
+   "colors": [
+    "blood red"
+   ],
+   "notes": "Grows where bloodshed happened.",
+   "inferred_colors": true
+  },
+  {
+   "id": "wither_grass",
+   "name": "Wither-grass",
+   "biome": "badlands",
+   "form": "grass",
+   "colors": [
+    "grey",
+    "sickly purple"
+   ],
+   "notes": "Magical-scarred lands.",
+   "inferred_colors": true
+  },
+  {
+   "id": "giant_kelp",
+   "name": "Giant Kelp",
+   "biome": "underwater",
+   "form": "vine",
+   "colors": [
+    "olive brown",
+    "gold"
+   ],
+   "notes": "Structural kelp forming the forest.",
+   "inferred_colors": true
+  },
+  {
+   "id": "coral_bloom",
+   "name": "Coral-Bloom",
+   "biome": "underwater",
+   "form": "shrub",
+   "colors": [
+    "coral pink",
+    "orange"
+   ],
+   "notes": "Living coral with pigmented polyps.",
+   "inferred_colors": true
+  },
+  {
+   "id": "lake_lily",
+   "name": "Lake-Lily",
+   "biome": "underwater",
+   "form": "flower",
+   "colors": [
+    "white",
+    "green"
+   ],
+   "notes": "Floating white flowers of freshwater lakes."
+  },
+  {
+   "id": "glow_alga",
+   "name": "Glow-Alga",
+   "biome": "underwater",
+   "form": "grass",
+   "colors": [
+    "bioluminescent cyan"
+   ],
+   "notes": "Primary light source in some cave lakes.",
+   "inferred_colors": true
+  },
+  {
+   "id": "tomb_rose",
+   "name": "Tomb-Rose",
+   "biome": null,
+   "form": "flower",
+   "colors": [
+    "crimson"
+   ],
+   "notes": "Dungeon plant: crimson flowers on ancient graves."
+  }
+ ],
+ "fungi": [
+  {
+   "id": "forest_cap",
+   "name": "Forest-Cap",
+   "biome": "forest",
+   "cap": "round",
+   "colors": [
+    "brown",
+    "tan"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "glow_cap",
+   "name": "Glow-Cap",
+   "biome": "forest",
+   "cap": "round",
+   "colors": [
+    "pale green",
+    "cyan glow"
+   ],
+   "glows": true,
+   "inferred_colors": true
+  },
+  {
+   "id": "death_cap",
+   "name": "Death-Cap",
+   "biome": "forest",
+   "cap": "round",
+   "colors": [
+    "olive",
+    "white"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "fly_amanita",
+   "name": "Fly-Amanita",
+   "biome": "forest",
+   "cap": "round",
+   "colors": [
+    "red",
+    "white spots"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "blood_amanita",
+   "name": "Blood-Amanita",
+   "biome": "forest",
+   "cap": "round",
+   "colors": [
+    "deep red"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "chanterelle",
+   "name": "Chanterelle",
+   "biome": "forest",
+   "cap": "conical",
+   "colors": [
+    "golden yellow"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "morel",
+   "name": "Morel",
+   "biome": "forest",
+   "cap": "conical",
+   "colors": [
+    "tan",
+    "brown"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "porcini",
+   "name": "Porcini",
+   "biome": "forest",
+   "cap": "round",
+   "colors": [
+    "brown",
+    "cream"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "bear_bread",
+   "name": "Bear-Bread",
+   "biome": "forest",
+   "cap": "shelf",
+   "colors": [
+    "brown",
+    "cream"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "reishi",
+   "name": "Reishi",
+   "biome": "forest",
+   "cap": "shelf",
+   "colors": [
+    "red-brown",
+    "glossy"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "moonlight_mushroom",
+   "name": "Moonlight-Mushroom",
+   "biome": "forest",
+   "cap": "round",
+   "colors": [
+    "silver",
+    "pale blue"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "sun_cap",
+   "name": "Sun-Cap",
+   "biome": "forest",
+   "cap": "round",
+   "colors": [
+    "gold",
+    "orange"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "spirit_shelf",
+   "name": "Spirit-Shelf",
+   "biome": "forest",
+   "cap": "shelf",
+   "colors": [
+    "pale grey",
+    "white"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "fey_ring_cap",
+   "name": "Fey-Ring-Cap",
+   "biome": "forest",
+   "cap": "cluster",
+   "colors": [
+    "pink",
+    "violet"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "witch_button",
+   "name": "Witch-Button",
+   "biome": "forest",
+   "cap": "round",
+   "colors": [
+    "black",
+    "purple"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "bog_cap",
+   "name": "Bog-Cap",
+   "biome": "swamp",
+   "cap": "round",
+   "colors": [
+    "olive",
+    "brown"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "marsh_puff",
+   "name": "Marsh-Puff",
+   "biome": "swamp",
+   "cap": "puffball",
+   "colors": [
+    "muddy white",
+    "brown"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "witch_cap",
+   "name": "Witch-Cap",
+   "biome": "swamp",
+   "cap": "conical",
+   "colors": [
+    "purple",
+    "black"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "mana_fungus",
+   "name": "Mana-Fungus",
+   "biome": "swamp",
+   "cap": "cluster",
+   "colors": [
+    "violet",
+    "cyan"
+   ],
+   "glows": true,
+   "inferred_colors": true
+  },
+  {
+   "id": "miasma_mold",
+   "name": "Miasma-Mold",
+   "biome": "swamp",
+   "cap": "coral",
+   "colors": [
+    "sickly green",
+    "yellow"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "fen_fire",
+   "name": "Fen-Fire",
+   "biome": "swamp",
+   "cap": "cluster",
+   "colors": [
+    "phosphorescent green"
+   ],
+   "glows": true,
+   "inferred_colors": true
+  },
+  {
+   "id": "mire_bracket",
+   "name": "Mire-Bracket",
+   "biome": "swamp",
+   "cap": "shelf",
+   "colors": [
+    "brown",
+    "olive"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "dream_mold",
+   "name": "Dream-Mold",
+   "biome": "swamp",
+   "cap": "coral",
+   "colors": [
+    "lavender",
+    "pale blue"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "fever_cap",
+   "name": "Fever-Cap",
+   "biome": "swamp",
+   "cap": "round",
+   "colors": [
+    "red",
+    "white"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "black_trumpet_of_bog",
+   "name": "Black-Trumpet-of-Bog",
+   "biome": "swamp",
+   "cap": "conical",
+   "colors": [
+    "black"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "rock_lichen",
+   "name": "Rock-Lichen",
+   "biome": "mountain",
+   "cap": "flat",
+   "colors": [
+    "grey",
+    "orange"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "volcano_fungus",
+   "name": "Volcano-Fungus",
+   "biome": "mountain",
+   "cap": "cluster",
+   "colors": [
+    "red",
+    "black"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "ice_cap",
+   "name": "Ice-Cap",
+   "biome": "mountain",
+   "cap": "round",
+   "colors": [
+    "white",
+    "ice blue"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "crystal_mycelium",
+   "name": "Crystal-Mycelium",
+   "biome": "mountain",
+   "cap": "coral",
+   "colors": [
+    "clear",
+    "violet"
+   ],
+   "glows": true,
+   "inferred_colors": true
+  },
+  {
+   "id": "tide_fungus",
+   "name": "Tide-Fungus",
+   "biome": "coast",
+   "cap": "flat",
+   "colors": [
+    "sea green",
+    "grey"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "pearl_fungus",
+   "name": "Pearl-Fungus",
+   "biome": "coast",
+   "cap": "round",
+   "colors": [
+    "pearl white"
+   ],
+   "glows": true,
+   "inferred_colors": true
+  },
+  {
+   "id": "driftwood_bracket",
+   "name": "Driftwood-Bracket",
+   "biome": "coast",
+   "cap": "shelf",
+   "colors": [
+    "bleached tan"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "oasis_cap",
+   "name": "Oasis-Cap",
+   "biome": "desert",
+   "cap": "round",
+   "colors": [
+    "green",
+    "sand"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "night_bloom_fungus",
+   "name": "Night-Bloom-Fungus",
+   "biome": "desert",
+   "cap": "round",
+   "colors": [
+    "indigo",
+    "white"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "aurora_mushroom",
+   "name": "Aurora-Mushroom",
+   "biome": "tundra",
+   "cap": "round",
+   "colors": [
+    "green",
+    "violet"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "ash_bracket",
+   "name": "Ash-Bracket",
+   "biome": "badlands",
+   "cap": "shelf",
+   "colors": [
+    "ash grey",
+    "ember orange"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "wither_fungus",
+   "name": "Wither-Fungus",
+   "biome": "badlands",
+   "cap": "cluster",
+   "colors": [
+    "grey",
+    "sickly purple"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "reef_fungus",
+   "name": "Reef-Fungus",
+   "biome": "underwater",
+   "cap": "coral",
+   "colors": [
+    "coral pink",
+    "white"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "drowned_cap",
+   "name": "Drowned-Cap",
+   "biome": "underwater",
+   "cap": "round",
+   "colors": [
+    "murky green",
+    "grey"
+   ],
+   "glows": false,
+   "inferred_colors": true
+  },
+  {
+   "id": "blue_cap",
+   "name": "Blue-Cap",
+   "biome": null,
+   "cap": "round",
+   "colors": [
+    "blue"
+   ],
+   "glows": true,
+   "notes": "Dungeon-goblin household glow-fungus; 'a well-grown blue-cap is the mark of a settled household'."
+  }
+ ],
+ "fauna": [
+  {
+   "id": "wild_deer",
+   "name": "Wild-Deer",
+   "biome": "forest",
+   "size": "medium",
+   "body": "quadruped",
+   "colors": [
+    "brown",
+    "tan"
+   ],
+   "notes": "Common herd game.",
+   "inferred_colors": true
+  },
+  {
+   "id": "boar",
+   "name": "Boar",
+   "biome": "forest",
+   "size": "medium",
+   "body": "quadruped",
+   "colors": [
+    "dark brown"
+   ],
+   "notes": "Aggressive; tusks.",
+   "inferred_colors": true
+  },
+  {
+   "id": "rabbit",
+   "name": "Rabbit",
+   "biome": "forest",
+   "size": "tiny",
+   "body": "quadruped",
+   "colors": [
+    "brown",
+    "grey"
+   ],
+   "notes": "Tiny game.",
+   "inferred_colors": true
+  },
+  {
+   "id": "fox",
+   "name": "Fox",
+   "biome": "forest",
+   "size": "small",
+   "body": "quadruped",
+   "colors": [
+    "orange",
+    "white"
+   ],
+   "notes": "Solitary predator.",
+   "inferred_colors": true
+  },
+  {
+   "id": "dire_wolf",
+   "name": "Dire-Wolf",
+   "biome": "forest",
+   "size": "large",
+   "body": "quadruped",
+   "colors": [
+    "dark grey",
+    "black"
+   ],
+   "notes": "Legendary predator.",
+   "inferred_colors": true
+  },
+  {
+   "id": "brown_bear",
+   "name": "Brown-Bear",
+   "biome": "forest",
+   "size": "large",
+   "body": "quadruped",
+   "colors": [
+    "brown"
+   ],
+   "notes": "Territorial.",
+   "inferred_colors": true
+  },
+  {
+   "id": "forest_owl",
+   "name": "Forest-Owl",
+   "biome": "forest",
+   "size": "small",
+   "body": "bird",
+   "colors": [
+    "brown",
+    "cream"
+   ],
+   "notes": "Nocturnal.",
+   "inferred_colors": true
+  },
+  {
+   "id": "forest_treant",
+   "name": "Forest-Treant",
+   "biome": "forest",
+   "size": "huge",
+   "body": "other",
+   "colors": [
+    "bark brown",
+    "moss green"
+   ],
+   "notes": "Deep Forest/Enchanted Grove only.",
+   "inferred_colors": true
+  },
+  {
+   "id": "sprite",
+   "name": "Sprite",
+   "biome": "forest",
+   "size": "tiny",
+   "body": "other",
+   "colors": [
+    "glowing green",
+    "gold"
+   ],
+   "notes": "Small fey; drops sprite-dust.",
+   "inferred_colors": true
+  },
+  {
+   "id": "ghost_wolf",
+   "name": "Ghost-Wolf",
+   "biome": "forest",
+   "size": "medium",
+   "body": "quadruped",
+   "colors": [
+    "spectral pale blue"
+   ],
+   "notes": "Haunted Forest spectral wolf.",
+   "inferred_colors": true
+  },
+  {
+   "id": "mountain_goat",
+   "name": "Mountain-Goat",
+   "biome": "mountain",
+   "size": "medium",
+   "body": "quadruped",
+   "colors": [
+    "white",
+    "grey"
+   ],
+   "notes": "Climber; curled horns.",
+   "inferred_colors": true
+  },
+  {
+   "id": "eagle",
+   "name": "Eagle",
+   "biome": "mountain",
+   "size": "small",
+   "body": "bird",
+   "colors": [
+    "brown",
+    "white"
+   ],
+   "notes": "Apex flier.",
+   "inferred_colors": true
+  },
+  {
+   "id": "yeti",
+   "name": "Yeti",
+   "biome": "mountain",
+   "size": "large",
+   "body": "other",
+   "colors": [
+    "white"
+   ],
+   "notes": "Cold-adapted High Mountains dweller.",
+   "inferred_colors": true
+  },
+  {
+   "id": "wyvern",
+   "name": "Wyvern",
+   "biome": "mountain",
+   "size": "large",
+   "body": "other",
+   "colors": [
+    "green",
+    "brown"
+   ],
+   "notes": "Flying predator; also plains variant.",
+   "inferred_colors": true
+  },
+  {
+   "id": "griffin",
+   "name": "Griffin",
+   "biome": "mountain",
+   "size": "large",
+   "body": "bird",
+   "colors": [
+    "gold",
+    "brown",
+    "white"
+   ],
+   "notes": "Rare magical.",
+   "inferred_colors": true
+  },
+  {
+   "id": "crystal_beetle",
+   "name": "Crystal-Beetle",
+   "biome": "mountain",
+   "size": "small",
+   "body": "insect",
+   "colors": [
+    "clear",
+    "violet"
+   ],
+   "notes": "Crystal Peaks mineral creature.",
+   "inferred_colors": true
+  },
+  {
+   "id": "phoenix",
+   "name": "Phoenix",
+   "biome": "mountain",
+   "size": "medium",
+   "body": "bird",
+   "colors": [
+    "flame red",
+    "gold"
+   ],
+   "notes": "Volcanic; legendary rare.",
+   "inferred_colors": true
+  },
+  {
+   "id": "sea_seal",
+   "name": "Sea-Seal",
+   "biome": "coast",
+   "size": "medium",
+   "body": "quadruped",
+   "colors": [
+    "grey",
+    "dark grey"
+   ],
+   "notes": "Coastal marine mammal.",
+   "inferred_colors": true
+  },
+  {
+   "id": "coast_crab",
+   "name": "Coast-Crab",
+   "biome": "coast",
+   "size": "small",
+   "body": "other",
+   "colors": [
+    "red",
+    "orange"
+   ],
+   "notes": "Common.",
+   "inferred_colors": true
+  },
+  {
+   "id": "selkie",
+   "name": "Selkie",
+   "biome": "coast",
+   "size": "medium",
+   "body": "other",
+   "colors": [
+    "seal grey"
+   ],
+   "notes": "Rare shapechanger; selkie-skin.",
+   "inferred_colors": true
+  },
+  {
+   "id": "swamp_gator",
+   "name": "Swamp-Gator",
+   "biome": "swamp",
+   "size": "large",
+   "body": "other",
+   "colors": [
+    "dark green",
+    "olive"
+   ],
+   "notes": "Predatory reptile.",
+   "inferred_colors": true
+  },
+  {
+   "id": "giant_dragonfly",
+   "name": "Giant-Dragonfly",
+   "biome": "swamp",
+   "size": "small",
+   "body": "insect",
+   "colors": [
+    "iridescent blue",
+    "green"
+   ],
+   "notes": "Iridescent wings stated.",
+   "inferred_colors": true
+  },
+  {
+   "id": "bog_troll",
+   "name": "Bog-Troll",
+   "biome": "swamp",
+   "size": "large",
+   "body": "other",
+   "colors": [
+    "mud green",
+    "brown"
+   ],
+   "notes": "Amphibious troll.",
+   "inferred_colors": true
+  },
+  {
+   "id": "will_o_wisp",
+   "name": "Will-o'-Wisp",
+   "biome": "swamp",
+   "size": "tiny",
+   "body": "other",
+   "colors": [
+    "pale glowing blue"
+   ],
+   "notes": "Floating light-spirit.",
+   "inferred_colors": true
+  },
+  {
+   "id": "swamp_frog",
+   "name": "Swamp-Frog",
+   "biome": "swamp",
+   "size": "tiny",
+   "body": "amphibian",
+   "colors": [
+    "green",
+    "yellow"
+   ],
+   "notes": "Some carry alchemical toxins.",
+   "inferred_colors": true
+  },
+  {
+   "id": "bison",
+   "name": "Bison",
+   "biome": "plain",
+   "size": "large",
+   "body": "quadruped",
+   "colors": [
+    "dark brown"
+   ],
+   "notes": "Herd animal.",
+   "inferred_colors": true
+  },
+  {
+   "id": "wild_horse",
+   "name": "Wild-Horse",
+   "biome": "plain",
+   "size": "large",
+   "body": "quadruped",
+   "colors": [
+    "bay",
+    "chestnut"
+   ],
+   "notes": "Tameable mount.",
+   "inferred_colors": true
+  },
+  {
+   "id": "plains_hawk",
+   "name": "Plains-Hawk",
+   "biome": "plain",
+   "size": "small",
+   "body": "bird",
+   "colors": [
+    "brown",
+    "rust"
+   ],
+   "notes": "Raptor.",
+   "inferred_colors": true
+  },
+  {
+   "id": "thunder_bison",
+   "name": "Thunder-Bison",
+   "biome": "plain",
+   "size": "huge",
+   "body": "quadruped",
+   "colors": [
+    "storm grey",
+    "electric blue"
+   ],
+   "notes": "Magical rare; storm signature.",
+   "inferred_colors": true
+  },
+  {
+   "id": "giant_scorpion",
+   "name": "Giant-Scorpion",
+   "biome": "desert",
+   "size": "medium",
+   "body": "insect",
+   "colors": [
+    "black",
+    "amber"
+   ],
+   "notes": "Dangerous.",
+   "inferred_colors": true
+  },
+  {
+   "id": "camel",
+   "name": "Camel",
+   "biome": "desert",
+   "size": "large",
+   "body": "quadruped",
+   "colors": [
+    "sand",
+    "tan"
+   ],
+   "notes": "Tameable mount.",
+   "inferred_colors": true
+  },
+  {
+   "id": "sand_worm",
+   "name": "Sand-Worm",
+   "biome": "desert",
+   "size": "huge",
+   "body": "serpent",
+   "colors": [
+    "sand",
+    "dun"
+   ],
+   "notes": "Massive deep-desert worm.",
+   "inferred_colors": true
+  },
+  {
+   "id": "roc",
+   "name": "Roc",
+   "biome": "desert",
+   "size": "huge",
+   "body": "bird",
+   "colors": [
+    "brown",
+    "gold"
+   ],
+   "notes": "Giant bird of prey.",
+   "inferred_colors": true
+  },
+  {
+   "id": "polar_bear",
+   "name": "Polar-Bear",
+   "biome": "tundra",
+   "size": "large",
+   "body": "quadruped",
+   "colors": [
+    "white"
+   ],
+   "notes": "Apex arctic predator.",
+   "inferred_colors": true
+  },
+  {
+   "id": "arctic_fox",
+   "name": "Arctic-Fox",
+   "biome": "tundra",
+   "size": "small",
+   "body": "quadruped",
+   "colors": [
+    "white"
+   ],
+   "notes": "White pelt stated."
+  },
+  {
+   "id": "ice_drake",
+   "name": "Ice-Drake",
+   "biome": "tundra",
+   "size": "large",
+   "body": "other",
+   "colors": [
+    "ice blue",
+    "white"
+   ],
+   "notes": "Cold drake.",
+   "inferred_colors": true
+  },
+  {
+   "id": "basilisk",
+   "name": "Basilisk",
+   "biome": "badlands",
+   "size": "medium",
+   "body": "serpent",
+   "colors": [
+    "grey-green",
+    "stone"
+   ],
+   "notes": "Rare; petrifying gaze.",
+   "inferred_colors": true
+  },
+  {
+   "id": "ash_wolf",
+   "name": "Ash-Wolf",
+   "biome": "badlands",
+   "size": "medium",
+   "body": "quadruped",
+   "colors": [
+    "ash grey",
+    "ember"
+   ],
+   "notes": "Volcanic badlands.",
+   "inferred_colors": true
+  },
+  {
+   "id": "octopus",
+   "name": "Octopus",
+   "biome": "underwater",
+   "size": "small",
+   "body": "other",
+   "colors": [
+    "red",
+    "brown"
+   ],
+   "notes": "Intelligent reef dweller.",
+   "inferred_colors": true
+  },
+  {
+   "id": "kraken",
+   "name": "Kraken",
+   "biome": "underwater",
+   "size": "huge",
+   "body": "other",
+   "colors": [
+    "dark red",
+    "purple"
+   ],
+   "notes": "Deep ocean legendary.",
+   "inferred_colors": true
+  }
+ ],
+ "fish": [
+  {
+   "id": "trout",
+   "name": "Trout",
+   "biome": "underwater",
+   "size": "small",
+   "colors": [
+    "olive",
+    "pink stripe",
+    "spotted"
+   ],
+   "inferred_colors": true,
+   "water": "freshwater"
+  },
+  {
+   "id": "salmon",
+   "name": "Salmon",
+   "biome": "underwater",
+   "size": "medium",
+   "colors": [
+    "silver",
+    "pink"
+   ],
+   "inferred_colors": true,
+   "water": "freshwater"
+  },
+  {
+   "id": "bass",
+   "name": "Bass",
+   "biome": "underwater",
+   "size": "small",
+   "colors": [
+    "green",
+    "olive"
+   ],
+   "inferred_colors": true,
+   "water": "freshwater"
+  },
+  {
+   "id": "carp",
+   "name": "Carp",
+   "biome": "underwater",
+   "size": "medium",
+   "colors": [
+    "bronze",
+    "gold"
+   ],
+   "inferred_colors": true,
+   "water": "freshwater"
+  },
+  {
+   "id": "pike",
+   "name": "Pike",
+   "biome": "underwater",
+   "size": "medium",
+   "colors": [
+    "green",
+    "yellow spots"
+   ],
+   "inferred_colors": true,
+   "water": "freshwater"
+  },
+  {
+   "id": "catfish",
+   "name": "Catfish",
+   "biome": "underwater",
+   "size": "medium",
+   "colors": [
+    "grey",
+    "brown"
+   ],
+   "inferred_colors": true,
+   "water": "freshwater"
+  },
+  {
+   "id": "eel",
+   "name": "Eel",
+   "biome": "underwater",
+   "size": "medium",
+   "colors": [
+    "dark brown",
+    "olive"
+   ],
+   "inferred_colors": true,
+   "water": "freshwater"
+  },
+  {
+   "id": "golden_carp",
+   "name": "Golden-Carp",
+   "biome": "underwater",
+   "size": "medium",
+   "colors": [
+    "gold"
+   ],
+   "inferred_colors": true,
+   "water": "freshwater"
+  },
+  {
+   "id": "river_serpent",
+   "name": "River-Serpent",
+   "biome": "underwater",
+   "size": "large",
+   "colors": [
+    "dark green",
+    "silver"
+   ],
+   "inferred_colors": true,
+   "water": "freshwater"
+  },
+  {
+   "id": "luminous_fish",
+   "name": "Luminous-Fish",
+   "biome": "underwater",
+   "size": "small",
+   "colors": [
+    "glowing cyan",
+    "white"
+   ],
+   "inferred_colors": true,
+   "water": "freshwater"
+  },
+  {
+   "id": "cod",
+   "name": "Cod",
+   "biome": "underwater",
+   "size": "medium",
+   "colors": [
+    "grey",
+    "speckled brown"
+   ],
+   "inferred_colors": true,
+   "water": "marine"
+  },
+  {
+   "id": "herring",
+   "name": "Herring",
+   "biome": "underwater",
+   "size": "small",
+   "colors": [
+    "silver",
+    "blue"
+   ],
+   "inferred_colors": true,
+   "water": "marine"
+  },
+  {
+   "id": "mackerel",
+   "name": "Mackerel",
+   "biome": "underwater",
+   "size": "small",
+   "colors": [
+    "blue-green",
+    "striped",
+    "silver"
+   ],
+   "inferred_colors": true,
+   "water": "marine"
+  },
+  {
+   "id": "tuna",
+   "name": "Tuna",
+   "biome": "underwater",
+   "size": "large",
+   "colors": [
+    "dark blue",
+    "silver"
+   ],
+   "inferred_colors": true,
+   "water": "marine"
+  },
+  {
+   "id": "squid",
+   "name": "Squid",
+   "biome": "underwater",
+   "size": "medium",
+   "colors": [
+    "pink",
+    "translucent"
+   ],
+   "inferred_colors": true,
+   "water": "marine"
+  },
+  {
+   "id": "shark",
+   "name": "Shark",
+   "biome": "underwater",
+   "size": "large",
+   "colors": [
+    "grey",
+    "white"
+   ],
+   "inferred_colors": true,
+   "water": "marine"
+  },
+  {
+   "id": "manta_ray",
+   "name": "Manta Ray",
+   "biome": "underwater",
+   "size": "large",
+   "colors": [
+    "black",
+    "white"
+   ],
+   "inferred_colors": true,
+   "water": "marine"
+  },
+  {
+   "id": "swordfish",
+   "name": "Swordfish",
+   "biome": "underwater",
+   "size": "large",
+   "colors": [
+    "dark blue",
+    "silver"
+   ],
+   "inferred_colors": true,
+   "water": "marine"
+  },
+  {
+   "id": "deep_sea_angler",
+   "name": "Deep-Sea-Angler",
+   "biome": "underwater",
+   "size": "medium",
+   "colors": [
+    "black",
+    "glowing lure"
+   ],
+   "inferred_colors": true,
+   "water": "marine"
+  },
+  {
+   "id": "seahorse",
+   "name": "Seahorse",
+   "biome": "underwater",
+   "size": "tiny",
+   "colors": [
+    "yellow",
+    "orange"
+   ],
+   "inferred_colors": true,
+   "water": "marine"
+  },
+  {
+   "id": "swamp_eel",
+   "name": "Swamp-Eel",
+   "biome": "swamp",
+   "size": "medium",
+   "colors": [
+    "mud brown",
+    "olive"
+   ],
+   "inferred_colors": true,
+   "water": "swamp"
+  },
+  {
+   "id": "mud_skipper",
+   "name": "Mud-Skipper",
+   "biome": "swamp",
+   "size": "tiny",
+   "colors": [
+    "brown",
+    "grey"
+   ],
+   "inferred_colors": true,
+   "water": "swamp"
+  },
+  {
+   "id": "bog_fish",
+   "name": "Bog-Fish",
+   "biome": "swamp",
+   "size": "small",
+   "colors": [
+    "peat brown",
+    "dull green"
+   ],
+   "inferred_colors": true,
+   "water": "swamp"
+  },
+  {
+   "id": "star_fish",
+   "name": "Star-Fish",
+   "biome": "underwater",
+   "size": "small",
+   "colors": [
+    "midnight blue",
+    "star white"
+   ],
+   "inferred_colors": true,
+   "water": "magical"
+  },
+  {
+   "id": "wish_koi",
+   "name": "Wish-Koi",
+   "biome": "underwater",
+   "size": "medium",
+   "colors": [
+    "gold",
+    "white",
+    "red"
+   ],
+   "inferred_colors": true,
+   "water": "magical"
+  }
+ ],
+ "ores": [
+  {
+   "id": "iron_ore",
+   "name": "Iron Ore",
+   "color": "rust red",
+   "rarity": "common",
+   "real_material": "iron",
+   "fantasy": false,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "copper_ore",
+   "name": "Copper Ore",
+   "color": "copper orange",
+   "rarity": "common",
+   "real_material": "copper",
+   "fantasy": false,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "tin_ore",
+   "name": "Tin Ore",
+   "color": "dull silver",
+   "rarity": "common",
+   "real_material": "tin",
+   "fantasy": false,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "silver_ore",
+   "name": "Silver Ore",
+   "color": "silver",
+   "rarity": "uncommon",
+   "real_material": "silver",
+   "fantasy": false,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "gold_ore",
+   "name": "Gold Ore",
+   "color": "gold",
+   "rarity": "rare",
+   "real_material": "gold",
+   "fantasy": false,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "mithril",
+   "name": "Mithril",
+   "color": "pale silver-blue",
+   "rarity": "legendary",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "adamantite",
+   "name": "Adamantite",
+   "color": "dark green-black",
+   "rarity": "legendary",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "dragon_iron",
+   "name": "Dragon-Iron",
+   "color": "ember red",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "star_metal",
+   "name": "Star-Metal",
+   "color": "starry blue-silver",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "peak_ore",
+   "name": "Peak-Ore",
+   "color": "pale grey-white",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "obsidian",
+   "name": "Obsidian",
+   "color": "black",
+   "rarity": "uncommon",
+   "real_material": "obsidian",
+   "fantasy": false,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "volcanic_glass",
+   "name": "Volcanic-Glass",
+   "color": "smoky black",
+   "rarity": "uncommon",
+   "real_material": "volcanic glass",
+   "fantasy": false,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "lightning_touched_ore",
+   "name": "Lightning-Touched Ore",
+   "color": "electric blue",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "clay",
+   "name": "Clay",
+   "color": "terracotta",
+   "rarity": "common",
+   "real_material": "clay",
+   "fantasy": false,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "limestone",
+   "name": "Limestone",
+   "color": "cream",
+   "rarity": "common",
+   "real_material": "limestone",
+   "fantasy": false,
+   "biome": "mountain",
+   "inferred_colors": true
+  },
+  {
+   "id": "sandstone",
+   "name": "Sandstone",
+   "color": "sandy tan",
+   "rarity": "common",
+   "real_material": "sandstone",
+   "fantasy": false,
+   "biome": "desert",
+   "inferred_colors": true
+  },
+  {
+   "id": "salt",
+   "name": "Salt",
+   "color": "white",
+   "rarity": "common",
+   "real_material": "halite",
+   "fantasy": false,
+   "biome": "desert",
+   "inferred_colors": true
+  },
+  {
+   "id": "turquoise",
+   "name": "Turquoise",
+   "color": "turquoise",
+   "rarity": "uncommon",
+   "real_material": "turquoise",
+   "fantasy": false,
+   "biome": "desert",
+   "inferred_colors": true
+  },
+  {
+   "id": "desert_glass",
+   "name": "Desert-Glass",
+   "color": "pale green glass",
+   "rarity": "uncommon",
+   "real_material": "fulgurite",
+   "fantasy": false,
+   "biome": "desert",
+   "inferred_colors": true
+  },
+  {
+   "id": "sun_stone",
+   "name": "Sun-Stone",
+   "color": "sunny orange",
+   "rarity": "rare",
+   "real_material": "sunstone",
+   "fantasy": true,
+   "biome": "desert",
+   "inferred_colors": true
+  },
+  {
+   "id": "opal",
+   "name": "Opal",
+   "color": "iridescent white",
+   "rarity": "rare",
+   "real_material": "opal",
+   "fantasy": false,
+   "biome": "desert",
+   "inferred_colors": true
+  },
+  {
+   "id": "star_crystal",
+   "name": "Star-Crystal",
+   "color": "pale gold",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "desert",
+   "inferred_colors": true
+  },
+  {
+   "id": "cinnabar",
+   "name": "Cinnabar",
+   "color": "vermilion red",
+   "rarity": "uncommon",
+   "real_material": "cinnabar",
+   "fantasy": false,
+   "biome": "desert",
+   "inferred_colors": true
+  },
+  {
+   "id": "pearl",
+   "name": "Pearl",
+   "color": "pearl white",
+   "rarity": "uncommon",
+   "real_material": "pearl",
+   "fantasy": false,
+   "biome": "coast",
+   "inferred_colors": true
+  },
+  {
+   "id": "coral",
+   "name": "Coral",
+   "color": "coral pink",
+   "rarity": "common",
+   "real_material": "coral",
+   "fantasy": false,
+   "biome": "coast",
+   "inferred_colors": true
+  },
+  {
+   "id": "crystalline_brain_coral",
+   "name": "Crystalline Brain-Coral",
+   "color": "pale translucent pink",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "coast",
+   "inferred_colors": true
+  },
+  {
+   "id": "mother_of_pearl",
+   "name": "Mother-of-Pearl",
+   "color": "iridescent cream",
+   "rarity": "uncommon",
+   "real_material": "nacre",
+   "fantasy": false,
+   "biome": "coast",
+   "inferred_colors": true
+  },
+  {
+   "id": "sea_salt",
+   "name": "Sea-Salt",
+   "color": "white",
+   "rarity": "common",
+   "real_material": "sea salt",
+   "fantasy": false,
+   "biome": "coast",
+   "inferred_colors": true
+  },
+  {
+   "id": "pearl_dust",
+   "name": "Pearl-Dust",
+   "color": "shimmer white",
+   "rarity": "uncommon",
+   "real_material": "pearl",
+   "fantasy": false,
+   "biome": "coast",
+   "inferred_colors": true
+  },
+  {
+   "id": "black_pearl",
+   "name": "Black-Pearl",
+   "color": "black",
+   "rarity": "rare",
+   "real_material": "pearl",
+   "fantasy": false,
+   "biome": "coast",
+   "inferred_colors": true
+  },
+  {
+   "id": "abyss_pearl",
+   "name": "Abyss-Pearl",
+   "color": "dark violet",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "coast",
+   "inferred_colors": true
+  },
+  {
+   "id": "bog_iron",
+   "name": "Bog-Iron",
+   "color": "dark rust",
+   "rarity": "common",
+   "real_material": "iron",
+   "fantasy": false,
+   "biome": "swamp",
+   "inferred_colors": true
+  },
+  {
+   "id": "peat",
+   "name": "Peat",
+   "color": "dark brown",
+   "rarity": "common",
+   "real_material": "peat",
+   "fantasy": false,
+   "biome": "swamp",
+   "inferred_colors": true
+  },
+  {
+   "id": "amber",
+   "name": "Amber",
+   "color": "amber",
+   "rarity": "uncommon",
+   "real_material": "amber",
+   "fantasy": false,
+   "biome": "swamp",
+   "inferred_colors": true
+  },
+  {
+   "id": "swamp_mithril",
+   "name": "Swamp-Mithril",
+   "color": "greenish silver",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "swamp",
+   "inferred_colors": true
+  },
+  {
+   "id": "flint",
+   "name": "Flint",
+   "color": "grey-black",
+   "rarity": "common",
+   "real_material": "flint",
+   "fantasy": false,
+   "biome": "plain",
+   "inferred_colors": true
+  },
+  {
+   "id": "plains_clay",
+   "name": "Plains-Clay",
+   "color": "ochre",
+   "rarity": "common",
+   "real_material": "clay",
+   "fantasy": false,
+   "biome": "plain",
+   "inferred_colors": true
+  },
+  {
+   "id": "mammoth_ivory",
+   "name": "Mammoth-Ivory",
+   "color": "ivory",
+   "rarity": "rare",
+   "real_material": "ivory",
+   "fantasy": false,
+   "biome": "tundra",
+   "inferred_colors": true
+  },
+  {
+   "id": "ice_crystal",
+   "name": "Ice-Crystal",
+   "color": "ice blue",
+   "rarity": "uncommon",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "tundra",
+   "inferred_colors": true
+  },
+  {
+   "id": "sulfur",
+   "name": "Sulfur",
+   "color": "yellow",
+   "rarity": "common",
+   "real_material": "sulfur",
+   "fantasy": false,
+   "biome": "badlands",
+   "inferred_colors": true
+  },
+  {
+   "id": "wither_stone",
+   "name": "Wither-Stone",
+   "color": "sickly purple-grey",
+   "rarity": "uncommon",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "badlands",
+   "inferred_colors": true
+  },
+  {
+   "id": "battle_iron",
+   "name": "Battle-Iron",
+   "color": "rust",
+   "rarity": "uncommon",
+   "real_material": "iron",
+   "fantasy": true,
+   "biome": "badlands",
+   "inferred_colors": true
+  },
+  {
+   "id": "ash_crystal",
+   "name": "Ash-Crystal",
+   "color": "ash grey",
+   "rarity": "uncommon",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "badlands",
+   "inferred_colors": true
+  },
+  {
+   "id": "deep_abyss_pearl",
+   "name": "Deep Abyss-Pearl",
+   "color": "deep indigo",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "underwater",
+   "inferred_colors": true
+  },
+  {
+   "id": "deep_sea_silver",
+   "name": "Deep-Sea-Silver",
+   "color": "blue-silver",
+   "rarity": "rare",
+   "real_material": "silver",
+   "fantasy": false,
+   "biome": "underwater",
+   "inferred_colors": true
+  },
+  {
+   "id": "pressure_stone",
+   "name": "Pressure-Stone",
+   "color": "dense dark blue",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": "underwater",
+   "inferred_colors": true
+  },
+  {
+   "id": "water_gem",
+   "name": "Water-Gem",
+   "color": "aquamarine",
+   "rarity": "uncommon",
+   "real_material": "aquamarine (beryl)",
+   "fantasy": true,
+   "biome": "underwater",
+   "inferred_colors": true
+  },
+  {
+   "id": "coral_stone",
+   "name": "Coral-Stone",
+   "color": "fossil cream",
+   "rarity": "uncommon",
+   "real_material": "fossil coral (limestone)",
+   "fantasy": false,
+   "biome": "underwater",
+   "inferred_colors": true
+  },
+  {
+   "id": "submerged_volcanic_glass",
+   "name": "Submerged-Volcanic-Glass",
+   "color": "dark green-black",
+   "rarity": "uncommon",
+   "real_material": "volcanic glass",
+   "fantasy": false,
+   "biome": "underwater",
+   "inferred_colors": true
+  },
+  {
+   "id": "leviathan_bone_calcite",
+   "name": "Leviathan-Bone-Calcite",
+   "color": "bone white",
+   "rarity": "legendary",
+   "real_material": "calcite",
+   "fantasy": true,
+   "biome": "underwater",
+   "inferred_colors": true
+  },
+  {
+   "id": "moonstone",
+   "name": "Moonstone",
+   "color": "milky blue-white",
+   "rarity": "uncommon",
+   "real_material": "moonstone",
+   "fantasy": false,
+   "biome": "underwater",
+   "inferred_colors": true
+  },
+  {
+   "id": "star_iron",
+   "name": "Star-Iron",
+   "color": "dark iron with silver flecks",
+   "rarity": "rare",
+   "real_material": "meteoric iron",
+   "fantasy": true,
+   "biome": null,
+   "inferred_colors": true,
+   "notes": "Stage 5/6 ores below have biome null = dungeon/event-sourced."
+  },
+  {
+   "id": "shadow_stone",
+   "name": "Shadow-Stone",
+   "color": "black",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "soulsteel",
+   "name": "Soulsteel",
+   "color": "dark red-black",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "dream_crystal",
+   "name": "Dream-Crystal",
+   "color": "lavender",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "heart_ore",
+   "name": "Heart-Ore",
+   "color": "deep crimson",
+   "rarity": "rare",
+   "real_material": null,
+   "fantasy": true,
+   "biome": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "catalyst_iron",
+   "name": "Catalyst Iron",
+   "color": "mottled rust",
+   "rarity": "uncommon",
+   "real_material": "iron",
+   "fantasy": true,
+   "biome": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "bone_coral",
+   "name": "Bone-Coral",
+   "color": "bone white",
+   "rarity": "uncommon",
+   "real_material": null,
+   "fantasy": true,
+   "biome": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "void_glass",
+   "name": "Void-Glass",
+   "color": "void black-violet",
+   "rarity": "legendary",
+   "real_material": null,
+   "fantasy": true,
+   "biome": null,
+   "inferred_colors": true
+  },
+  {
+   "id": "heaven_gold",
+   "name": "Heaven-Gold",
+   "color": "radiant gold",
+   "rarity": "rare",
+   "real_material": "gold",
+   "fantasy": true,
+   "biome": null,
+   "inferred_colors": true
+  }
+ ],
+ "stations": [
+  {
+   "id": "improvised_forge",
+   "name": "Improvised Forge",
+   "tier": 1,
+   "tier_name": "IMPROVISED",
+   "summary": "Pit of rocks, hand-bellows, clay-lined firebricks; no parent station needed."
+  },
+  {
+   "id": "basic_forge",
+   "name": "Basic Forge",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "summary": "Proper stone hearth and iron-cast anvil; hamlet/village default."
+  },
+  {
+   "id": "standard_forge",
+   "name": "Standard Forge",
+   "tier": 3,
+   "tier_name": "STANDARD",
+   "summary": "Urban default with ventilation; can make MASTER-tier weapons."
+  },
+  {
+   "id": "masterwork_forge",
+   "name": "Masterwork Forge",
+   "tier": 4,
+   "tier_name": "MASTERWORK",
+   "summary": "Heirloom forge with Mithril plate and Heart-Ore anvil."
+  },
+  {
+   "id": "legendary_forge",
+   "name": "Legendary Forge",
+   "tier": 5,
+   "tier_name": "LEGENDARY",
+   "summary": "Unique; Adamantite plate and Dragon-Iron core, ritual-forged."
+  },
+  {
+   "id": "improvised_carpenters_bench",
+   "name": "Improvised Carpenter's Bench",
+   "tier": 1,
+   "tier_name": "IMPROVISED",
+   "summary": "Planks laid across two stumps."
+  },
+  {
+   "id": "improvised_alchemy_station",
+   "name": "Improvised Alchemy Station",
+   "tier": 1,
+   "tier_name": "IMPROVISED",
+   "summary": "Portable cauldron over a fire ring."
+  },
+  {
+   "id": "basic_alchemy_station",
+   "name": "Basic Alchemy Station",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "summary": "Glass distillery and proper reagent shelves."
+  },
+  {
+   "id": "basic_carpenters_bench",
+   "name": "Basic Carpenter's Bench",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "summary": "Real work surface with clamps."
+  },
+  {
+   "id": "scribing_desk",
+   "name": "Scribing Desk",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Writing desks with ink, parchment, quill and drying racks. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "loom",
+   "name": "Loom",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Tailoring loom with cutting tables. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "tanning_rack",
+   "name": "Tanning Rack",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Leather-working rack. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "jewelry_working_station",
+   "name": "Jewelry-working Station",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Fine metal and gem work. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "binding_frame",
+   "name": "Binding Frame",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Tome-binding ritual frame; mage academies hold STANDARD ones. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "enchanting_pedestal",
+   "name": "Enchanting Pedestal",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Magical-item work. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "anvil",
+   "name": "Anvil",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Smithy fixture paired with the forge. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "quenching_tank",
+   "name": "Quenching Tank",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Smithy fixture for quenching. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "distillation_apparatus",
+   "name": "Distillation Apparatus",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Alchemy lab still. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "lathe",
+   "name": "Lathe",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Carpentry workshop fixture. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "brewing_vats",
+   "name": "Brewing Vats",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Alchemy lab vats. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  }
+ ],
+ "districts_or_buildings": [
+  {
+   "id": "residential",
+   "name": "Residential District",
+   "kind": "district",
+   "summary": "70% housing, 20% small shop, 10% communal."
+  },
+  {
+   "id": "market",
+   "name": "Market District",
+   "kind": "district",
+   "summary": "Shops and stalls; goblin markets blur shop and stall."
+  },
+  {
+   "id": "civic",
+   "name": "Civic District",
+   "kind": "district",
+   "summary": "Civic buildings, official housing, plazas."
+  },
+  {
+   "id": "temple",
+   "name": "Temple District",
+   "kind": "district",
+   "summary": "Temples, clergy housing, gardens."
+  },
+  {
+   "id": "industrial",
+   "name": "Industrial District",
+   "kind": "district",
+   "summary": "Workshops, storage, worker housing."
+  },
+  {
+   "id": "military",
+   "name": "Military District",
+   "kind": "district",
+   "summary": "Barracks, training, armory, command."
+  },
+  {
+   "id": "artisan",
+   "name": "Artisan District",
+   "kind": "district",
+   "summary": "Workshop-shops with master and apprentice housing."
+  },
+  {
+   "id": "port",
+   "name": "Port District",
+   "kind": "district",
+   "summary": "Docks, warehouses, ship-supply shops, taverns."
+  },
+  {
+   "id": "outskirts",
+   "name": "Outskirts",
+   "kind": "district",
+   "summary": "Farms, small-holdings, road-side."
+  },
+  {
+   "id": "inn",
+   "name": "Inn",
+   "kind": "building",
+   "summary": "Mandatory in every city; rest/heal venue."
+  },
+  {
+   "id": "church",
+   "name": "Church",
+   "kind": "building",
+   "summary": "Mandatory; race-appropriate variant."
+  },
+  {
+   "id": "general_shop",
+   "name": "General Shop",
+   "kind": "building",
+   "summary": "Mandatory general store."
+  },
+  {
+   "id": "training_center",
+   "name": "Training Center",
+   "kind": "building",
+   "summary": "Mandatory ML-backed training hub."
+  },
+  {
+   "id": "cartographer",
+   "name": "Cartographer",
+   "kind": "building",
+   "summary": "Map kiosk selling dRAM slices."
+  },
+  {
+   "id": "lord_s_seat",
+   "name": "Lord's Seat",
+   "kind": "building",
+   "summary": "City authority venue."
+  },
+  {
+   "id": "guildhall",
+   "name": "Guildhall",
+   "kind": "building",
+   "summary": "Towns+; STANDARD member stations."
+  },
+  {
+   "id": "mage_shop",
+   "name": "Mage Shop",
+   "kind": "building",
+   "summary": "Towns+; goblins substitute a tinkerer-alchemist."
+  },
+  {
+   "id": "blacksmith",
+   "name": "Blacksmith",
+   "kind": "building",
+   "summary": "Towns+; forge-centered smithy."
+  },
+  {
+   "id": "library",
+   "name": "Library",
+   "kind": "building",
+   "summary": "Cities+; library or archive."
+  },
+  {
+   "id": "herbalist_alchemist",
+   "name": "Herbalist-Alchemist",
+   "kind": "building",
+   "summary": "Guaranteed at HAMLET scale; processes tended-adjacency yield."
+  }
+ ]
+}

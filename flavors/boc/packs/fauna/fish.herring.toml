@@ -1,0 +1,60 @@
+# Herring (marine)
+schema = "pixelgoblin/type@1"
+id = "boc.fish.herring"
+tag = "creature.small"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Herring"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "underwater"
+
+[provenance]
+source = "book-of-cities: fish (underwater)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#6a7580", "#9aa1ac", "#cdcfd5", "#f1f2f3"]
+
+[[palette.ramps]]
+name = "coat_alt"
+weight = 1
+colors = ["#122a3f", "#2a538d", "#5a7bc3", "#a5b2de"]
+
+[body]
+anchor = [1, 2]
+template = [
+  "......#",
+  ".....##",
+  "....###",
+  "...####",
+  "..#####",
+  "..#####",
+  "...####",
+  "....###",
+  ".....##",
+  "....###",
+  "...1.##",
+]
+
+[features]
+eyes = 1
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 3
+frame_ms = 220
+
+[[parts]]
+name = "fins"
+chance = 70
+anchor = [5, 6]
+template = ["1..", "#1.", ".#."]
+ramp = "coat_alt"

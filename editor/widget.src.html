@@ -1,0 +1,279 @@
+<title>PixelGoblin Pocket</title>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Silkscreen&display=swap">
+<style>
+:root{
+  --bg:#191d18;--panel:#232820;--panel2:#2c3228;--line:#3a4234;--ink:#e9e3cf;--mute:#a9a592;
+  --accent:#d9a441;--accent-ink:#1d1a10;--teal:#56a39c;--good:#8cc265;--bad:#e0705a;
+  --check1:#2a2f27;--check2:#323829;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){--bg:#f3eedd;--panel:#fbf7ea;--panel2:#ece5cf;--line:#d4cab0;--ink:#26261e;--mute:#6a6552;
+    --accent:#a86f12;--accent-ink:#fffaf0;--teal:#2f7a74;--good:#4a7a2a;--bad:#b0402a;--check1:#e6dfc8;--check2:#efe9d6;color-scheme:light}
+}
+:root[data-theme="light"]{--bg:#f3eedd;--panel:#fbf7ea;--panel2:#ece5cf;--line:#d4cab0;--ink:#26261e;--mute:#6a6552;
+  --accent:#a86f12;--accent-ink:#fffaf0;--teal:#2f7a74;--good:#4a7a2a;--bad:#b0402a;--check1:#e6dfc8;--check2:#efe9d6;color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif;padding-inline:16px;padding-block:14px;margin:0}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+h1{font:400 1.35rem "Silkscreen","Courier New",monospace;letter-spacing:.04em;color:var(--accent);margin:0}
+header p{margin:0;color:var(--mute);font-size:.9rem}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:14px;align-items:start}
+@media (max-width:720px){.main{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.plate{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px}
+.plate h2{font:400 1.1rem "Silkscreen","Courier New",monospace;letter-spacing:.04em;margin:0;text-wrap:balance}
+.plate span{color:var(--mute);font-size:.85rem}
+.stage{display:grid;place-items:center;min-height:300px;border-radius:4px;touch-action:none;cursor:grab;
+  background-color:var(--check1);background-image:linear-gradient(45deg,var(--check2) 25%,transparent 25%,transparent 75%,var(--check2) 75%),linear-gradient(45deg,var(--check2) 25%,transparent 25%,transparent 75%,var(--check2) 75%);background-size:16px 16px;background-position:0 0,8px 8px}
+canvas{image-rendering:pixelated;image-rendering:crisp-edges;max-width:100%;display:block}
+.views{display:flex;flex-wrap:wrap;gap:6px}
+.readout{font:400 .8rem "JetBrains Mono",ui-monospace,monospace;color:var(--mute);font-variant-numeric:tabular-nums}
+label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--mute)}
+label.row{flex-direction:row;align-items:center;gap:8px;color:var(--ink)}
+input,select,button{font:inherit;color:var(--ink)}
+input[type=text],select{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:6px 8px;width:100%}
+.namebox{display:flex;gap:6px}
+button{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button:focus-visible,select:focus-visible,input:focus-visible,.stage:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.chain{display:flex;align-items:flex-end;gap:14px;overflow-x:auto;padding-bottom:4px}
+.chain figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px;flex:none}
+.chain figcaption{font:400 .75rem "JetBrains Mono",monospace;color:var(--mute)}
+.share{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.share input{flex:1 1 220px;font-family:"JetBrains Mono",monospace;font-size:.8rem}
+.hint{font-size:.82rem;color:var(--mute);margin:0}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--accent);color:var(--accent-ink);padding:8px 14px;border-radius:4px;font-weight:700}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header><h1>PixelGoblin Pocket</h1><p>Type a name. Get a goblin at every size, from any side.</p></header>
+<div class="main">
+  <section class="card" aria-label="Your goblin">
+    <div class="plate"><h2 id="who">Grubnak</h2><span id="whoRole">Blacksmith</span></div>
+    <div class="stage" id="stage" tabindex="0" aria-label="Goblin view. Drag, or use arrow keys, to turn and tilt."><canvas id="view"></canvas></div>
+    <div class="views" id="viewBtns"></div>
+    <div class="readout" id="readout"></div>
+    <div>
+      <p class="hint" style="margin-bottom:6px">The same goblin at every size in the chain, enlarged so you can compare the detail. Each size adds features the smaller one had no room for.</p>
+      <div class="chain" id="chain"></div>
+    </div>
+  </section>
+  <aside class="card" aria-label="Controls">
+    <label for="name">Name
+      <span class="namebox"><input type="text" id="name" value="Grubnak" autocomplete="off"><button type="button" id="roll" title="A new random name">New</button></span>
+    </label>
+    <label for="role">Job<select id="role"></select></label>
+    <label for="folk">Folk<select id="folk"></select></label>
+    <label for="trait">Trait (Compendium)<select id="trait"></select></label>
+    <label for="clan">Clan colours<select id="clan"></select></label>
+    <label for="mount">Riding<select id="mount"></select></label>
+    <label for="tier">Size<select id="tier"><option>16</option><option>32</option><option selected>64</option><option>128</option></select></label>
+    <label for="era">Colour era<select id="era"><option value="">By size (default)</option><option value="8-bit">8-bit, 3 colours</option><option value="16-bit">16-bit, 15 colours</option><option value="32-bit">32-bit, 31 colours</option><option value="hd">HD, 255 colours</option></select></label>
+    <label class="row" for="walk"><input type="checkbox" id="walk"> Walk</label>
+    <div class="views"><button type="button" class="primary" id="savePng">Save picture</button><button type="button" id="saveTurn">Save 8 directions</button></div>
+    <div>
+      <label for="code">Share code</label>
+      <div class="share"><input type="text" id="code" aria-label="Share code"><button type="button" id="copy">Copy</button><button type="button" id="load">Load</button></div>
+      <p class="hint">Paste a code and press Load to get the exact same goblin back. Older pg1 codes still work.</p>
+    </div>
+  </aside>
+</div>
+<p class="hint" id="foot"></p>
+</div>
+
+<script>
+/*__PG_CORE__*/
+</script>
+<script>
+const PRESETS = /*__PRESETS__*/;
+(() => {
+"use strict";
+const $ = (id) => document.getElementById(id);
+const store = { get(k, d) { try { const v = localStorage.getItem("pgp." + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem("pgp." + k, JSON.stringify(v)); } catch (e) {} } };
+const typeById = (id) => (PRESETS.types.find((t) => t.data.id === id) || {}).data;
+PGRig.setResolver((id) => { const d = typeById(id); if (!d) throw new Error("unknown type " + id); return d; });
+const subs = PRESETS.types.filter((t) => t.data.generator === "rig" && t.own);
+PGRig.setTables(PRESETS.teams || {}, Object.fromEntries(subs.map((t) => [t.data.id, t.own])));
+const roles = PRESETS.types.filter((t) => t.data.generator === "rig" && t.data.role && !t.own && t.data.label).sort((a, b) => a.data.label.localeCompare(b.data.label));
+const beasts = PRESETS.types.filter((t) => t.data.generator === "beast");
+const opt = (sel, v, t) => { const o = document.createElement("option"); o.value = v; o.textContent = t; sel.appendChild(o); };
+roles.forEach((t) => opt($("role"), t.data.id, t.data.label));
+opt($("clan"), "", "Own colours");
+Object.keys(PRESETS.teams || {}).sort().forEach((k) => opt($("clan"), k, PRESETS.teams[k].label || k));
+opt($("mount"), "", "On foot");
+beasts.forEach((t) => opt($("mount"), t.data.id, t.data.label || t.data.id));
+$("foot").textContent = PRESETS.credit + " · " + PRESETS.version + " · runs in this page, nothing is sent anywhere.";
+
+// state
+const st = { yaw: 45, pitch: 30 };
+const VIEWS = [["front", "Front"], ["side_right", "Side"], ["back", "Back"], ["iso_sw", "Iso"], ["three_quarter", "¾ top"], ["top", "Top"]];
+VIEWS.forEach(([v, label]) => {
+  const b = document.createElement("button"); b.type = "button"; b.textContent = label; b.dataset.view = v;
+  b.onclick = () => { [st.yaw, st.pitch] = PGRig.VIEWS[v]; drawView(); };
+  $("viewBtns").appendChild(b);
+});
+$("role").value = store.get("role", "boc.goblin.blacksmith");
+if (!$("role").value) $("role").value = roles[0].data.id;
+$("name").value = store.get("name", "Grubnak");
+$("clan").value = store.get("clan", ""); $("mount").value = store.get("mount", "");
+opt($("folk"), "", "Goblin");
+subs.filter((t) => !t.data.id.startsWith("boc.trait.")).sort((a, b) => a.data.label.localeCompare(b.data.label)).forEach((t) => opt($("folk"), t.data.id, t.data.label));
+opt($("trait"), "", "None");
+subs.filter((t) => t.data.id.startsWith("boc.trait.")).sort((a, b) => a.data.label.localeCompare(b.data.label)).forEach((t) => opt($("trait"), t.data.id, t.data.label));
+$("folk").value = store.get("folk", ""); $("trait").value = store.get("trait", "");
+
+const SYL1 = ["Grub", "Snag", "Miz", "Tok", "Riv", "Zil", "Nub", "Krag", "Vex", "Pip", "Mog", "Skab", "Wort", "Fiz", "Gnar", "Bog"];
+const SYL2 = ["nak", "gle", "zle", "tooth", "rot", "wick", "bit", "fang", "ish", "gob", "snout", "lug", "kin", "rix"];
+$("roll").onclick = () => { $("name").value = SYL1[Math.floor(Math.random() * SYL1.length)] + SYL2[Math.floor(Math.random() * SYL2.length)]; redraw(); };
+
+let cur = null;
+function build() {
+  const name = $("name").value.trim() || "Grubnak";
+  const over = [$("folk").value, $("trait").value].filter(Boolean).join(",");
+  let data = over ? PGRig.composeId($("role").value, over) : typeById($("role").value);
+  if ($("clan").value) data = PGRig.withTeam(data, $("clan").value);
+  const seed = PGRig.seedFromName(name);
+  const g = PGRig.genome(data, PGRig.streamsFor(data, seed));
+  let mount = null;
+  if ($("mount").value) { const md = typeById($("mount").value); mount = { md, bg: PGRig.beastGenome(md, PGRig.streamsFor(md, PGRig.seedFromName(name + "'s mount"))) }; }
+  cur = { name, data, g, mount };
+  store.set("name", name); store.set("role", $("role").value); store.set("clan", $("clan").value); store.set("mount", $("mount").value); store.set("folk", $("folk").value); store.set("trait", $("trait").value);
+}
+function viewSprite(tier, yaw, pitch, pose) {
+  const o = { yaw, pitch, pose, era: $("era").value || null };
+  if (cur.mount) return PGRig.mounted(cur.data, cur.g, cur.mount.md, cur.mount.bg, tier, o).sprite;
+  return PGRig.renderView(cur.data, cur.g, tier, o).sprite;
+}
+function paint(canvas, spr, scale) {
+  canvas.width = spr.w * scale; canvas.height = spr.h * scale;
+  const ctx = canvas.getContext("2d"); ctx.imageSmoothingEnabled = false;
+  const off = document.createElement("canvas"); off.width = spr.w; off.height = spr.h;
+  const oc = off.getContext("2d"), img = oc.createImageData(spr.w, spr.h);
+  for (let i = 0; i < spr.px.length; i++) img.data.set(spr.palette[spr.px[i]], i * 4);
+  oc.putImageData(img, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
+}
+let anim = null, pending = false;
+function drawView() {
+  if (!cur) return;
+  const tier = +$("tier").value;
+  const poses = $("walk").checked ? PGRig.VIEW_POSES.walk_side : [{}];
+  const frames = poses.map((p) => viewSprite(tier, st.yaw, st.pitch, p));
+  const box = Math.min(340, $("stage").clientWidth - 16);
+  const scale = Math.max(1, Math.floor(box / Math.max(frames[0].w, frames[0].h)));
+  paint($("view"), frames[0], scale);
+  document.querySelectorAll("#viewBtns button").forEach((b) => { const [y, p] = PGRig.VIEWS[b.dataset.view]; b.setAttribute("aria-pressed", String(y === st.yaw && p === st.pitch)); });
+  $("readout").textContent = `turn ${st.yaw}°  ·  tilt ${st.pitch}°  ·  ${frames[0].w}×${frames[0].h} px  ·  ${frames[0].usedColors()} colours`;
+  clearInterval(anim); let k = 0;
+  if (frames.length > 1 && !matchMedia("(prefers-reduced-motion: reduce)").matches) anim = setInterval(() => { k = (k + 1) % frames.length; paint($("view"), frames[k], scale); }, 200);
+  $("code").value = shareCode();
+}
+function drawChain() {
+  const box = $("chain"); box.innerHTML = "";
+  PGRig.TIERS.forEach((t) => {
+    const era = $("era").value || PGRig.DEFAULT_CHAIN[t];
+    const spr = PGRig.render(cur.data, cur.g, t, { era }).sprite;
+    const f = document.createElement("figure"), c = document.createElement("canvas");
+    paint(c, spr, t >= 128 ? 1 : 128 / t); f.appendChild(c);
+    const cap = document.createElement("figcaption"); cap.textContent = t + " px"; f.appendChild(cap); box.appendChild(f);
+  });
+}
+function redraw() {
+  build();
+  $("who").textContent = cur.name;
+  const clan = $("clan").value ? " · " + (PRESETS.teams[$("clan").value].label || $("clan").value) : "";
+  const lab = (id) => (id ? (typeById(id) || {}).label || id.split(".").pop() : "");
+  $("whoRole").textContent = [lab($("role").value), lab($("folk").value), lab($("trait").value)].filter(Boolean).join(" · ") + clan + (cur.mount ? " · on a " + (cur.mount.md.label || "mount").toLowerCase() : "");
+  drawView(); drawChain();
+}
+const later = () => { if (!pending) { pending = true; requestAnimationFrame(() => { pending = false; drawView(); }); } };
+
+// drag and keys to rotate
+(() => {
+  const s = $("stage"); let drag = null;
+  s.addEventListener("pointerdown", (e) => { drag = [e.clientX, e.clientY, st.yaw, st.pitch]; s.setPointerCapture(e.pointerId); s.style.cursor = "grabbing"; });
+  s.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    st.yaw = ((drag[2] - Math.round((e.clientX - drag[0]) / 2)) % 360 + 360) % 360;
+    st.pitch = Math.max(0, Math.min(90, drag[3] + Math.round((e.clientY - drag[1]) / 3)));
+    later();
+  });
+  const end = () => { drag = null; s.style.cursor = "grab"; };
+  s.addEventListener("pointerup", end); s.addEventListener("pointercancel", end);
+  s.addEventListener("keydown", (e) => {
+    const m = { ArrowLeft: [15, 0], ArrowRight: [-15, 0], ArrowUp: [0, -10], ArrowDown: [0, 10] }[e.key];
+    if (!m) return; e.preventDefault();
+    st.yaw = ((st.yaw + m[0]) % 360 + 360) % 360; st.pitch = Math.max(0, Math.min(90, st.pitch + m[1])); later();
+  });
+})();
+
+// share codes: pg1/role/clan/mount/era/tier/yaw/pitch/name
+function shareCode() {
+  const short = $("role").value.split(".").pop();
+  const sh = (v) => (v ? v.split(".").pop() : "-");
+  return ["pg2", short, sh($("folk").value), sh($("trait").value), $("clan").value || "-", sh($("mount").value), $("era").value || "-", $("tier").value, st.yaw, st.pitch, encodeURIComponent(cur.name)].join("/");
+}
+function loadCode(code) {
+  const p = code.trim().split("/");
+  if (p[0] === "pg1" && p.length >= 9) p.splice(2, 0, "-", "-");      // pg1 codes had no folk or trait
+  else if (p[0] !== "pg2" || p.length < 11) return toast("That doesn't look like a PixelGoblin share code. It should start with pg2/ (or pg1/).");
+  const findOver = (short, trait) => (short === "-" ? "" : (subs.find((t) => t.data.id.split(".").pop() === short && t.data.id.startsWith("boc.trait.") === trait) || { data: { id: "" } }).data.id);
+  $("folk").value = findOver(p[2], false); $("trait").value = findOver(p[3], true); p.splice(2, 2);
+  const role = roles.find((t) => t.data.id.split(".").pop() === p[1]);
+  if (!role) return toast("Unknown job in that code: " + p[1]);
+  $("role").value = role.data.id;
+  $("clan").value = p[2] === "-" ? "" : p[2];
+  const m = beasts.find((t) => t.data.id.split(".").pop() === p[3]); $("mount").value = m ? m.data.id : "";
+  $("era").value = p[4] === "-" ? "" : p[4]; $("tier").value = p[5];
+  st.yaw = ((+p[6] || 0) % 360 + 360) % 360; st.pitch = Math.max(0, Math.min(90, +p[7] || 0));
+  $("name").value = decodeURIComponent(p.slice(8).join("/"));
+  redraw(); toast("Loaded " + cur.name);
+}
+$("load").onclick = () => loadCode($("code").value);
+$("copy").onclick = () => {
+  const v = $("code").value;
+  try { navigator.clipboard.writeText(v).then(() => toast("Copied"), () => { $("code").select(); toast("Selected. Press Ctrl+C or Cmd+C to copy."); }); }
+  catch (e) { $("code").select(); toast("Selected. Press Ctrl+C or Cmd+C to copy."); }
+};
+
+// saving
+let dl = null;
+try { if (window.claude && window.claude.use) window.claude.use("downloads").then((d) => { dl = d; }, () => {}); } catch (e) {}
+function toast(msg) { const t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2200); }
+const pngBlob = (spr, scale) => new Promise((res) => { const c = document.createElement("canvas"); paint(c, spr, scale); c.toBlob(res, "image/png"); });
+async function saveFile(filename, blob) {
+  if (dl) {
+    try { await dl.save({ filename, data: blob }); toast("Saved " + filename); }
+    catch (e) { if (!e || e.code !== "declined") toast("Could not save the picture" + (e && e.message ? ": " + e.message : ".")); }
+    return;
+  }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+}
+const fname = (rest) => `${cur.name.replace(/[^A-Za-z0-9_-]+/g, "_")}-${$("role").value.split(".").pop()}-${rest}.png`;
+$("savePng").onclick = async () => { const t = +$("tier").value; saveFile(fname(`${t}px-turn${st.yaw}-tilt${st.pitch}`), await pngBlob(viewSprite(t, st.yaw, st.pitch, {}), Math.max(1, Math.floor(256 / t)))); };
+$("saveTurn").onclick = async () => {
+  const t = +$("tier").value;
+  const sprs = [0, 45, 90, 135, 180, 225, 270, 315].map((y) => viewSprite(t, y, st.pitch, {}));
+  const W = sprs.reduce((a, s) => a + s.w, 0), H = Math.max(...sprs.map((s) => s.h));
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const ctx = c.getContext("2d"); let x = 0;
+  for (const s of sprs) { const cc = document.createElement("canvas"); paint(cc, s, 1); ctx.drawImage(cc, x, H - s.h); x += s.w; }
+  c.toBlob((b) => saveFile(fname(`8dir-${t}px-tilt${st.pitch}`), b), "image/png");
+};
+
+let typing = null;
+$("name").oninput = () => { clearTimeout(typing); typing = setTimeout(redraw, 180); };
+["role", "folk", "trait", "clan", "mount", "era"].forEach((id) => { $(id).onchange = redraw; });
+$("tier").onchange = drawView; $("walk").onchange = drawView;
+window.addEventListener("resize", later);
+redraw();
+})();
+</script>

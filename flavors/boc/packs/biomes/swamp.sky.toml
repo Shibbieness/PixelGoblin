@@ -1,0 +1,41 @@
+# Swamp: Water-saturated lowlands: marsh, bog, blighted and mana-swamps.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.swamp.sky"
+tag = "env"
+generator = "parallax"
+license = "Proprietary"
+size = [160, 90]
+label = "Swamp sky"
+stars = 0
+
+[provenance]
+source = "book-of-cities: biomes (Swamp)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+sky = ["#21271f", "#445240", "#677b64", "#8ca18b", "#b5c3b5"]
+star = "#fff4e0"
+
+[[layers]]
+name = "far"
+colors = ["#24200e", "#686830", "#a2ad51"]
+base = 60
+periods = [40, 12]
+amps = [12, 4]
+scroll = 20
+
+[[layers]]
+name = "mid"
+colors = ["#0b1207", "#2c4f24", "#52a74c"]
+base = 74
+periods = [26, 9]
+amps = [8, 3]
+scroll = 50
+
+[[layers]]
+name = "ground"
+colors = ["#120a07", "#523926", "#a9814e"]
+base = 88
+periods = [16, 5]
+amps = [3, 2]
+scroll = 100

@@ -1,0 +1,22 @@
+# LEGENDARY: master-of-masters craft
+schema = "pixelgoblin/type@1"
+id = "boc.rank.quality_legendary"
+tag = "ui"
+generator = "uikit"
+license = "Proprietary"
+size = [12, 12]
+label = "LEGENDARY"
+tile = 12
+border = 3
+corner = "round"
+icons = 6
+texture = 18
+rank_order = 5
+
+[provenance]
+source = "book-of-cities-compendium: ranks"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#14121a"
+material = ["#40280b", "#8e6418", "#cda535", "#dfcc7e", "#f2ecc8"]

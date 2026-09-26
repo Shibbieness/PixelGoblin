@@ -1,0 +1,18 @@
+# Plain: Open grassland, prairie, steppe and flowering meadows.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.plain.ground"
+tag = "terrain"
+generator = "autotile"
+license = "Proprietary"
+size = [16, 16]
+label = "Plain ground"
+tile = 16
+
+[provenance]
+source = "book-of-cities: biomes (Plain)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#503423"
+highlight = "#f8f7ec"
+fill = ["#38210d", "#80571e", "#bc933a", "#d6c079"]

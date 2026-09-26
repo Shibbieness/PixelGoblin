@@ -1,0 +1,33 @@
+# Brackrun-Hollow, the Aether Library's hamlet, as a PixelGoblin city of mixed folk.
+# Names: brackrun_hollow.names.txt (the named souls of the Aether Library).
+schema = "pixelgoblin/city@1"
+id = "boc.city.brackrun_hollow"
+scene = "boc.scene.village"
+clans = []
+
+[census]
+gatherer = 3
+hunter = 2
+father = 2
+mother = 2
+trader = 1
+shaman = 1
+elder_scholar = 1
+craftswoman = 1
+
+[children]
+child_boy = 1
+child_girl = 1
+
+[elders]
+elder = 1
+
+[subspecies]
+"boc.race.sub.human" = 4
+"boc.race.sub.halfling" = 1
+common = 1
+
+[bands]
+far = 4
+mid = 3
+near = 1

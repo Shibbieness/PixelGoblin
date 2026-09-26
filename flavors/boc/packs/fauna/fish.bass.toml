@@ -1,0 +1,60 @@
+# Bass (freshwater)
+schema = "pixelgoblin/type@1"
+id = "boc.fish.bass"
+tag = "creature.small"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Bass"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "underwater"
+
+[provenance]
+source = "book-of-cities: fish (underwater)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#131f0c", "#396829", "#5caa4d", "#95cd90"]
+
+[[palette.ramps]]
+name = "coat_alt"
+weight = 1
+colors = ["#121007", "#48451d", "#878a41", "#b5be73"]
+
+[body]
+anchor = [1, 2]
+template = [
+  "......#",
+  ".....##",
+  "....###",
+  "...####",
+  "..#####",
+  "..#####",
+  "...####",
+  "....###",
+  ".....##",
+  "....###",
+  "...1.##",
+]
+
+[features]
+eyes = 1
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 3
+frame_ms = 220
+
+[[parts]]
+name = "fins"
+chance = 70
+anchor = [5, 6]
+template = ["1..", "#1.", ".#."]
+ramp = "coat_alt"

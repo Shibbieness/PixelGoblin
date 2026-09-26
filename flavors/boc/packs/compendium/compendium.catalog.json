@@ -1,0 +1,1641 @@
+{
+ "schema": "pixelgoblin/catalog@1",
+ "id": "boc.catalog.compendium",
+ "license": "Proprietary",
+ "notes": "Doc 3 §3 Axis Registry is still 'pending' in source (v0u1p0); trait_axes here lift the §2.7 provisional dispositions. Axis count provisional (~38-44 + 7 meta + ~12 composites). Visual hints are all inferred for pixel-art use; sources describe mechanics, not sprites.",
+ "trait_axes": [
+  {
+   "id": "elemental",
+   "name": "Elemental cluster",
+   "summary": "Flat material/energy axes; continuous-amplitude by default, gradient chosen per context (offensive/defensive/binding/environmental-ambient/transformative/cultivative).",
+   "values": [
+    "flame",
+    "frost",
+    "force",
+    "electric",
+    "water",
+    "earth",
+    "air",
+    "earth:petrification"
+   ]
+  },
+  {
+   "id": "vital",
+   "name": "Vital cluster",
+   "summary": "Life, growth, decay and renewal axes. growth/bloom merged into nature; withering merged into decay.",
+   "values": [
+    "nature",
+    "healing",
+    "regeneration",
+    "decay",
+    "rebirth",
+    "nutrition",
+    "preservation"
+   ]
+  },
+  {
+   "id": "mind",
+   "name": "Mind cluster",
+   "summary": "Hierarchical namespace: base mind plus perception/dream/memory/emotional/psychic sub-axes (specialization-lift fallback: mind:perception:listening -> mind:perception -> mind).",
+   "values": [
+    "mind",
+    "mind:perception",
+    "mind:perception:vision",
+    "mind:perception:listening",
+    "mind:perception:spirit",
+    "mind:dream",
+    "mind:memory",
+    "mind:emotional",
+    "mind:emotional:beauty",
+    "mind:emotional:grief",
+    "mind:emotional:fear",
+    "mind:emotional:morale",
+    "mind:emotional:humility",
+    "mind:psychic"
+   ]
+  },
+  {
+   "id": "spirit-divinity",
+   "name": "Spirit / Death / Divinity cluster",
+   "summary": "Sacred, profane, spirit and celestial axes. divine and infernal provisionally paired-opposite (two axes). radiant/unhallow are surfaces of divine.",
+   "values": [
+    "divine",
+    "infernal",
+    "spirit",
+    "necromantic",
+    "celestial",
+    "celestial:lunar",
+    "celestial:stellar",
+    "celestial:solar",
+    "dormant",
+    "devotional",
+    "fey"
+   ]
+  },
+  {
+   "id": "ritual-binding",
+   "name": "Ritual / Binding / Oath cluster",
+   "summary": "Commitment and binding axes; testament/witnessed/settled route to composites.",
+   "values": [
+    "contract",
+    "ward",
+    "oath",
+    "invocation",
+    "order",
+    "containment",
+    "peace",
+    "purity"
+   ]
+  },
+  {
+   "id": "curse",
+   "name": "Adjacency / Curse / Hex cluster",
+   "summary": "hexing and tainted merged into curse; blight separability still open.",
+   "values": [
+    "curse",
+    "blight"
+   ]
+  },
+  {
+   "id": "hidden-negation",
+   "name": "Hidden / Secret / Negation cluster",
+   "summary": "Concealment and negation; silenced (acoustic) and unsaid (linguistic) kept flat.",
+   "values": [
+    "hidden",
+    "shadow",
+    "silenced",
+    "unsaid"
+   ]
+  },
+  {
+   "id": "physical",
+   "name": "Physical cluster (pure namespace)",
+   "summary": "Always prefixed physical:*; the flat 'physical' is meaningless.",
+   "values": [
+    "physical:metabolism",
+    "physical:movement",
+    "physical:wear",
+    "physical:pressure",
+    "physical:endurance",
+    "physical:flow"
+   ]
+  },
+  {
+   "id": "hunt",
+   "name": "Hunt cluster",
+   "summary": "combat removed (combat is a context, not an axis, OQ-CMP-19); predator is a composite over {hunt, ferocity, force}.",
+   "values": [
+    "ferocity",
+    "hunt",
+    "grace"
+   ]
+  },
+  {
+   "id": "value-time",
+   "name": "Value / Permanence / Time cluster",
+   "summary": "Economic, duration and change axes.",
+   "values": [
+    "value",
+    "permanence",
+    "time",
+    "cycles",
+    "transformation",
+    "abundance",
+    "depth"
+   ]
+  },
+  {
+   "id": "anomaly",
+   "name": "Anomaly / Planar cluster",
+   "summary": "Reality-instability and absence.",
+   "values": [
+    "anomaly",
+    "anomaly:tear",
+    "void"
+   ]
+  },
+  {
+   "id": "social",
+   "name": "Social cluster (pure namespace)",
+   "summary": "Always prefixed; paired-opposite poles live inside one signed axis (kinship<->exile, wanderlust<->hearth).",
+   "values": [
+    "social:disposition",
+    "social:economic-state",
+    "social:kinship",
+    "social:movement-disposition"
+   ]
+  },
+  {
+   "id": "meta",
+   "name": "Meta / Architectural axes",
+   "summary": "Engine-facing axes, always meta:-prefixed; not gradient-bearing in the standard sense.",
+   "values": [
+    "meta:catalytic",
+    "meta:polymorphic",
+    "meta:capacity",
+    "meta:provenance",
+    "meta:tag",
+    "meta:state-shift",
+    "meta:identity-stability"
+   ]
+  },
+  {
+   "id": "quality",
+   "name": "quality ladder (state-classifier)",
+   "summary": "Craftsmanship ladder; LEGENDARY = master-of-masters craft.",
+   "values": [
+    "COMMON",
+    "UNCOMMON",
+    "GREATER",
+    "MASTER",
+    "LEGENDARY"
+   ]
+  },
+  {
+   "id": "rarity",
+   "name": "rarity ladder (state-classifier)",
+   "summary": "Scarcity ladder split from quality (OQ-CMP-12); LEGENDARY = once-per-civilization scarcity.",
+   "values": [
+    "COMMON",
+    "UNCOMMON",
+    "RARE",
+    "LEGENDARY"
+   ]
+  },
+  {
+   "id": "cultivation",
+   "name": "cultivation ladder (state-classifier)",
+   "summary": "Harvester tier; ADJACENCY_TRANSFORMED is a parallel branch at BEYOND_MASTER level; LEGENDARY requires an ENDEMIC-promoted source (OQ-CMP-23).",
+   "values": [
+    "WILD",
+    "STANDARD",
+    "MASTER",
+    "BEYOND_MASTER",
+    "ADJACENCY_TRANSFORMED",
+    "LEGENDARY"
+   ]
+  },
+  {
+   "id": "cultivation:lifecycle",
+   "name": "cultivation:lifecycle (state-classifier)",
+   "summary": "Five-stage crop lifecycle; BUILDUP and BEYOND_MASTER are the hidden stages.",
+   "values": [
+    "READY_TO_HARVEST",
+    "GRACE_PERIOD",
+    "WILD_LOSS",
+    "BUILDUP",
+    "BEYOND_MASTER"
+   ]
+  },
+  {
+   "id": "continuity",
+   "name": "continuity ladder (state-classifier)",
+   "summary": "Age/establishment of a lineage or adjacency.",
+   "values": [
+    "UNESTABLISHED",
+    "ESTABLISHED",
+    "HEREDITARY",
+    "ANCIENT"
+   ]
+  },
+  {
+   "id": "adaptation-lifecycle",
+   "name": "Adaptation lifecycle (Mechanism 3 states)",
+   "summary": "Five-state machine for adjacency-adapted materials plus the PERMANENT promotion lock (recursive ENDEMIC).",
+   "values": [
+    "ADAPTED",
+    "DECAYING",
+    "BASE",
+    "STABILIZING",
+    "ENDEMIC",
+    "PERMANENT"
+   ]
+  },
+  {
+   "id": "defensive-ladder",
+   "name": "Defensive-trait ladder",
+   "summary": "Gradient used by inherited defensive traits on any axis (defensive context). Suffixes stay register-distinct per axis (OQ-CMP-13).",
+   "values": [
+    "(none)",
+    "Tolerance",
+    "Resistance",
+    "Adaptation",
+    "Immunity",
+    "Absorption",
+    "Replenishment"
+   ]
+  },
+  {
+   "id": "context",
+   "name": "Context registry (per-context gradient)",
+   "summary": "Gradient model is selected by context, not by axis (OQ-CMP-02/24): e.g. flame@offensive, flame@defensive.",
+   "values": [
+    "offensive",
+    "defensive",
+    "binding",
+    "environmental-ambient",
+    "transformative",
+    "cultivative"
+   ]
+  },
+  {
+   "id": "water:clarity",
+   "name": "water:clarity tier",
+   "summary": "Underwater vision tier; Dim Water Sight shifts it one step.",
+   "values": [
+    "CLEAR",
+    "MURKY",
+    "DARK",
+    "BIOLUMINESCENT_ONLY"
+   ]
+  },
+  {
+   "id": "lexical-register",
+   "name": "Lexical register tags",
+   "summary": "Register tags for lexical surfaces and procedural naming (Goblin = [formal]+[crude]; Dwarf = [archaic]+[formal]; Elf = [poetic]+[poetic]; Human = [common] w/ occasional [poetic]).",
+   "values": [
+    "[common]",
+    "[formal]",
+    "[poetic]",
+    "[archaic]",
+    "[crude]"
+   ]
+  }
+ ],
+ "composite_axis_classes": [
+  {
+   "id": "predator",
+   "distributes_over": [
+    "hunt",
+    "ferocity",
+    "force"
+   ]
+  },
+  {
+   "id": "prophecy",
+   "distributes_over": [
+    "mind",
+    "time"
+   ]
+  },
+  {
+   "id": "divination",
+   "distributes_over": [
+    "prophecy",
+    "ritual"
+   ]
+  },
+  {
+   "id": "crystallized-memory",
+   "distributes_over": [
+    "memory",
+    "mineral",
+    "time"
+   ]
+  },
+  {
+   "id": "crystallized-knowledge",
+   "distributes_over": [
+    "knowledge",
+    "mineral",
+    "time"
+   ]
+  },
+  {
+   "id": "testament",
+   "distributes_over": [
+    "oath",
+    "memory"
+   ]
+  },
+  {
+   "id": "witnessed",
+   "distributes_over": [
+    "observation",
+    "oath"
+   ]
+  },
+  {
+   "id": "settled",
+   "distributes_over": [
+    "stability",
+    "peace"
+   ]
+  }
+ ],
+ "adjacency_types": [
+  "Cursed Ruins",
+  "Blighted Swamp",
+  "Haunted Woods",
+  "Old Battlefield",
+  "Hollow Hills",
+  "Standing Stones",
+  "Drowned Grove",
+  "Feral Coast",
+  "Thin Place",
+  "Boneyard / Great Carcass",
+  "Wyrdwood",
+  "Forgotten Altar",
+  "Silent Cavern",
+  "Starfall Crater",
+  "Whispering Hollow",
+  "Enchanted Grove (wilderness)",
+  "Deep Forest (wilderness)",
+  "Deep Ocean (underwater)"
+ ],
+ "traits": [
+  {
+   "id": "curse-resistance",
+   "name": "Curse Resistance",
+   "axis": "curse",
+   "summary": "Inherited trait from Cursed Ruins lineages; defensive on curse axis.",
+   "visual_hint": "faint dark sigil-scars or ashen skin marks",
+   "inferred": true
+  },
+  {
+   "id": "psychic-damage-dampening",
+   "name": "Psychic Damage Dampening",
+   "axis": "mind:psychic",
+   "summary": "Inherited trait from Cursed Ruins; defensive on psychic axis.",
+   "visual_hint": "calm, dulled eyes; faint halo-ring at brow",
+   "inferred": true
+  },
+  {
+   "id": "disease-resistance",
+   "name": "Disease Resistance",
+   "axis": "physical (toxicity/disease)",
+   "summary": "Inherited trait from Blighted Swamp.",
+   "visual_hint": "sallow-green tinged skin, unblemished despite swamp grime",
+   "inferred": true
+  },
+  {
+   "id": "toxin-tolerance",
+   "name": "Toxin Tolerance",
+   "axis": "physical (toxicity)",
+   "summary": "Inherited trait from Blighted Swamp.",
+   "visual_hint": "greenish lips/nails, swamp-stained clothing",
+   "inferred": true
+  },
+  {
+   "id": "fear-resistance",
+   "name": "Fear Resistance",
+   "axis": "mind:emotional:fear",
+   "summary": "Inherited trait from Haunted Woods.",
+   "visual_hint": "steady stance, set jaw",
+   "inferred": true
+  },
+  {
+   "id": "night-vision",
+   "name": "Night Vision",
+   "axis": "mind:perception:vision",
+   "summary": "Inherited trait from Haunted Woods; perception capability.",
+   "visual_hint": "reflective/glowing eyes in dark palettes",
+   "inferred": true
+  },
+  {
+   "id": "spirit-sensitivity",
+   "name": "Spirit Sensitivity",
+   "axis": "mind:perception:spirit",
+   "summary": "Inherited trait from Haunted Woods.",
+   "visual_hint": "pale translucent wisps near the head; pale irises",
+   "inferred": true
+  },
+  {
+   "id": "bleeding-resistance",
+   "name": "Bleeding Resistance",
+   "axis": "physical (wound)",
+   "summary": "Inherited trait from Old Battlefield.",
+   "visual_hint": "healed scars, thick hide-like skin patches",
+   "inferred": true
+  },
+  {
+   "id": "necromantic-resistance",
+   "name": "Necromantic Resistance",
+   "axis": "necromantic",
+   "summary": "Inherited trait from Boneyard.",
+   "visual_hint": "bone charms, grey-white skin tone",
+   "inferred": true
+  },
+  {
+   "id": "pressure-resistance",
+   "name": "Pressure Resistance",
+   "axis": "physical:pressure",
+   "summary": "Underwater Layer-3 inherited trait; reduces pressure tier one step.",
+   "visual_hint": "dense stocky build",
+   "inferred": true
+  },
+  {
+   "id": "slowed-metabolism",
+   "name": "Slowed Metabolism",
+   "axis": "physical:metabolism",
+   "summary": "Reduces oxygen consumption; breath time x1.5-2.0.",
+   "visual_hint": "slow idle animation, lean frame",
+   "inferred": true
+  },
+  {
+   "id": "dim-water-sight",
+   "name": "Dim Water Sight",
+   "axis": "mind:perception:vision",
+   "summary": "Treats MURKY as CLEAR and DARK as BIOLUMINESCENT_ONLY.",
+   "visual_hint": "large dark pupils, faint bioluminescent eye-shine",
+   "inferred": true
+  },
+  {
+   "id": "cold-water-adaptation",
+   "name": "Cold Water Adaptation",
+   "axis": "frost",
+   "summary": "Reduces cold-water exposure one tier.",
+   "visual_hint": "blue-tinged skin, thick blubbery build",
+   "inferred": true
+  },
+  {
+   "id": "swimming-grace",
+   "name": "Swimming Grace",
+   "axis": "physical:movement",
+   "summary": "Native-efficient swimming; skill bonus.",
+   "visual_hint": "webbed fingers, fin-like ear frills",
+   "inferred": true
+  },
+  {
+   "id": "salt-tolerance",
+   "name": "Salt Tolerance",
+   "axis": "salt (water overlap)",
+   "summary": "Extended salt-water exposure without damage (immunity position).",
+   "visual_hint": "salt-crusted hair, sea-weathered skin",
+   "inferred": true
+  },
+  {
+   "id": "goblin-improvised-into-comfort",
+   "name": "Goblin improvised-into-comfort",
+   "axis": "racial classifier (social)",
+   "summary": "Named-composition racial classifier (OQ-CMP-15): Goblins usually show this tendency; not every Goblin. Not 'cluttered'. Naming: [formal]+[crude] hyphenated (e.g. Cogitating-Stick, Resonance-Bonker).",
+   "visual_hint": "patched mismatched gear, cosy scavenged trinkets hung about the body",
+   "inferred": true
+  },
+  {
+   "id": "half-race-composed-floor",
+   "name": "Half-race composed floor",
+   "axis": "meta:identity-stability",
+   "summary": "Half-race children have composed racial floors (Stage 2 §7.7).",
+   "visual_hint": "blended features from two parent race palettes",
+   "inferred": true
+  },
+  {
+   "id": "lineage",
+   "name": "Lineage",
+   "axis": "meta:provenance",
+   "summary": "Generations concentrate adjacency-tolerant traits (Stage 2 §7.7.3).",
+   "visual_hint": "family crest or heirloom accessory",
+   "inferred": true
+  },
+  {
+   "id": "axis-flame",
+   "name": "flame",
+   "axis": "elemental",
+   "summary": "Canonical axis. heat/fire/combustion; warmth is low-amplitude [common]/[poetic] surface.",
+   "visual_hint": "ember glow, singed edges, flame wisps",
+   "inferred": true
+  },
+  {
+   "id": "axis-frost",
+   "name": "frost",
+   "axis": "elemental",
+   "summary": "Canonical axis. cold/ice/chill.",
+   "visual_hint": "icicle fringes, rime on shoulders, pale blue tint",
+   "inferred": true
+  },
+  {
+   "id": "axis-force",
+   "name": "force",
+   "axis": "elemental",
+   "summary": "Canonical axis. kinetic impact/blunt/push.",
+   "visual_hint": "cracked-ground impact marks, heavy fists",
+   "inferred": true
+  },
+  {
+   "id": "axis-electric",
+   "name": "electric",
+   "axis": "elemental",
+   "summary": "Canonical axis. candidate promoted to canonical.",
+   "visual_hint": "crackling sparks, jagged highlight lines",
+   "inferred": true
+  },
+  {
+   "id": "axis-water",
+   "name": "water",
+   "axis": "elemental",
+   "summary": "Canonical axis. fluid/wet/oceanic; fluidity merged.",
+   "visual_hint": "dripping edges, wet sheen",
+   "inferred": true
+  },
+  {
+   "id": "axis-earth",
+   "name": "earth",
+   "axis": "elemental",
+   "summary": "Canonical axis. stone/soil/mineral; grounding merged.",
+   "visual_hint": "stony plates, mud-caked feet",
+   "inferred": true
+  },
+  {
+   "id": "axis-air",
+   "name": "air",
+   "axis": "elemental",
+   "summary": "Canonical axis. candidate promoted to canonical.",
+   "visual_hint": "swirling wind lines, fluttering cloth",
+   "inferred": true
+  },
+  {
+   "id": "axis-earth-petrification",
+   "name": "earth:petrification",
+   "axis": "elemental",
+   "summary": "Canonical axis. provisional placement (basilisk-eye yields stone content).",
+   "visual_hint": "partially stone-grey limbs",
+   "inferred": true
+  },
+  {
+   "id": "axis-nature",
+   "name": "nature",
+   "axis": "vital",
+   "summary": "Canonical axis. wild-vitality; growth and bloom merged.",
+   "visual_hint": "moss on shoulders, leaves/flowers in hair",
+   "inferred": true
+  },
+  {
+   "id": "axis-healing",
+   "name": "healing",
+   "axis": "vital",
+   "summary": "Canonical axis. restoration/mend/cure.",
+   "visual_hint": "soft green-gold glow at hands",
+   "inferred": true
+  },
+  {
+   "id": "axis-regeneration",
+   "name": "regeneration",
+   "axis": "vital",
+   "summary": "Canonical axis. active re-growth (re-creation, not restoration).",
+   "visual_hint": "sprouting new tissue/bark at wounds",
+   "inferred": true
+  },
+  {
+   "id": "axis-decay",
+   "name": "decay",
+   "axis": "vital",
+   "summary": "Canonical axis. rot/wither/entropy; withering merged.",
+   "visual_hint": "rot spots, withered leaves, flies",
+   "inferred": true
+  },
+  {
+   "id": "axis-rebirth",
+   "name": "rebirth",
+   "axis": "vital",
+   "summary": "Canonical axis. cyclic renewal, phoenix archetype.",
+   "visual_hint": "rising ember-feathers",
+   "inferred": true
+  },
+  {
+   "id": "axis-preservation",
+   "name": "preservation",
+   "axis": "vital",
+   "summary": "Canonical axis. decay-resistance specifically (narrower than permanence).",
+   "visual_hint": "salt/wax sheen, amber-encased bits",
+   "inferred": true
+  },
+  {
+   "id": "axis-mind-dream",
+   "name": "mind:dream",
+   "axis": "mind",
+   "summary": "Canonical axis. oneiric/liminal cognition.",
+   "visual_hint": "drifting starry motes, half-closed eyes",
+   "inferred": true
+  },
+  {
+   "id": "axis-mind-memory",
+   "name": "mind:memory",
+   "axis": "mind",
+   "summary": "Canonical axis. recall/preservation-of-knowing.",
+   "visual_hint": "floating script fragments, faded sepia overlay",
+   "inferred": true
+  },
+  {
+   "id": "axis-mind-emotional-grief",
+   "name": "mind:emotional:grief",
+   "axis": "mind",
+   "summary": "Canonical axis. negative emotional sub-axis.",
+   "visual_hint": "tear tracks, drooped posture",
+   "inferred": true
+  },
+  {
+   "id": "axis-mind-emotional-beauty",
+   "name": "mind:emotional:beauty",
+   "axis": "mind",
+   "summary": "Canonical axis. positive emotional sub-axis.",
+   "visual_hint": "ornate adornment, shimmer highlights",
+   "inferred": true
+  },
+  {
+   "id": "axis-mind-psychic",
+   "name": "mind:psychic",
+   "axis": "mind",
+   "summary": "Canonical axis. psychic damage/pressure/mental control.",
+   "visual_hint": "violet aura rings around head",
+   "inferred": true
+  },
+  {
+   "id": "axis-divine",
+   "name": "divine",
+   "axis": "spirit-divinity",
+   "summary": "Canonical axis. holy/sanctified; radiant is its peak [poetic] surface.",
+   "visual_hint": "halo, gold-white radiance",
+   "inferred": true
+  },
+  {
+   "id": "axis-infernal",
+   "name": "infernal",
+   "axis": "spirit-divinity",
+   "summary": "Canonical axis. hellish/damned; paired-opposite of divine.",
+   "visual_hint": "horns, red-black ember glow",
+   "inferred": true
+  },
+  {
+   "id": "axis-spirit",
+   "name": "spirit",
+   "axis": "spirit-divinity",
+   "summary": "Canonical axis. incorporeal personhood (ghost, wraith, settled thread).",
+   "visual_hint": "translucent body, ghost trail",
+   "inferred": true
+  },
+  {
+   "id": "axis-necromantic",
+   "name": "necromantic",
+   "axis": "spirit-divinity",
+   "summary": "Canonical axis. death-magic (raising/control of dead).",
+   "visual_hint": "bone motifs, green-black glow",
+   "inferred": true
+  },
+  {
+   "id": "axis-celestial-lunar",
+   "name": "celestial:lunar",
+   "axis": "spirit-divinity",
+   "summary": "Canonical axis. moon; monthly cycle.",
+   "visual_hint": "silver crescent marks, moonlit palette",
+   "inferred": true
+  },
+  {
+   "id": "axis-celestial-stellar",
+   "name": "celestial:stellar",
+   "axis": "spirit-divinity",
+   "summary": "Canonical axis. stars; annual meteor-shower cycle.",
+   "visual_hint": "star-speckled skin or cloak",
+   "inferred": true
+  },
+  {
+   "id": "axis-celestial-solar",
+   "name": "celestial:solar",
+   "axis": "spirit-divinity",
+   "summary": "Canonical axis. sun; daily/seasonal cycle.",
+   "visual_hint": "sunburst motif, warm gold rim-light",
+   "inferred": true
+  },
+  {
+   "id": "axis-dormant",
+   "name": "dormant",
+   "axis": "spirit-divinity",
+   "summary": "Canonical axis. sleeping/forgotten divinity.",
+   "visual_hint": "dust-covered, closed eyes, faded gilding",
+   "inferred": true
+  },
+  {
+   "id": "axis-devotional",
+   "name": "devotional",
+   "axis": "spirit-divinity",
+   "summary": "Canonical axis. practice toward divinity; faith/devotion merged.",
+   "visual_hint": "prayer beads, candle-wax drips",
+   "inferred": true
+  },
+  {
+   "id": "axis-fey",
+   "name": "fey",
+   "axis": "spirit-divinity",
+   "summary": "Canonical axis. wild-magic/planar-touched.",
+   "visual_hint": "sprite dust sparkles, pointed ears, iridescent wings",
+   "inferred": true
+  },
+  {
+   "id": "axis-ward",
+   "name": "ward",
+   "axis": "ritual-binding",
+   "summary": "Canonical axis. defensive binding.",
+   "visual_hint": "runic ward circle, talisman",
+   "inferred": true
+  },
+  {
+   "id": "axis-oath",
+   "name": "oath",
+   "axis": "ritual-binding",
+   "summary": "Canonical axis. binding of intent/personhood.",
+   "visual_hint": "bound wrist cords, sealed scroll",
+   "inferred": true
+  },
+  {
+   "id": "axis-containment",
+   "name": "containment",
+   "axis": "ritual-binding",
+   "summary": "Canonical axis. binding inward of loose energy.",
+   "visual_hint": "chains, stoppered vessel motif",
+   "inferred": true
+  },
+  {
+   "id": "axis-purity",
+   "name": "purity",
+   "axis": "ritual-binding",
+   "summary": "Canonical axis. unalloyed state (distinct from divine).",
+   "visual_hint": "white/clean palette, clear glassy sheen",
+   "inferred": true
+  },
+  {
+   "id": "axis-peace",
+   "name": "peace",
+   "axis": "ritual-binding",
+   "summary": "Canonical axis. stabilized post-conflict state.",
+   "visual_hint": "soft muted palette, relaxed pose",
+   "inferred": true
+  },
+  {
+   "id": "axis-curse",
+   "name": "curse",
+   "axis": "curse",
+   "summary": "Canonical axis. environmental malefice; hexing/tainted merged.",
+   "visual_hint": "dark veins, purple-black miasma",
+   "inferred": true
+  },
+  {
+   "id": "axis-blight",
+   "name": "blight",
+   "axis": "curse",
+   "summary": "Canonical axis. Blighted Swamp surface (separability open).",
+   "visual_hint": "sickly green-brown spots",
+   "inferred": true
+  },
+  {
+   "id": "axis-hidden",
+   "name": "hidden",
+   "axis": "hidden-negation",
+   "summary": "Canonical axis. concealment by position.",
+   "visual_hint": "hood, partial occlusion",
+   "inferred": true
+  },
+  {
+   "id": "axis-shadow",
+   "name": "shadow",
+   "axis": "hidden-negation",
+   "summary": "Canonical axis. concealment by darkness.",
+   "visual_hint": "umbral outline, dark smoke",
+   "inferred": true
+  },
+  {
+   "id": "axis-silenced",
+   "name": "silenced",
+   "axis": "hidden-negation",
+   "summary": "Canonical axis. acoustic absence.",
+   "visual_hint": "muffled/desaturated sprite, no sound-lines",
+   "inferred": true
+  },
+  {
+   "id": "axis-unsaid",
+   "name": "unsaid",
+   "axis": "hidden-negation",
+   "summary": "Canonical axis. linguistic refusal.",
+   "visual_hint": "sewn or covered mouth, blank speech glyph",
+   "inferred": true
+  },
+  {
+   "id": "axis-ferocity",
+   "name": "ferocity",
+   "axis": "hunt",
+   "summary": "Canonical axis. aggression intensity.",
+   "visual_hint": "bared fangs, bristling fur",
+   "inferred": true
+  },
+  {
+   "id": "axis-hunt",
+   "name": "hunt",
+   "axis": "hunt",
+   "summary": "Canonical axis. predation; tracking + kill.",
+   "visual_hint": "trophy teeth, tracker gear",
+   "inferred": true
+  },
+  {
+   "id": "axis-grace",
+   "name": "grace",
+   "axis": "hunt",
+   "summary": "Canonical axis. movement elegance.",
+   "visual_hint": "slender posture, flowing silhouette",
+   "inferred": true
+  },
+  {
+   "id": "axis-permanence",
+   "name": "permanence",
+   "axis": "value-time",
+   "summary": "Canonical axis. resistance to change of any kind.",
+   "visual_hint": "stone/metal finish, unchanging sheen",
+   "inferred": true
+  },
+  {
+   "id": "axis-time",
+   "name": "time",
+   "axis": "value-time",
+   "summary": "Canonical axis. temporal coordinate.",
+   "visual_hint": "hourglass/clock motifs, aged patina",
+   "inferred": true
+  },
+  {
+   "id": "axis-cycles",
+   "name": "cycles",
+   "axis": "value-time",
+   "summary": "Canonical axis. periodic pattern (lunar, tidal, seasonal).",
+   "visual_hint": "ring/phase markings",
+   "inferred": true
+  },
+  {
+   "id": "axis-transformation",
+   "name": "transformation",
+   "axis": "value-time",
+   "summary": "Canonical axis. state-shift driver (content axis).",
+   "visual_hint": "half-morphed silhouette",
+   "inferred": true
+  },
+  {
+   "id": "axis-depth",
+   "name": "depth",
+   "axis": "value-time",
+   "summary": "Canonical axis. spatial deep-place property.",
+   "visual_hint": "dark blue gradient, bioluminescent spots",
+   "inferred": true
+  },
+  {
+   "id": "axis-anomaly",
+   "name": "anomaly",
+   "axis": "anomaly",
+   "summary": "Canonical axis. reality instability (Thin Place).",
+   "visual_hint": "glitchy/offset pixels, warped outline",
+   "inferred": true
+  },
+  {
+   "id": "axis-anomaly-tear",
+   "name": "anomaly:tear",
+   "axis": "anomaly",
+   "summary": "Canonical axis. specific reality tear (Tear-Witness).",
+   "visual_hint": "rift crack of light across body",
+   "inferred": true
+  },
+  {
+   "id": "axis-void",
+   "name": "void",
+   "axis": "anomaly",
+   "summary": "Canonical axis. absence as content.",
+   "visual_hint": "black cut-out patches, starless voids",
+   "inferred": true
+  },
+  {
+   "id": "axis-social-kinship",
+   "name": "social:kinship",
+   "axis": "social",
+   "summary": "Canonical axis. signed axis kinship<->exile.",
+   "visual_hint": "family tokens vs torn crest",
+   "inferred": true
+  },
+  {
+   "id": "axis-social-movement-disposition",
+   "name": "social:movement-disposition",
+   "axis": "social",
+   "summary": "Canonical axis. signed axis wanderlust<->hearth.",
+   "visual_hint": "travel pack vs hearth apron",
+   "inferred": true
+  },
+  {
+   "id": "axis-meta-provenance",
+   "name": "meta:provenance",
+   "axis": "meta",
+   "summary": "Canonical axis. named-history field (storied blade, heirloom).",
+   "visual_hint": "engraved heirloom accessory",
+   "inferred": true
+  },
+  {
+   "id": "axis-meta-identity-stability",
+   "name": "meta:identity-stability",
+   "axis": "meta",
+   "summary": "Canonical axis. architectural identity-stability trait.",
+   "visual_hint": null,
+   "inferred": false
+  }
+ ],
+ "adjacency_adaptations": [
+  {
+   "id": "adapted-pine",
+   "name": "Adapted-pine",
+   "from_context": "Haunted Woods",
+   "adaptation": "Mechanism 1: pine + spirit + memory overlay (canonical example; coexists with endemic Spirit-Bound Yew).",
+   "visual_hint": "pine with pale ghostly bark streaks",
+   "inferred": true
+  },
+  {
+   "id": "spirit-bound-yew",
+   "name": "Spirit-Bound Yew",
+   "from_context": "Haunted Woods",
+   "adaptation": "Mechanism 2 endemic species (canonical).",
+   "visual_hint": "dark yew with bound spirit wisps",
+   "inferred": true
+  },
+  {
+   "id": "curse-tempered-iron",
+   "name": "Curse-Tempered Iron",
+   "from_context": "Cursed Ruins",
+   "adaptation": "Mechanism 1 adapted metal; curse + durability.",
+   "visual_hint": "iron with violet-black temper lines",
+   "inferred": true
+  },
+  {
+   "id": "hexed-parchment",
+   "name": "Hexed-Parchment",
+   "from_context": "Cursed Ruins",
+   "adaptation": "Adapted/endemic parchment (disposition open); curse + writing.",
+   "visual_hint": "parchment with smouldering hex glyphs",
+   "inferred": true
+  },
+  {
+   "id": "curse-touched-wheat",
+   "name": "Curse-Touched Wheat",
+   "from_context": "Cursed Ruins",
+   "adaptation": "wheat x Cursed Ruins x BUILDUP harvest; nutrition + curse + hexing. Promotes toward Curse-Wheat via recursive ENDEMIC.",
+   "visual_hint": "dark purple-tipped wheat",
+   "inferred": true
+  },
+  {
+   "id": "memory-barley",
+   "name": "Memory-Barley",
+   "from_context": "Boneyard",
+   "adaptation": "barley x Boneyard x BUILDUP; nutrition + memory + preservation.",
+   "visual_hint": "pale bone-white barley",
+   "inferred": true
+  },
+  {
+   "id": "tide-rice",
+   "name": "Tide-Rice",
+   "from_context": "Feral Coast",
+   "adaptation": "rice x Feral Coast x BUILDUP; nutrition + water + cycles (+salt, depth).",
+   "visual_hint": "sea-green rice with salt crust",
+   "inferred": true
+  },
+  {
+   "id": "moon-corn",
+   "name": "Moon-Corn",
+   "from_context": "Standing Stones",
+   "adaptation": "corn x Standing Stones x BUILDUP; nutrition + lunar + prophecy.",
+   "visual_hint": "silver-kernelled corn",
+   "inferred": true
+  },
+  {
+   "id": "grave-honored-bone",
+   "name": "Grave-Honored-Bone",
+   "from_context": "Boneyard",
+   "adaptation": "Tended yield {necromantic .5, endurance .6, honor .4} amp .7.",
+   "visual_hint": "polished engraved bone",
+   "inferred": true
+  },
+  {
+   "id": "memorial-soil",
+   "name": "Memorial-Soil",
+   "from_context": "Boneyard",
+   "adaptation": "Tended yield {memory .7, grounding .5}.",
+   "visual_hint": "dark soil with faint glyph flecks",
+   "inferred": true
+  },
+  {
+   "id": "witnessed-ash",
+   "name": "Witnessed-Ash",
+   "from_context": "Boneyard",
+   "adaptation": "Tended yield {release .5, memory .4, transformation .5}.",
+   "visual_hint": "grey ash with ember specks",
+   "inferred": true
+  },
+  {
+   "id": "settled-ghost-thread",
+   "name": "Settled-Ghost-Thread",
+   "from_context": "Boneyard",
+   "adaptation": "Rare yield {memory .6, spirit .5, peace .4}; ghost-process settled during tending.",
+   "visual_hint": "translucent pale thread",
+   "inferred": true
+  },
+  {
+   "id": "commanders-testament",
+   "name": "Commander's-Testament",
+   "from_context": "Old Battlefield",
+   "adaptation": "{leadership .5, battle .5, memory .4}.",
+   "visual_hint": "worn sealed battle scroll",
+   "inferred": true
+  },
+  {
+   "id": "soldiers-bonded-steel",
+   "name": "Soldier's-Bonded-Steel",
+   "from_context": "Old Battlefield",
+   "adaptation": "{loyalty .5, combat .5}.",
+   "visual_hint": "notched steel with bound cloth",
+   "inferred": true
+  },
+  {
+   "id": "battlefield-seed-crystal",
+   "name": "Battlefield-Seed-Crystal",
+   "from_context": "Old Battlefield",
+   "adaptation": "{crystallized-memory .6, battle .4}.",
+   "visual_hint": "red-tinged crystal shard",
+   "inferred": true
+  },
+  {
+   "id": "echoed-battlecry-essence",
+   "name": "Echoed-Battlecry-Essence",
+   "from_context": "Old Battlefield",
+   "adaptation": "Rare {morale .6, battle .5}.",
+   "visual_hint": "vial with rippling orange soundwave",
+   "inferred": true
+  },
+  {
+   "id": "heart-crystal",
+   "name": "Heart-Crystal",
+   "from_context": "Hollow Hills",
+   "adaptation": "{earth .6, time .4}.",
+   "visual_hint": "amber-brown geode heart",
+   "inferred": true
+  },
+  {
+   "id": "hollow-echo-stone",
+   "name": "Hollow-Echo-Stone",
+   "from_context": "Hollow Hills",
+   "adaptation": "{memory .5, earth .4, patience .5}.",
+   "visual_hint": "hollow stone with rings",
+   "inferred": true
+  },
+  {
+   "id": "ancient-data-crystal",
+   "name": "Ancient Data-Crystal",
+   "from_context": "Hollow Hills",
+   "adaptation": "Rare capacity-expander: +3 to +8 tome slots (meta:capacity).",
+   "visual_hint": "faceted crystal with circuit-like veins",
+   "inferred": true
+  },
+  {
+   "id": "root-deep-ore",
+   "name": "Root-Deep-Ore",
+   "from_context": "Hollow Hills",
+   "adaptation": "Ore quarried only during tending; amplitude 0.7.",
+   "visual_hint": "ore chunk laced with root tendrils",
+   "inferred": true
+  },
+  {
+   "id": "moonblessed-water",
+   "name": "Moonblessed-Water",
+   "from_context": "Standing Stones",
+   "adaptation": "{lunar .7, purity .5, fluidity .4}.",
+   "visual_hint": "silver-glowing water flask",
+   "inferred": true
+  },
+  {
+   "id": "moonsilver-dust",
+   "name": "Moonsilver-Dust",
+   "from_context": "Standing Stones",
+   "adaptation": "{lunar .6, purity .6}.",
+   "visual_hint": "silver sparkle pouch",
+   "inferred": true
+  },
+  {
+   "id": "star-charged-crystal",
+   "name": "Star-Charged-Crystal",
+   "from_context": "Standing Stones",
+   "adaptation": "{celestial .7, transformation .4} amp .8.",
+   "visual_hint": "crystal with inner starfield",
+   "inferred": true
+  },
+  {
+   "id": "prophecy-ink",
+   "name": "Prophecy-Ink",
+   "from_context": "Standing Stones",
+   "adaptation": "{divination .6, lunar .4}.",
+   "visual_hint": "indigo ink with star flecks",
+   "inferred": true
+  },
+  {
+   "id": "silenced-echo",
+   "name": "Silenced-Echo",
+   "from_context": "Silent Cavern",
+   "adaptation": "{silence .7, stealth .5}.",
+   "visual_hint": "muted grey vial, no highlights",
+   "inferred": true
+  },
+  {
+   "id": "listening-stone",
+   "name": "Listening-Stone",
+   "from_context": "Silent Cavern",
+   "adaptation": "{perception .6, silence .5}.",
+   "visual_hint": "ear-shaped smooth stone",
+   "inferred": true
+  },
+  {
+   "id": "unsaid-thread",
+   "name": "Unsaid-Thread",
+   "from_context": "Silent Cavern",
+   "adaptation": "{subtle .5, silence .5}.",
+   "visual_hint": "near-invisible fine thread",
+   "inferred": true
+  },
+  {
+   "id": "star-metal",
+   "name": "Star-Metal",
+   "from_context": "Starfall Crater",
+   "adaptation": "Star-Iron variant {celestial .8, transformation .4}.",
+   "visual_hint": "dark metal with glinting star points",
+   "inferred": true
+  },
+  {
+   "id": "falling-light-essence",
+   "name": "Falling-Light-Essence",
+   "from_context": "Starfall Crater",
+   "adaptation": "{celestial .6, motion .5}.",
+   "visual_hint": "streaking light vial",
+   "inferred": true
+  },
+  {
+   "id": "impact-shock-crystal",
+   "name": "Impact-Shock-Crystal",
+   "from_context": "Starfall Crater",
+   "adaptation": "{force .6, transformation .5}.",
+   "visual_hint": "cracked radiating crystal",
+   "inferred": true
+  },
+  {
+   "id": "forgotten-gods-blessing-fragment",
+   "name": "Forgotten-God's-Blessing-Fragment",
+   "from_context": "Forgotten Altar",
+   "adaptation": "Rare {divine .5, memory .4}.",
+   "visual_hint": "dim gilded shard",
+   "inferred": true
+  },
+  {
+   "id": "devotional-dust",
+   "name": "Devotional-Dust",
+   "from_context": "Forgotten Altar",
+   "adaptation": "{faith .5, humility .4, memory .5}.",
+   "visual_hint": "soft gold dust",
+   "inferred": true
+  },
+  {
+   "id": "altar-lit-candle-wax",
+   "name": "Altar-Lit Candle-Wax",
+   "from_context": "Forgotten Altar",
+   "adaptation": "{devotion .4, warmth .4}.",
+   "visual_hint": "warm dripping candle wax",
+   "inferred": true
+  },
+  {
+   "id": "memory-echoed-bone",
+   "name": "Memory-Echoed Bone",
+   "from_context": "Boneyard",
+   "adaptation": "Capacity-expander +1 to +3 slots; memory flavor.",
+   "visual_hint": "bone with faint echo rings",
+   "inferred": true
+  },
+  {
+   "id": "star-atlas-fragment",
+   "name": "Star-Atlas Fragment",
+   "from_context": "Starfall Crater",
+   "adaptation": "Capacity-expander +2 to +5 slots; divination-biased.",
+   "visual_hint": "torn star-map shard",
+   "inferred": true
+  },
+  {
+   "id": "crystalline-brain-coral",
+   "name": "Crystalline Brain-Coral",
+   "from_context": "Feral Coast",
+   "adaptation": "Mechanism 2 endemic (canonical); capacity-expander +1 to +4 slots.",
+   "visual_hint": "crystalline pink-blue coral",
+   "inferred": true
+  },
+  {
+   "id": "sprite",
+   "name": "Sprite",
+   "from_context": "Enchanted Grove",
+   "adaptation": "Endemic fauna; sprite-dust collapses to fey.",
+   "visual_hint": "tiny winged glowing figure",
+   "inferred": true
+  },
+  {
+   "id": "dryad",
+   "name": "Dryad",
+   "from_context": "Enchanted Grove / Ancient Forest",
+   "adaptation": "Legendary endemic; dryad-essence = nature + fey + grace.",
+   "visual_hint": "bark-skinned figure with leaf hair",
+   "inferred": true
+  },
+  {
+   "id": "deep-ocean-legendaries",
+   "name": "ambergris-of-deep / anglerfish-lure / kraken-ink",
+   "from_context": "Deep Ocean",
+   "adaptation": "Legendary endemic substances: depth+abundance+value / depth+perception+hunt / depth+shadow+abyss.",
+   "visual_hint": "glowing lure, black ink, waxy ambergris",
+   "inferred": true
+  },
+  {
+   "id": "underwater-six-layer",
+   "name": "Underwater six-layer adaptation",
+   "from_context": "Underwater biome",
+   "adaptation": "Body-side layered adaptation: L1 gear, L2 Breath-Holding skill, L3 inherited traits, L4 aquatic sub-race base, L5 cultivation, L6 deep-water domain.",
+   "visual_hint": "layered: diving gear -> gills/fins -> aquatic sub-race body",
+   "inferred": true
+  }
+ ],
+ "ranks": [
+  {
+   "id": "s-rank",
+   "name": "S-Rank",
+   "order": 1,
+   "ladder": "composite",
+   "summary": "Any one of quality/rarity/cultivation at LEGENDARY (S-Rank quality)."
+  },
+  {
+   "id": "ss-rank",
+   "name": "SS-Rank",
+   "order": 2,
+   "ladder": "composite",
+   "summary": "Quality + Rarity LEGENDARY."
+  },
+  {
+   "id": "sss-rank",
+   "name": "SSS-Rank composite",
+   "order": 3,
+   "ladder": "composite",
+   "summary": "Quality + Rarity + Cultivation LEGENDARY simultaneously. Requires generational specialized play (cannot be looted/found/crafted-from-base). Provisionally display + narrative significance + capability-unlock for S-tier rituals; not a flat multiplier. Also the Pathway A S-Rank threshold in the Aether Library."
+  },
+  {
+   "id": "quality-common",
+   "name": "COMMON",
+   "order": 1,
+   "ladder": "quality",
+   "summary": "quality ladder tier 1."
+  },
+  {
+   "id": "quality-uncommon",
+   "name": "UNCOMMON",
+   "order": 2,
+   "ladder": "quality",
+   "summary": "quality ladder tier 2."
+  },
+  {
+   "id": "quality-greater",
+   "name": "GREATER",
+   "order": 3,
+   "ladder": "quality",
+   "summary": "quality ladder tier 3."
+  },
+  {
+   "id": "quality-master",
+   "name": "MASTER",
+   "order": 4,
+   "ladder": "quality",
+   "summary": "quality ladder tier 4."
+  },
+  {
+   "id": "quality-legendary",
+   "name": "LEGENDARY",
+   "order": 5,
+   "ladder": "quality",
+   "summary": "master-of-masters craft"
+  },
+  {
+   "id": "rarity-common",
+   "name": "COMMON",
+   "order": 1,
+   "ladder": "rarity",
+   "summary": "rarity ladder tier 1."
+  },
+  {
+   "id": "rarity-uncommon",
+   "name": "UNCOMMON",
+   "order": 2,
+   "ladder": "rarity",
+   "summary": "rarity ladder tier 2."
+  },
+  {
+   "id": "rarity-rare",
+   "name": "RARE",
+   "order": 3,
+   "ladder": "rarity",
+   "summary": "rarity ladder tier 3."
+  },
+  {
+   "id": "rarity-legendary",
+   "name": "LEGENDARY",
+   "order": 4,
+   "ladder": "rarity",
+   "summary": "once-per-civilization scarcity"
+  },
+  {
+   "id": "cultivation-wild",
+   "name": "WILD",
+   "order": 1,
+   "ladder": "cultivation",
+   "summary": "cultivation ladder tier 1."
+  },
+  {
+   "id": "cultivation-standard",
+   "name": "STANDARD",
+   "order": 2,
+   "ladder": "cultivation",
+   "summary": "cultivation ladder tier 2."
+  },
+  {
+   "id": "cultivation-master",
+   "name": "MASTER",
+   "order": 3,
+   "ladder": "cultivation",
+   "summary": "cultivation ladder tier 3."
+  },
+  {
+   "id": "cultivation-beyond_master",
+   "name": "BEYOND_MASTER",
+   "order": 4,
+   "ladder": "cultivation",
+   "summary": "ADJACENCY_TRANSFORMED is a parallel branch at this level"
+  },
+  {
+   "id": "cultivation-legendary",
+   "name": "LEGENDARY",
+   "order": 5,
+   "ladder": "cultivation",
+   "summary": "harvested from an ENDEMIC-promoted species by a BEYOND_MASTER cultivator"
+  },
+  {
+   "id": "continuity-unestablished",
+   "name": "UNESTABLISHED",
+   "order": 1,
+   "ladder": "continuity",
+   "summary": "continuity ladder tier 1."
+  },
+  {
+   "id": "continuity-established",
+   "name": "ESTABLISHED",
+   "order": 2,
+   "ladder": "continuity",
+   "summary": "continuity ladder tier 2."
+  },
+  {
+   "id": "continuity-hereditary",
+   "name": "HEREDITARY",
+   "order": 3,
+   "ladder": "continuity",
+   "summary": "continuity ladder tier 3."
+  },
+  {
+   "id": "continuity-ancient",
+   "name": "ANCIENT",
+   "order": 4,
+   "ladder": "continuity",
+   "summary": "continuity ladder tier 4."
+  },
+  {
+   "id": "cultivation-adjacency_transformed",
+   "name": "ADJACENCY_TRANSFORMED",
+   "order": 4,
+   "ladder": "cultivation",
+   "summary": "Parallel branch at BEYOND_MASTER level for adjacency-transformed crops (Curse-Touched Wheat etc.); does not lead directly to LEGENDARY."
+  }
+ ],
+ "cultivation_stages": [
+  {
+   "id": "ready_to_harvest",
+   "name": "READY_TO_HARVEST",
+   "order": 1,
+   "summary": "Mature full-yield state.",
+   "visual_hint": "full ripe crop sprite",
+   "inferred": true
+  },
+  {
+   "id": "grace_period",
+   "name": "GRACE_PERIOD",
+   "order": 2,
+   "summary": "Brief window post-ready.",
+   "visual_hint": "ripe crop with slight droop",
+   "inferred": true
+  },
+  {
+   "id": "wild_loss",
+   "name": "WILD_LOSS",
+   "order": 3,
+   "summary": "Grace passed; quality degrades.",
+   "visual_hint": "overripe, browning, scattered seed",
+   "inferred": true
+  },
+  {
+   "id": "buildup",
+   "name": "BUILDUP",
+   "order": 4,
+   "summary": "Hidden stage; dim_signature accumulation from adjacency; gates BEYOND_MASTER.",
+   "visual_hint": "subtle adjacency-coloured shimmer building on crop",
+   "inferred": true
+  },
+  {
+   "id": "beyond_master",
+   "name": "BEYOND_MASTER",
+   "order": 5,
+   "summary": "Hidden stage: harvested from BUILDUP at the right moment (Beyond-Master Harvesting skill). Quality-tier-equivalent.",
+   "visual_hint": "crop saturated in adjacency colour with glow",
+   "inferred": true
+  }
+ ],
+ "world_modes": [
+  {
+   "id": "standard",
+   "name": "Standard",
+   "summary": "Default recursive-ENDEMIC parameters (trigger 1.0x legendary, baseline 1/3, cap growth 0.3, unlimited promotions)."
+  },
+  {
+   "id": "slow-drift",
+   "name": "Slow Drift",
+   "summary": "buildup_rate x0.5; trigger_amplitude x1.2; cap_growth x0.5."
+  },
+  {
+   "id": "mythic-world",
+   "name": "Mythic World",
+   "summary": "buildup_rate x2.0; trigger x0.8; cap_growth x0.5; promotions_hard_cap = 50."
+  },
+  {
+   "id": "fixed-world",
+   "name": "Fixed World",
+   "summary": "promotions_hard_cap = 0; no recursive ENDEMIC (once-and-done or no promotion)."
+  },
+  {
+   "id": "player-configurable",
+   "name": "Player-Configurable",
+   "summary": "Sliders exposed: endemic_trigger_amplitude, endemic_baseline_fraction, cap_growth_per_promotion, buildup_rate_multiplier, endemic_promotions_hard_cap, cultivation_legendary_unlock_condition."
+  }
+ ],
+ "vocabulary": [
+  {
+   "term": "Compendium",
+   "meaning": "The 16-doc Compendium Documentation Phase roster (capital C)."
+  },
+  {
+   "term": "Doc N",
+   "meaning": "A specific Compendium doc (capital D)."
+  },
+  {
+   "term": "OQ-CMP-NN",
+   "meaning": "Compendium open-question id; monotonic; never reused."
+  },
+  {
+   "term": "dim_signature",
+   "meaning": "Polymorphic axis-amplitude signature of a material, e.g. {lunar: 0.7, purity: 0.5}."
+  },
+  {
+   "term": "Axis Registry",
+   "meaning": "Doc 3 §3 canonical axis list lifted from merge/fork/overlap dispositions."
+  },
+  {
+   "term": "merge/fork/overlap",
+   "meaning": "Doc 3 methodology (OQ-CMP-01) for canonicalizing axis anchors."
+  },
+  {
+   "term": "Per-context gradient",
+   "meaning": "Same axis carries a different gradient model per context (axis@context)."
+  },
+  {
+   "term": "Combat-as-context",
+   "meaning": "Combat is the offensive context, not an axis or composite."
+  },
+  {
+   "term": "Hierarchical namespace",
+   "meaning": "parent:child axis naming (mind:perception:listening), flat where natural (hybrid, OQ-CMP-16)."
+  },
+  {
+   "term": "Composite-axis class",
+   "meaning": "Class that distributes over constituent axes (predator = hunt+ferocity+force); both formal class and shorthand tag."
+  },
+  {
+   "term": "Recursive ENDEMIC",
+   "meaning": "ENDEMIC promotion locks 1/3 of achieved amplitude PERMANENT; buildup resumes; cap = legendary x (1 + 0.3n)."
+  },
+  {
+   "term": "ENDEMIC",
+   "meaning": "Lifecycle state: promoted to own species (capital E)."
+  },
+  {
+   "term": "BUILDUP",
+   "meaning": "Hidden cultivation lifecycle stage (capital B)."
+  },
+  {
+   "term": "BEYOND_MASTER",
+   "meaning": "Hidden harvest stage / cultivation tier."
+  },
+  {
+   "term": "ADAPTED / DECAYING / BASE / STABILIZING / PERMANENT",
+   "meaning": "Mechanism 3 lifecycle states."
+  },
+  {
+   "term": "Cultivation LEGENDARY",
+   "meaning": "Tier only reachable from an ENDEMIC-promoted source species."
+  },
+  {
+   "term": "SSS-Rank composite",
+   "meaning": "All three ladders (quality, rarity, cultivation) at LEGENDARY."
+  },
+  {
+   "term": "Mechanism 1 / 2 / 3",
+   "meaning": "Adaptation Layer / Endemic Species / Adaptation Lifecycle."
+  },
+  {
+   "term": "Tended adjacency",
+   "meaning": "Adjacency as renewable resource managed by hamlet tenders (AdjacencyEnergy, tending expedition)."
+  },
+  {
+   "term": "EnvironmentalAdjacency",
+   "meaning": "Architectural class hosting the 15 adjacency types (Cursed Ruins, Boneyard, Haunted Woods, etc.)."
+  },
+  {
+   "term": "Embedding-as-deity-substrate",
+   "meaning": "One sovereign embedding model serves RAG + minor-deity cognition + AL-bridge (OQ-CMP-21)."
+  },
+  {
+   "term": "Goblin improvised-into-comfort",
+   "meaning": "Racial classifier; naming pattern [formal]+[crude] hyphenated. Not 'cluttered'."
+  },
+  {
+   "term": "Lexical Surface Registry",
+   "meaning": "Doc 14: register-tagged word bags per axis; SLM corpus seed."
+  },
+  {
+   "term": "World-mode adjustability",
+   "meaning": "Exposed recursive-ENDEMIC parameters (OQ-CMP-18) with named modes."
+  },
+  {
+   "term": "Skill-tree / axis-tree parallel",
+   "meaning": "Axis-tree composition reuses Stage 3 §3.4 skill-tree composition, incl. specialization-lift fallback."
+  },
+  {
+   "term": "CALSProfile",
+   "meaning": "NPC cognitive profile in Book of Cities (parent capsule term)."
+  },
+  {
+   "term": "SubSpace",
+   "meaning": "Book of Cities core primitive (parent capsule term)."
+  },
+  {
+   "term": "VUP",
+   "meaning": "Versioning v[n]u[n]p[n]; never semver."
+  },
+  {
+   "term": "CAP-NN",
+   "meaning": "Cross-capsule item needing a parent-capsule update cycle."
+  },
+  {
+   "term": "PSB / PSU",
+   "meaning": "PseudoSkills Builder (forge) / PseudoSkill Update Skill (does not yet exist)."
+  }
+ ]
+}

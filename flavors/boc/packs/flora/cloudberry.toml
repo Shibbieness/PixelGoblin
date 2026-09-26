@@ -1,0 +1,28 @@
+# Cloudberry: Rare northern boreal fruit.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.cloudberry"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [32, 32]
+label = "Cloudberry"
+axiom = "FX"
+iterations = 3
+step = [2, 4]
+leaf_radius = 2
+fruit_chance = 25
+trunk_width = 2
+biome = "forest"
+
+[provenance]
+source = "book-of-cities: flora (forest)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F[+X][-X]FX", weight = 3 }, { to = "F[+X]FX", weight = 2 }, { to = "F[-X]FX", weight = 2 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#d8962a"
+bark = ["#130a07", "#603f27", "#b78850"]
+leaf = ["#131f0c", "#396829", "#5caa4d", "#95cd90"]

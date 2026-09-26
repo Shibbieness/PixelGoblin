@@ -1,0 +1,22 @@
+# BEYOND_MASTER: ADJACENCY_TRANSFORMED is a parallel branch at this level
+schema = "pixelgoblin/type@1"
+id = "boc.rank.cultivation_beyond_master"
+tag = "ui"
+generator = "uikit"
+license = "Proprietary"
+size = [12, 12]
+label = "BEYOND_MASTER"
+tile = 12
+border = 3
+corner = "round"
+icons = 6
+texture = 16
+rank_order = 4
+
+[provenance]
+source = "book-of-cities-compendium: ranks"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#14121a"
+material = ["#271a41", "#553482", "#8a5eb4", "#bb9cd1", "#e7dbee"]

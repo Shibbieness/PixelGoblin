@@ -1,0 +1,18 @@
+# Forest: Tree-dominated regions from temperate to jungle, haunted and fey.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.forest.ground"
+tag = "terrain"
+generator = "autotile"
+license = "Proprietary"
+size = [16, 16]
+label = "Forest ground"
+tile = 16
+
+[provenance]
+source = "book-of-cities: biomes (Forest)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#120a08"
+highlight = "#eff7ee"
+fill = ["#1a240d", "#416525", "#639e45", "#8bc477"]

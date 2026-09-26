@@ -1,0 +1,44 @@
+# Mammoth-Ivory (rare)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.mammoth_ivory"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Mammoth-Ivory"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "rare"
+fantasy = false
+biome = "tundra"
+
+[provenance]
+source = "book-of-cities: ores (tundra)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "rock"
+weight = 1
+colors = ["#d0a261", "#e5d3a7", "#f8f6ec", "#f8f7ec"]
+
+[body]
+anchor = [1, 4]
+template = ["...1###", "..#####", ".######", "1######", "#######", "1######", ".######", "..1####"]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "category_default"
+density_kg_m3 = 1300
+category = "organic"
+chunk_grams = 650
+note = "CRUCIBLE has no density here; a typical organic density is used"

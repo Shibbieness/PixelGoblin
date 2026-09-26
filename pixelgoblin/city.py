@@ -78,6 +78,12 @@ def _weighted(rng, table: dict) -> str:
     return keys[rng.weighted([table[k] for k in keys])]
 
 
+def sub_id(sub: str) -> str:
+    """A city's [subspecies] key: a goblin subspecies by short name (`snow`), or any
+    overlay by full id (`"boc.race.sub.dwarf"`), so a city can hold other folk."""
+    return sub if "." in sub else f"boc.goblin.sub.{sub}"
+
+
 def census(city: dict, names: list[dict]) -> list[dict]:
     """Everyone in the city: name, seed, role, subspecies, clan, household,
     parents, band in the village scene, and stream overrides for children."""
@@ -134,7 +140,7 @@ def census(city: dict, names: list[dict]) -> list[dict]:
 
 def _type(p):
     from .typefile import compose, load, with_team
-    tf = compose(p["role"], "boc.goblin.sub." + p["sub"]) if p["sub"] else load(p["role"])
+    tf = compose(p["role"], sub_id(p["sub"])) if p["sub"] else load(p["role"])
     return with_team(tf, p["team"]) if p["team"] else tf
 
 
@@ -162,7 +168,7 @@ def village(city: dict, people: list[dict], seed: int = 0):
         if cap.get(p["band"], 0) > 0:
             cap[p["band"]] -= 1
             shown.append({"role": p["role"], "seed": p["seed"], "band": p["band"], "overrides": p.get("overrides"),
-                          "sub": ("boc.goblin.sub." + p["sub"]) if p["sub"] else None, "team": p["team"]})
+                          "sub": sub_id(p["sub"]) if p["sub"] else None, "team": p["team"]})
             p["outdoors"] = True
         else:
             p["outdoors"] = False

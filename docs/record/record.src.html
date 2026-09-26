@@ -75,6 +75,10 @@ a{color:var(--teal)}
 <nav class="toc" aria-label="Contents">
   <b>Contents</b>
   <a href="#status">Where it stands</a>
+  <a href="#s5">Session 5: widget, plugin, PseudoSkill</a>
+  <a href="#s5packs">Resource packs</a>
+  <a href="#s5grounds">Goblin Grounds</a>
+  <a href="#s5round">Breaks, fixes, in between (round 5)</a>
   <a href="#s4ask">Session 4: asked and made</a>
   <a href="#s4views">"Built from each other"</a>
   <a href="#s4gallery">Session 4 gallery</a>
@@ -104,8 +108,9 @@ a{color:var(--teal)}
 
 <main>
 <section>
-  <span class="eyebrow">M MAOU LLC · session 4 · {{DATE}} · {{VERSION}}</span>
+  <span class="eyebrow">M MAOU LLC · session 5 · {{DATE}} · {{VERSION}}</span>
   <h1>PixelGoblin Build Record</h1>
+  <p class="lede">Session 5 made PixelGoblin reachable from any chat with Claude, three ways: a small widget for making a goblin by hand, a plugin whose tools draw goblins from a sentence, and a PseudoSkill capsule that holds the whole project. Then your other worlds came in: resource packs from the Book of Cities, the Compendium and the Aether Library, ores weighed by CRUCIBLE, and Goblin Grounds, a sandbox you can play. Every piece runs the same engine, and three new gates prove it.</p>
   <p class="lede">Session 4 put the goblins in three dimensions without giving up the drawing. Every character's front drawing is now lifted into one model, which draws the side, the back, four isometric facings, a top-down view and any angle in between, and every view agrees with the others. Goblins ride boars and wargs. A list of names becomes a city of families who look related. And the fixes from last time are in: signatures that keep 8 px icons apart, eyes that survive three colours, items written as data, and huts that gain detail as they grow.</p>
   <p>Every count on this page was computed by running the build when this page was made. None were typed in. Sessions 1 to 3 are kept below.</p>
 </section>
@@ -121,6 +126,80 @@ a{color:var(--teal)}
     <div class="stat"><b>{{ASSERTS}}</b><span>assertions, one full run</span></div>
   </div>
   <p>The run also passes <code>--from-empty</code>, which copies the repo to a clean folder with a minimal environment and no network.</p>
+</section>
+
+<section id="s5">
+  <h2>Session 5: a widget, a plugin, and a PseudoSkill</h2>
+  <div class="tbl"><table>
+    <tr><th>You asked</th><th>Now</th><th>Checked by</th></tr>
+    <tr><td>A widget</td><td><b>PixelGoblin Pocket</b>: type a name, pick a job, clan, mount, size and era, drag to turn, see every size, save a picture or 8 directions, copy a share code that brings the same goblin back</td><td>B21</td></tr>
+    <tr><td>A plugin for all of it</td><td><b>pixelgoblin.plugin</b>: three skills (make art, write type files, work on the engine) and an MCP server with six tools that return pictures in the chat. The whole engine and both pages are inside.</td><td>B21: the server writes only protocol messages, and its picture is byte-identical to the engine's</td></tr>
+    <tr><td>Access here and in future chats</td><td>The widget and workbench are published artifacts; the plugin brings the skills and tools to every chat where it is installed; the capsule brings the project's memory</td><td>—</td></tr>
+    <tr><td>A PseudoSkill build structure for a .skill file</td><td><b>pixelgoblin-pseudoskill.skill</b>: SKILL.md router, PseudoSKILL.md reference, META.json, codex (index, narrative, changelog, tags, CALS namespace, open questions, one mini-index per module), dependencies, build (the whole runnable repo), pretune (8 scenarios with pixel hashes), updates (8 slots)</td><td>B21: the Forge validation checklist, as code, with a missing-slot control</td></tr>
+  </table></div>
+  <figure><img src="{{IMG_pocket5}}" alt="The PixelGoblin Pocket widget showing Grubnak on a war boar"><figcaption><b>PixelGoblin Pocket</b>: Grubnak the blacksmith in Cinderglass colours on a war boar, with his whole size chain underneath.</figcaption></figure>
+  <h3>What I think</h3>
+  <p>The three pieces do different jobs, and that is the point. The widget is for when you just want a goblin. The plugin is for asking in words. The capsule is for the next time someone, including a future Claude, has to work on PixelGoblin without being briefed. The part I'd trust most is the new gate: it builds the plugin and the capsule from scratch in an empty folder, talks to the plugin's server the way Claude would, and checks the picture byte for byte. The part to watch is the MCP server: it needs Python 3.11 on the computer that runs it, and not every Claude surface runs local servers. Where it doesn't, the skills and the published pages still work.</p>
+</section>
+
+<section id="s5packs">
+  <h2>Resource packs: your worlds, as things you can draw</h2>
+  <div class="tbl"><table>
+    <tr><th>Pack</th><th>What is in it</th><th>From</th></tr>
+    <tr><td>Folk</td><td>37 races as overlays for any job: human, elf, dwarf, orc, goblin, halfling, gnome, tiefling, dungeon dweller, infernal, divine, and variants from drow to merfolk. Each has its own height.</td><td>Book of Cities</td></tr>
+    <tr><td>Biomes</td><td>9 skies and grounds, and who lives in each</td><td>Book of Cities</td></tr>
+    <tr><td>Flora and fauna</td><td>60 plants, 40 fungi, 40 animals, 25 fish</td><td>Book of Cities</td></tr>
+    <tr><td>Ores</td><td>60 ores and gems. {{ORES_GROUNDED}} carry CRUCIBLE's own density; the fantasy metals stay ungrounded, as CRUCIBLE requires.</td><td>Book of Cities + CRUCIBLE</td></tr>
+    <tr><td>Compendium</td><td>22 rank badges and 14 trait overlays that stack on a folk</td><td>Compendium</td></tr>
+    <tr><td>Aether</td><td>Named souls as avatar seeds (supplements, never overwrites) and Brackrun-Hollow as a mixed-folk city</td><td>Aether Library</td></tr>
+  </table></div>
+  <p>Most colours are my inferences from names, because the documents describe how things work, not how they look. Every inferred colour is flagged, and one command regenerates a pack when you set the real palette.</p>
+  <div class="gallery">
+    <figure style="grid-column:1/-1"><img src="{{IMG_folk}}" alt="Thirty-seven folk as guards"><figcaption><b>Folk</b>: the same guard as every folk of the Book of Cities.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_stacks}}" alt="Six characters with folk and traits in isometric view"><figcaption><b>Folk plus trait, from any side</b>: a dwarf smith with the flame trait, an elf hunter with frost, an orc with ferocity, a halfling cook, a merfolk fisher, a drow assassin.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_ores}}" alt="Sixty ore icons"><figcaption><b>Ores</b>, each with its CRUCIBLE grounding.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_flora}}" alt="Plants"><figcaption><b>Flora</b> (first sheet; a second holds the rest, since one palette holds 256 colours).</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_fauna}}" alt="Animals"><figcaption><b>Fauna</b>: generic body plans for now.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_biomes}}" alt="Nine biome skies"><figcaption><b>Biomes</b>: nine skies (each also has a ground tile set).</figcaption></figure>
+  </div>
+</section>
+
+<section id="s5grounds">
+  <h2>Goblin Grounds: the sandbox and minigame</h2>
+  <p>Pick a biome and a seed. Your goblin (any name, job and folk) walks a world planned by the engine: gather what the forge's quests ask for, and feel the weight, because a chunk of ore weighs what CRUCIBLE says. Build mode places anything that lives there. The same world exports as <code>world.json</code>, an atlas and a map for a game engine, and gate B23 proves the page and the export plan the same world, down to a 64-bit seed.</p>
+  <div class="gallery">
+    <figure style="grid-column:1/-1"><img src="{{IMG_ws_grounds5}}" alt="Goblin Grounds page with every quest done"><figcaption><b>Goblin Grounds</b>, played through by a test: three quests delivered in 140 steps.</figcaption></figure>
+    <figure style="grid-column:1/-1"><img src="{{IMG_grounds_map}}" alt="A mountain world map"><figcaption><b>The exported map</b> of the same mountain world.</figcaption></figure>
+  </div>
+  <p>VI Builder has no registry to plug into yet, so PixelGoblin now carries a registration profile (the LEXIS way) and a process record (the LATTICE way), ready for its Phase 1.</p>
+</section>
+
+<section id="s5round">
+  <h2>What breaks this, what fixes that, what goes in between (round 5)</h2>
+  <h3>Found and fixed this session</h3>
+  <ul>
+    <li><b>The variety gate expected creatures, not icons.</b> Ores and mushrooms are meant to look alike. Fix: a stated <code>variety_min</code> per type, checked by B03, never below 50.</li>
+    <li><b>Mask parts off-centre broke the mirror verdict.</b> Fix: parts are centred on the mirror line.</li>
+    <li><b>Type lookup slowed tenfold with 330 more files</b>, and a full gate run passed ten minutes. Fix: an id index rebuilt only when a file changes.</li>
+    <li><b>Big pack sheets passed 256 colours.</b> Fix: sheets split across palettes, in the command, the plugin and the record.</li>
+    <li><b>Vanilla code picked up stack words</b> in new help text. The scrub caught it; reworded.</li>
+    <li><b>Flowers drew as bare sticks.</b> Fix: new forms with coloured blooms.</li>
+    <li><b>A composed character was titled by its last overlay</b> ("Dwarf" instead of "Blacksmith · Dwarf"). Fix: a display name that changes no hash.</li>
+  </ul>
+  <h3>Put in between the pieces</h3>
+  <ul>
+    <li><b>Overlays stack</b> in Python and JavaScript, with short names and a suggestion for typos: the joint between folk, traits and every job.</li>
+    <li><b>Cities take any overlay</b> by full id, so a city can hold mixed folk (Brackrun-Hollow).</li>
+    <li>The <b>Pocket</b> gained folk and trait choices and a pg2 share code (pg1 still loads); the <b>workbench</b> gained trait stacking and grouped type lists; the <b>plugin</b> gained pack, avatar and sandbox tools.</li>
+  </ul>
+  <h3>What still breaks it</h3>
+  <ol>
+    <li><b>Inferred colours.</b> <i>Fix:</i> your canonical palettes into the source catalogs.</li>
+    <li><b>Generic body plans</b> for animals. <i>Fix:</i> per-creature templates, or lift beasts into 3D like the boar and warg.</li>
+    <li><b>No horns, tails or wings for folk.</b> <i>Fix:</i> body features as species accessories on the LOD ladder.</li>
+    <li><b>Grounds is thin</b>: no recipes yet. <i>Fix:</i> recipes from the stations catalog, tier by tier.</li>
+    <li><b>VI Builder can't take the registration yet.</b> <i>Fix:</i> its Phase 1.</li>
+  </ol>
 </section>
 
 <section id="s4ask">

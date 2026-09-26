@@ -1,0 +1,28 @@
+# Swamp-iris: Rare bloom.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.swamp_iris"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [16, 24]
+label = "Swamp-iris"
+axiom = "FFX]"
+iterations = 2
+step = [1, 2]
+leaf_radius = 2
+fruit_chance = 60
+trunk_width = 1
+biome = "swamp"
+
+[provenance]
+source = "book-of-cities: flora (swamp)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F[+FL]FX", weight = 2 }, { to = "F[-FL]FX", weight = 2 }, { to = "FFX", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#9b63b8"
+bark = ["#131f0c", "#4c873d", "#95cd90"]
+leaf = ["#0c0712", "#482764", "#8c4faf", "#c49ed3"]

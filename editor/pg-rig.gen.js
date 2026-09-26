@@ -1433,3 +1433,152 @@ function seat_rider(solids, decals, bg, px) {
   }
   return [out, moved];
 }
+
+// ---- from pixelgoblin/sandbox.py
+const T_GROUND = 0;
+const T_WATER = 1;
+const T_ROCK = 2;
+const CARRY_GRAMS = 12000;
+function _disc(grid, w, h, cx, cy, r, kind) {
+  let y, x, _e28, _e29;
+  for (y = (cy - r), _e28 = ((cy + r) + 1); y < _e28; y += 1) {
+    for (x = (cx - r), _e29 = ((cx + r) + 1); x < _e29; x += 1) {
+      if (((x >= 1)) && ((x < (w - 1))) && ((y >= 1)) && ((y < (h - 1))) && (((((x - cx) * (x - cx)) + ((y - cy) * (y - cy))) <= ((r * r) + r)))) {
+        grid[((y * w) + x)] = kind;
+      }
+    }
+  }
+}
+
+function reachable(grid, w, h, sx, sy) {
+  let seen, queue, head, i, x, y, d, nx, ny, j, _e30;
+  seen = new Uint8Array((w * h));
+  if ((grid[((sy * w) + sx)] !== 0)) {
+    return seen;
+  }
+  queue = [((sy * w) + sx)];
+  seen[((sy * w) + sx)] = 1;
+  head = 0;
+  while ((head < queue.length)) {
+    i = queue[head];
+    head += 1;
+    x = MOD(i, w);
+    y = F(i, w);
+    for (d = 0, _e30 = 4; d < _e30; d += 1) {
+      nx = (x + [1, (-1), 0, 0][d]);
+      ny = (y + [0, 0, 1, (-1)][d]);
+      if (((nx >= 0)) && ((nx < w)) && ((ny >= 0)) && ((ny < h))) {
+        j = ((ny * w) + nx);
+        if (((seen[j] === 0)) && ((grid[j] === 0))) {
+          seen[j] = 1;
+          queue.push(j);
+        }
+      }
+    }
+  }
+  return seen;
+}
+
+function plan_world(cfg, rng) {
+  let w, h, grid, x, y, ponds, k, crags, sx, sy, seen, open_cells, i, things, kinds, counts, kind, pool, j, cell, near_rock, d, nb, swap, _e31, _e32, _e33, _e34, _e35, _e36, _e37;
+  w = cfg["w"];
+  h = cfg["h"];
+  grid = new Uint8Array((w * h));
+  for (x = 0, _e31 = w; x < _e31; x += 1) {
+    grid[x] = T_ROCK;
+    grid[(((h - 1) * w) + x)] = T_ROCK;
+  }
+  for (y = 0, _e32 = h; y < _e32; y += 1) {
+    grid[(y * w)] = T_ROCK;
+    grid[(((y * w) + w) - 1)] = T_ROCK;
+  }
+  ponds = F(((cfg["water"] * w) * h), 1600);
+  for (k = 0, _e33 = ponds; k < _e33; k += 1) {
+    _disc(grid, w, h, (2 + rng.below((w - 4))), (2 + rng.below((h - 4))), (1 + rng.below(3)), T_WATER);
+  }
+  crags = F(((cfg["rock"] * w) * h), 1600);
+  for (k = 0, _e34 = crags; k < _e34; k += 1) {
+    _disc(grid, w, h, (2 + rng.below((w - 4))), (2 + rng.below((h - 4))), rng.below(3), T_ROCK);
+  }
+  sx = F(w, 2);
+  sy = F(h, 2);
+  _disc(grid, w, h, sx, sy, 2, T_GROUND);
+  seen = reachable(grid, w, h, sx, sy);
+  open_cells = [];
+  for (i = 0, _e35 = (w * h); i < _e35; i += 1) {
+    if (((seen[i] === 1)) && (((Math.abs((MOD(i, w) - sx)) + Math.abs((F(i, w) - sy))) > 2))) {
+      open_cells.push(i);
+    }
+  }
+  things = [];
+  kinds = ["flora", "fungi", "ores", "fauna"];
+  counts = cfg["counts"];
+  for (kind of kinds) {
+    pool = cfg[kind];
+    if ((pool.length === 0)) {
+      continue;
+    }
+    for (k = 0, _e36 = counts[kind]; k < _e36; k += 1) {
+      if ((open_cells.length === 0)) {
+        break;
+      }
+      j = rng.below(open_cells.length);
+      cell = open_cells[j];
+      open_cells[j] = open_cells[(open_cells.length - 1)];
+      open_cells.pop();
+      if ((kind === "ores")) {
+        near_rock = 0;
+        x = MOD(cell, w);
+        y = F(cell, w);
+        for (d = 0, _e37 = 4; d < _e37; d += 1) {
+          nb = ((((y + [0, 0, 1, (-1)][d]) * w) + x) + [1, (-1), 0, 0][d]);
+          if ((grid[nb] === T_ROCK)) {
+            near_rock = 1;
+          }
+        }
+        if (((near_rock === 0)) && ((rng.below(3) > 0)) && ((open_cells.length > 0))) {
+          j = rng.below(open_cells.length);
+          swap = open_cells[j];
+          open_cells[j] = cell;
+          cell = swap;
+        }
+      }
+      things.push(({["kind"]: kind, ["type"]: pool[rng.below(pool.length)], ["x"]: MOD(cell, w), ["y"]: F(cell, w), ["gather"]: ((((kind === "fungi")) || ((kind === "ores"))) ? 1 : 0), ["seed"]: rng.below(1000)}));
+    }
+  }
+  return ({["w"]: w, ["h"]: h, ["tiles"]: Array.from(grid), ["things"]: things, ["start"]: [sx, sy], ["station"]: [(sx + 1), (sy - 1)]});
+}
+
+function quests(plan, rng, n) {
+  let have, order, t, out, k, j, tid, _e38;
+  have = ({});
+  order = [];
+  for (t of plan["things"]) {
+    if ((t["gather"] === 1)) {
+      if ((get(have, t["type"], null) === null)) {
+        have[t["type"]] = 0;
+        order.push(t["type"]);
+      }
+      have[t["type"]] = (have[t["type"]] + 1);
+    }
+  }
+  out = [];
+  for (k = 0, _e38 = n; k < _e38; k += 1) {
+    if ((order.length === 0)) {
+      break;
+    }
+    j = rng.below(order.length);
+    tid = order[j];
+    order[j] = order[(order.length - 1)];
+    order.pop();
+    out.push(({["type"]: tid, ["count"]: (1 + rng.below(have[tid]))}));
+  }
+  return out;
+}
+
+function speed(load_grams, carry_grams) {
+  if ((load_grams >= carry_grams)) {
+    return 50;
+  }
+  return (100 - F((50 * load_grams), carry_grams));
+}

@@ -1,0 +1,44 @@
+# Sea-Salt (common)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.sea_salt"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Sea-Salt"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "common"
+fantasy = false
+biome = "coast"
+
+[provenance]
+source = "book-of-cities: ores (coast)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "rock"
+weight = 1
+colors = ["#b4a692", "#dad4c8", "#f4f3f0", "#f4f4f0"]
+
+[body]
+anchor = [1, 4]
+template = ["...1###", "..#####", ".######", "1######", "#######", "1######", ".######", "..1####"]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "category_default"
+density_kg_m3 = 2160
+category = "salt"
+chunk_grams = 1080
+note = "CRUCIBLE has no density here; a typical salt density is used"

@@ -12,12 +12,15 @@ const input = JSON.parse(readFileSync(0, "utf8"));
 const types = input.types || {};
 PGRig.setResolver((id) => { if (!types[id]) throw new Error("unknown type " + id); return types[id]; });
 PGRig.setTables(input.teams || {}, input.owns || {});
+PGRig.setPacks(input.packs || []);
 const typeOf = (c) => {
   let d = c.overlay ? PGRig.compose(c.type, c.overlay.own, c.overlay.id) : c.type;
+  for (const o of c.overlays || []) d = PGRig.compose(d, o.own, o.id);
   if (c.team) d = PGRig.withTeam(d, c.team);
   return d;
 };
 const out = input.cases.map((c) => {
+  if (c.kind === "sandbox") return { plan: PGRig.sandboxWorld(c.biome, c.seed, c.w, c.h) };
   if (c.kind === "view") {
     const data = typeOf(c);
     const g = PGRig.genome(data, PGRig.streamsFor(data, c.seed));

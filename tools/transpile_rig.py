@@ -11,7 +11,8 @@ guessing:
     a % b  -> MOD(a, b)     floor modulo, Python semantics
     x in (..)               -> [..].includes(x)
     d.get(k, v)             -> get(d, k, v)
-    s.append(x) / insert    -> push / splice
+    s.append(x) / insert    -> push / splice;  s.pop() -> s.pop()
+    rng.below / chance / range  -> the same Rng methods in pg-core.js
     len(x), list(x), dict(x), bytearray(n), [v] * n
     x is None / is not None -> === null / !== null
     for / while / break / continue / raise / += and friends
@@ -37,6 +38,7 @@ SOURCES = [
                                       "normal", "light_at", "decal_at", "paint"],
      ["ZC", "SIN90", "DECAL_FEATS", "WRAP_FEATS", "HEADWEAR_FEATS", "HELD_DEPTH"]),
     ("pixelgoblin/gen/beast.py", [], ["_ell", "_cap", "beast_solids", "seat", "seat_rider"], ["EXT", "BX", "BZ", "BGROUND"]),
+    ("pixelgoblin/sandbox.py", [], ["_disc", "reachable", "plan_world", "quests", "speed"], ["T_GROUND", "T_WATER", "T_ROCK", "CARRY_GRAMS"]),
 ]
 SHAPES = {"E", "R", "C", "T", "A"}
 BIN = {ast.Add: "+", ast.Sub: "-", ast.Mult: "*"}
@@ -147,6 +149,10 @@ class Emitter:
                     return f"{self.expr(f.value)}.push({', '.join(args)})"
                 if f.attr == "insert":
                     return f"{self.expr(f.value)}.splice({args[0]}, 0, {args[1]})"
+                if f.attr == "pop" and not args:
+                    return f"{self.expr(f.value)}.pop()"
+                if f.attr in ("below", "chance", "range"):   # the engine's Rng: the same methods in both languages
+                    return f"{self.expr(f.value)}.{f.attr}({', '.join(args)})"
             raise Unsupported(ast.unparse(n))
         raise Unsupported(ast.unparse(n))
 

@@ -4,9 +4,9 @@ PixelGoblin v0u1p0 · engine major 0
 
 Written only when every build gate ran. Counts below are derived by the run, not typed.
 
-- Build gates passed: 21 of 21
-- Plan gates covered by passing build gates: 29 of 29
-- Assertions: 1261
+- Build gates passed: 24 of 24
+- Plan gates covered by passing build gates: 32 of 32
+- Assertions: 5463
 
 | Gate | What | Covers | Result |
 |---|---|---|---|
@@ -31,22 +31,25 @@ Written only when every build gate ran. Counts below are derived by the run, not
 | B18 | views: one lifted model, seen from anywhere | G27 | PASS |
 | B19 | city: a population from a list of names | G28 | PASS |
 | B20 | signatures, items as data, clans, mounts, zoom, props | G29 | PASS |
+| B21 | packaging: pocket widget, plugin and PseudoSkill capsule | G30 | PASS |
+| B22 | resource packs: Book of Cities, Compendium, Aether Library, CRUCIBLE | G31 | PASS |
+| B23 | Goblin Grounds: a sandbox world from the packs | G32 | PASS |
 
 ## Ratchet
 
 | Count | Now | Floor |
 |---|---|---|
-| build_gates | 21 | 21 |
-| plan_gates_covered | 29 | 29 |
+| build_gates | 24 | 24 |
+| plan_gates_covered | 32 | 32 |
 | goldens | 224 | 224 |
 | validator_negative_cases | 20 | 20 |
-| mutations | 43 | 43 |
+| mutations | 51 | 51 |
 | vanilla_types | 10 | 10 |
-| flavor_types | 48 | 48 |
-| cli_commands | 28 | 28 |
+| flavor_types | 364 | 364 |
+| cli_commands | 32 | 32 |
 | flavor_capabilities | 8 | 8 |
 | tag_roots | 8 | 8 |
-| doc_pages | 16 | 16 |
+| doc_pages | 19 | 19 |
 
 —Shibbieness
 —Claude

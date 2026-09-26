@@ -1,0 +1,18 @@
+# Mountain: Elevated rocky regions: hills to snow peaks, volcanic and crystal.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.mountain.ground"
+tag = "terrain"
+generator = "autotile"
+license = "Proprietary"
+size = [16, 16]
+label = "Mountain ground"
+tile = 16
+
+[provenance]
+source = "book-of-cities: biomes (Mountain)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#222121"
+highlight = "#ecedf0"
+fill = ["#101315", "#363e48", "#5e6778", "#8b91a4"]

@@ -1,0 +1,44 @@
+# Abyss-Pearl (rare, fantasy)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.abyss_pearl"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Abyss-Pearl"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "rare"
+fantasy = true
+biome = "coast"
+
+[provenance]
+source = "book-of-cities: ores (coast)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "gem"
+weight = 1
+colors = ["#0a0712", "#2e1c49", "#774aa3", "#bfa1d4"]
+
+[body]
+anchor = [1, 4]
+template = ["...####", "..#####", ".######", ".######", ".######", "..#####", "...####"]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "intentionally_ungrounded"
+density_kg_m3 = 1300
+category = "organic"
+chunk_grams = 650
+note = "fantasy material: CRUCIBLE's rule is never to fill it from real data; the weight is authored"

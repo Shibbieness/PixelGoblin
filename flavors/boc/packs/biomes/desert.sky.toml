@@ -1,0 +1,41 @@
+# Desert: Arid sand, rock, salt flats, glass desert and oases.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.desert.sky"
+tag = "env"
+generator = "parallax"
+license = "Proprietary"
+size = [160, 90]
+label = "Desert sky"
+stars = 30
+
+[provenance]
+source = "book-of-cities: biomes (Desert)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+sky = ["#c48f20", "#e1bd48", "#e3d68b", "#f0edc2", "#fafaea"]
+star = "#fff4e0"
+
+[[layers]]
+name = "far"
+colors = ["#2b3e20", "#527c48", "#7db179"]
+base = 60
+periods = [40, 12]
+amps = [12, 4]
+scroll = 20
+
+[[layers]]
+name = "mid"
+colors = ["#202d18", "#527c48", "#8dba89"]
+base = 74
+periods = [26, 9]
+amps = [8, 3]
+scroll = 50
+
+[[layers]]
+name = "ground"
+colors = ["#8b5a21", "#cdae5e", "#ebe4bf"]
+base = 88
+periods = [16, 5]
+amps = [3, 2]
+scroll = 100

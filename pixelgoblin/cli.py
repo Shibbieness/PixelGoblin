@@ -48,6 +48,10 @@ EXAMPLES = {
     "zoom": "pixelgoblin zoom boc.goblin.shaman --seed 5 --from 16 --to 256 --out zoom.gif",
     "ride": "pixelgoblin ride boc.goblin.rider boc.mount.boar --seed 2 --mount-seed 1 --view side_right --tier 128 --out rider.png --scale 2",
     "city": "pixelgoblin city boc.city.goblintown flavors/boc/village/goblintown.names.txt --out town/",
+    "packs": "pixelgoblin packs",
+    "pack": "pixelgoblin pack boc.pack.ores --out ores.png --scale 3",
+    "avatar": "pixelgoblin avatar Aelren --view iso_sw --out aelren.png --scale 3",
+    "sandbox": "pixelgoblin sandbox --biome mountain --seed 3 --out grounds/",
 }
 
 
@@ -70,7 +74,7 @@ def _seed(a) -> int:
 def _load(a):
     """A type id or path, optionally with a variant overlay (--sub snow) and clan colours (--team ashfang)."""
     sub = getattr(a, "sub", None)
-    tf = typefile.compose(a.type, sub if "." in sub else f"boc.goblin.sub.{sub}") if sub else typefile.load(a.type)
+    tf = typefile.compose(a.type, sub) if sub else typefile.load(a.type)
     team = getattr(a, "team", None)
     return typefile.with_team(tf, team) if team else tf
 
@@ -437,6 +441,26 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--seed", type=int, default=1, help="village seed")
     p.add_argument("--tier", type=int, default=32, choices=list(rig.TIERS), help="size of the household sheet")
     p.add_argument("--out", required=True, help="output folder")
+    add("packs", cmd_packs, "List the resource packs: what each holds, where it came from, how many colours were inferred.")
+    p = add("pack", cmd_pack, "Every type in one resource pack on one sheet (races and traits are shown on a job).")
+    p.add_argument("pack", help="pack id like boc.pack.ores, or its folder name like ores")
+    p.add_argument("--seed", type=int, default=1)
+    p.add_argument("--role", default="boc.goblin.guard", help="the job that shows races and traits")
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=2)
+    p = add("avatar", cmd_avatar, "A named soul's avatar (souls.toml): seeded from the soul name, offered as a supplement, never an overwrite.")
+    p.add_argument("soul", help="a soul name from any souls.toml (like Aelren), or any name")
+    p.add_argument("--role", help="job to draw them as (default: the soul's own, else father)")
+    p.add_argument("--sub", help="race or overlay (default: the soul's own)")
+    p.add_argument("--view", default="front", choices=list(rig3d.VIEWS))
+    p.add_argument("--tier", type=int, default=64, choices=list(rig.TIERS))
+    p.add_argument("--out", required=True)
+    p.add_argument("--scale", type=int, default=1)
+    p = add("sandbox", cmd_sandbox, "Goblin Grounds: a sandbox world from a biome's resource packs, with material weights, for games.")
+    p.add_argument("--biome", default="forest", help="forest, mountain, coast, swamp, plain, desert, tundra, badlands, underwater")
+    p.add_argument("--seed", type=int, default=1)
+    p.add_argument("--size", default="28x18", help="tiles, like 28x18")
+    p.add_argument("--out", required=True, help="output folder: world.json, atlas.png, map.png")
     return ap
 
 
@@ -485,7 +509,7 @@ def cmd_roster(a):
     files = typefile.type_files(Path(a.folder))
     sprites = []
     for f in files:
-        tf = typefile.load(f) if not a.sub else typefile.compose(str(f), a.sub if "." in a.sub else f"boc.goblin.sub.{a.sub}")
+        tf = typefile.load(f) if not a.sub else typefile.compose(str(f), a.sub)
         if tf.generator != "rig":
             continue
         g = rig.genome(tf.data, rig.streams_for(tf, a.seed))
@@ -664,3 +688,79 @@ def cmd_city(a):
     cards.labelled(items, a.tier, 10, 2).save(out / "citizens.png", 2)
     _write_json(out / "census.json", {"city": cty["id"], "citizens": city.public(people)})
     print(f"{out}/  {len(people)} citizens in {len(houses)} households: census.json, citizens.png, village.png")
+
+
+def cmd_packs(a):
+    for p in typefile.packs():
+        c = p.get("counts", {})
+        src = p.get("source", {})
+        print(f"{p['id']:24} {c.get('types', 0):4} types  {c.get('inferred_colors', 0):3} with inferred colours  from {src.get('skill', '?')}  {p['label']}")
+
+
+def _pack(name: str) -> dict:
+    for p in typefile.packs():
+        if p["id"] == name or p["id"] == f"boc.pack.{name}" or Path(p["path"]).parent.name == name:
+            return p
+    raise ValueError(f"no pack called {name!r}; run `pixelgoblin packs`")
+
+
+def cmd_pack(a):
+    p = _pack(a.pack)
+    items = []
+    for tid in p.get("types", []):
+        if ".sub." in tid:
+            tf = typefile.compose(a.role, tid)
+            g = rig.genome(tf.data, rig.streams_for(tf, a.seed))
+            s = rig.render(tf.data, g, 64)[0]
+        else:
+            tf = typefile.load(tid)
+            if tf.generator == "autotile":
+                s = autotile.build_tileset(tf, a.seed)[0]
+            elif tf.generator == "uikit":
+                k = uikit.build_kit(tf, a.seed)
+                s = uikit.nine_slice(k["panels"]["normal"], uikit.insets(tf.data), 48, 24)
+            else:
+                s = gen.frames(tf, a.seed)[0]
+        items.append((tf.data.get("label", tid.split(".")[-1])[:12] if ".sub." not in tid else typefile.load(tid).data.get("label", tid)[:12], s))
+    if not items:
+        raise ValueError(f"{p['id']} holds data only ({', '.join(p.get('data', []))}); nothing to draw")
+    cell = max(max(s.w, s.h) for _, s in items)
+    cell = min(cell, 160)
+    pages = cards.labelled_pages(items, cell, max(1, min(12, 960 // (cell + 6))))
+    outs = [Path(a.out)] + [Path(a.out).with_name(f"{Path(a.out).stem}-{k + 2}{Path(a.out).suffix}") for k in range(len(pages) - 1)]
+    for sheet, o in zip(pages, outs):
+        sheet.save(o, a.scale)
+    print(f"{a.out}  {len(items)} from {p['id']}" + (f" on {len(pages)} sheets ({', '.join(o.name for o in outs[1:])} too: one palette holds 256 colours)" if len(pages) > 1 else ""))
+
+
+def cmd_avatar(a):
+    from .gen import rig3d
+    souls = {}
+    for root in typefile.search_path():
+        for f in Path(root).rglob("souls.toml"):
+            for e in typefile._read_toml(f).get("entities", []):
+                souls[e["name"].lower()] = e
+                souls[e["id"].lower()] = e
+    e = souls.get(a.soul.lower(), {})
+    role = a.role or e.get("role", "boc.goblin.father")
+    sub = a.sub or e.get("sub")
+    tf = typefile.compose(role, sub) if sub else typefile.load(role)
+    soul = e.get("soul_name", a.soul)
+    seed = seed_from_name("soul:" + soul)
+    g = rig.genome(tf.data, rig.streams_for(tf, seed))
+    rig3d.render_view(tf.data, g, a.tier, a.view).save(a.out, a.scale)
+    _write_json(Path(a.out).with_suffix(".json"), {"soul_name": soul, "seed": str(seed), "role": role, "sub": sub, "known_soul": bool(e),
+                                                   "supplement": True, "overwrites": None,
+                                                   "rule": "supplement-but-never-overwrite: an offered appearance; it replaces no identity and writes nothing into the soul's own records"})
+    print(f"{a.out}  avatar for {soul!r} ({'known soul' if e else 'any name'}), as {role.split('.')[-1]}" + (f" {sub.split('.')[-1]}" if sub else ""))
+
+
+def cmd_sandbox(a):
+    from . import sandbox
+    w, h = (int(v) for v in a.size.lower().split("x"))
+    if not (12 <= w <= 64 and 10 <= h <= 48):
+        raise ValueError("--size must be between 12x10 and 64x48 tiles")
+    plan = sandbox.world(a.biome, a.seed, w, h)
+    paths = sandbox.export(plan, Path(a.out))
+    q = ", ".join(f"{x['count']} {typefile.load(x['type']).data.get('label', x['type'])}" for x in plan["quests"])
+    print(f"{a.out}  {a.biome} {w}x{h}: {len(plan['things'])} things, quests: {q or 'none'}  ({', '.join(p.name for p in paths)})")

@@ -1,0 +1,388 @@
+<title>Goblin Grounds</title>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Silkscreen&display=swap">
+<style>
+:root{
+  --bg:#191d18;--panel:#232820;--panel2:#2c3228;--line:#3a4234;--ink:#e9e3cf;--mute:#a9a592;
+  --accent:#d9a441;--accent-ink:#1d1a10;--teal:#56a39c;--good:#8cc265;--bad:#e0705a;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){--bg:#f3eedd;--panel:#fbf7ea;--panel2:#ece5cf;--line:#d4cab0;--ink:#26261e;--mute:#6a6552;
+    --accent:#a86f12;--accent-ink:#fffaf0;--teal:#2f7a74;--good:#4a7a2a;--bad:#b0402a;color-scheme:light}
+}
+:root[data-theme="light"]{--bg:#f3eedd;--panel:#fbf7ea;--panel2:#ece5cf;--line:#d4cab0;--ink:#26261e;--mute:#6a6552;
+  --accent:#a86f12;--accent-ink:#fffaf0;--teal:#2f7a74;--good:#4a7a2a;--bad:#b0402a;color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif;padding-inline:16px;padding-block:14px;margin:0}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+h1{font:400 1.35rem "Silkscreen","Courier New",monospace;letter-spacing:.04em;color:var(--accent);margin:0}
+h2{font:400 .95rem "Silkscreen","Courier New",monospace;letter-spacing:.04em;margin:0}
+header p{margin:0;color:var(--mute);font-size:.9rem}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;align-items:start}
+@media (max-width:860px){.main{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.stagewrap{overflow:auto;border-radius:4px;background:#0e100d;touch-action:none}
+canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+#map{width:100%;height:auto}
+@media (min-width:861px) and (pointer:fine){.pad{display:none}}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+label{display:flex;flex-direction:column;gap:3px;font-size:.82rem;color:var(--mute);flex:1 1 120px}
+input,select,button{font:inherit;color:var(--ink)}
+input[type=text],input[type=number],select{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:5px 7px;width:100%}
+button{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button[aria-pressed="true"],button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button:focus-visible,select:focus-visible,input:focus-visible,.stagewrap:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.hint{font-size:.82rem;color:var(--mute);margin:0}
+.mono{font:400 .8rem "JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+ul.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+ul.list li{display:flex;justify-content:space-between;gap:8px;font-size:.88rem}
+ul.list li.done{color:var(--good)}
+.meter{height:8px;border-radius:4px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
+.meter span{display:block;height:100%;background:var(--accent)}
+.chip{display:inline-block;padding:1px 7px;border-radius:99px;font-size:.72rem;border:1px solid var(--line);color:var(--mute)}
+.chip.g{color:var(--good);border-color:var(--good)}.chip.w{color:var(--accent);border-color:var(--accent)}.chip.u{color:var(--teal);border-color:var(--teal)}
+.pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:4px;justify-content:center}
+.pad button{padding:0;font-size:1.1rem}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--accent);color:var(--accent-ink);padding:8px 14px;border-radius:4px;font-weight:700;max-width:90vw}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header><h1>Goblin Grounds</h1><p>Walk your goblin through a Book of Cities biome, gather what the quests ask for, and bring it to the forge. Ore weighs what CRUCIBLE says it weighs.</p></header>
+<div class="main">
+  <section class="card" aria-label="The grounds">
+    <div class="row" style="justify-content:space-between">
+      <h2 id="title">Forest</h2>
+      <div class="row"><button type="button" id="modePlay" aria-pressed="true">Play</button><button type="button" id="modeBuild" aria-pressed="false">Build</button></div>
+    </div>
+    <div class="stagewrap" id="stagewrap" tabindex="0" aria-label="Map. Arrow keys or WASD to walk, E or Space to gather or use the forge."><canvas id="map"></canvas></div>
+    <div class="row" style="justify-content:space-between">
+      <span class="mono" id="status"></span>
+      <span class="hint">Arrows / WASD walk · E or Space gathers and uses the forge · tap a tile to walk there</span>
+    </div>
+    <div class="pad" id="pad" aria-label="Walk buttons">
+      <span></span><button type="button" data-d="0,-1" aria-label="Up">▲</button><span></span>
+      <button type="button" data-d="-1,0" aria-label="Left">◀</button><button type="button" data-act="1" aria-label="Gather or use">E</button><button type="button" data-d="1,0" aria-label="Right">▶</button>
+      <span></span><button type="button" data-d="0,1" aria-label="Down">▼</button><span></span>
+    </div>
+  </section>
+  <aside class="card" aria-label="World and goblin">
+    <div class="row">
+      <label for="biome">Biome<select id="biome"></select></label>
+      <label for="seed">World seed<input type="number" id="seed" value="3" min="0"></label>
+    </div>
+    <div class="row">
+      <label for="name">Goblin name<input type="text" id="name" value="Grubnak"></label>
+      <label for="folk">Folk<select id="folk"></select></label>
+    </div>
+    <label for="job">Job<select id="job"></select></label>
+    <div class="row"><button type="button" class="primary" id="newWorld">New world</button><button type="button" id="saveWorld">Save world.json</button></div>
+    <div>
+      <h2>Quests</h2>
+      <ul class="list" id="quests"></ul>
+    </div>
+    <div>
+      <h2>Pack</h2>
+      <div class="row" style="justify-content:space-between"><span class="mono" id="load"></span><span class="mono" id="speed"></span></div>
+      <div class="meter" aria-hidden="true"><span id="meter" style="width:0%"></span></div>
+      <ul class="list" id="bag"></ul>
+      <p class="hint" id="crucible"></p>
+    </div>
+    <div id="buildPanel" hidden>
+      <h2>Build</h2>
+      <label for="palette">Place<select id="palette"></select></label>
+      <p class="hint">Click a tile to place it. Alt-click (or long-press) a thing to remove it. The world stays the same seed plus your edits.</p>
+    </div>
+  </aside>
+</div>
+<p class="hint" id="foot"></p>
+</div>
+
+<script>
+/*__PG_CORE__*/
+</script>
+<script>
+const PRESETS = /*__PRESETS__*/;
+(() => {
+"use strict";
+const $ = (id) => document.getElementById(id);
+const store = { get(k, d) { try { const v = localStorage.getItem("pgg." + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem("pgg." + k, JSON.stringify(v)); } catch (e) {} } };
+const typeById = (id) => (PRESETS.types.find((t) => t.data.id === id) || {}).data;
+PGRig.setResolver((id) => { const d = typeById(id); if (!d) throw new Error("unknown type " + id); return d; });
+const subs = PRESETS.types.filter((t) => t.data.generator === "rig" && t.own);
+PGRig.setTables(PRESETS.teams || {}, Object.fromEntries(subs.map((t) => [t.data.id, t.own])));
+PGRig.setPacks(PRESETS.packs || []);
+const roles = PRESETS.types.filter((t) => t.data.generator === "rig" && t.data.role && !t.own && t.data.label).sort((a, b) => a.data.label.localeCompare(b.data.label));
+const opt = (sel, v, t) => { const o = document.createElement("option"); o.value = v; o.textContent = t; sel.appendChild(o); };
+const biomes = Object.keys((PRESETS.packs.find((p) => p.id === "boc.pack.biomes") || {}).residents || {}).sort();
+biomes.forEach((b) => opt($("biome"), b, b[0].toUpperCase() + b.slice(1)));
+roles.forEach((t) => opt($("job"), t.data.id, t.data.label));
+opt($("folk"), "", "Goblin");
+subs.filter((t) => t.data.id.startsWith("boc.race.sub.") || t.data.id.startsWith("boc.goblin.sub.")).sort((a, b) => a.data.label.localeCompare(b.data.label)).forEach((t) => opt($("folk"), t.data.id, t.data.label));
+$("biome").value = store.get("biome", "forest"); $("seed").value = store.get("seed", 3);
+$("name").value = store.get("name", "Grubnak"); $("job").value = store.get("job", "boc.goblin.miner"); $("folk").value = store.get("folk", "");
+$("foot").textContent = PRESETS.credit + " · " + PRESETS.version + " · Goblin Grounds runs in this page; the world plan is the engine's own (the same world as `pixelgoblin sandbox`).";
+
+const TILE = 16;
+let SCALE = 2, plan = null, things = [], player = null, bag = [], done = {}, steps = 0, mode = "play", sprites = new Map(), hero = null, quests = [];
+function spriteOf(t) {
+  const key = t.type + "#" + t.seed;
+  if (!sprites.has(key)) sprites.set(key, PG.frames(typeById(t.type), t.seed)[0]);
+  return sprites.get(key);
+}
+function grams(tid) {
+  const d = typeById(tid);
+  if (d && d.crucible) return [d.crucible.chunk_grams, d.crucible.grounding, d.crucible.note];
+  if (tid.startsWith("boc.fungus.")) return [150, "authored", "authored weight: CRUCIBLE has no mushrooms"];
+  return [40, "authored", "authored weight"];
+}
+const label = (tid) => (typeById(tid) || {}).label || tid.split(".").pop();
+function heroSprites() {
+  let data = typeById($("job").value);
+  if ($("folk").value) data = PGRig.composeId($("job").value, $("folk").value);
+  const g = PGRig.genome(data, PGRig.streamsFor(data, PGRig.seedFromName($("name").value.trim() || "Grubnak")));
+  const dirs = { "0,1": 0, "1,1": 315, "1,0": 270, "1,-1": 225, "0,-1": 180, "-1,-1": 135, "-1,0": 90, "-1,1": 45 };
+  const out = {};
+  for (const [k, yaw] of Object.entries(dirs)) {
+    const side = yaw === 90 || yaw === 270;
+    const poses = side ? PGRig.VIEW_POSES.walk_side : [{}, { bob: 1 }, {}, { bob: 1 }];
+    out[k] = poses.map((p) => PGRig.renderView(data, g, 32, { yaw, pitch: 0, pose: p }).sprite);
+  }
+  return out;
+}
+function newWorld() {
+  const biome = $("biome").value, seed = String(Math.max(0, parseInt($("seed").value || "0", 10)));
+  store.set("biome", biome); store.set("seed", +seed); store.set("name", $("name").value); store.set("job", $("job").value); store.set("folk", $("folk").value);
+  plan = PGRig.sandboxWorld(biome, seed, 28, 18);
+  things = plan.things.map((t) => Object.assign({}, t));
+  quests = plan.quests.map((q) => Object.assign({ delivered: 0 }, q));
+  player = { x: plan.start[0], y: plan.start[1], dir: "0,1", frame: 0, px: plan.start[0] * TILE, py: plan.start[1] * TILE, busy: 0 };
+  bag = []; steps = 0; hero = heroSprites();
+  $("title").textContent = biome[0].toUpperCase() + biome.slice(1) + " · world " + seed;
+  fit(); draw(); panel();
+}
+function fit() {  // drawn at native size; the browser scales it up with square pixels
+  SCALE = 1;
+  const c = $("map"); c.width = plan.w * TILE; c.height = plan.h * TILE;
+}
+// ---- drawing
+const off = document.createElement("canvas");
+function toCanvas(spr) {
+  if (spr._c) return spr._c;
+  const c = document.createElement("canvas"); c.width = spr.w; c.height = spr.h;
+  const x = c.getContext("2d"), img = x.createImageData(spr.w, spr.h);
+  for (let i = 0; i < spr.px.length; i++) img.data.set(spr.palette[spr.px[i]], i * 4);
+  x.putImageData(img, 0, 0); spr._c = c; return c;
+}
+let groundCache = null;
+function groundLayer() {
+  if (groundCache && groundCache.key === plan.config_hash + plan.seed) return groundCache.c;
+  const pal = typeById("boc.biome." + plan.biome + ".ground").palette, sky = typeById("boc.biome." + plan.biome + ".sky").palette.sky;
+  const fill = pal.fill.map(PG.hexToRgba), water = (plan.biome === "underwater" ? sky.slice(1, 4) : ["#24507a", "#2e6494", "#4a86b4"]).map(PG.hexToRgba);
+  const rock = ["#3a3a40", "#5a5a64", "#7a7a86", "#9a9aa6"].map(PG.hexToRgba);
+  const W = plan.w * TILE, H = plan.h * TILE, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d"), img = x.createImageData(W, H);
+  const rng = new PG.Rng(PG.derive(PG.masterSeed(plan.config_hash, plan.seed, 0), "texture"));
+  for (let ty = 0; ty < plan.h; ty++) for (let tx = 0; tx < plan.w; tx++) {
+    const k = plan.tiles[ty * plan.w + tx];
+    for (let y = 0; y < TILE; y++) for (let xx = 0; xx < TILE; xx++) {
+      const n = rng.below(16);
+      const col = k === 0 ? fill[n < 13 ? 1 : n < 15 ? 2 : 0] : k === 1 ? water[n < 13 ? 1 : 2] : rock[((xx + y) % 7 ? 1 : 0) + (y < 3 ? 1 : 0)];
+      img.data.set(col, ((ty * TILE + y) * W + tx * TILE + xx) * 4);
+    }
+  }
+  x.putImageData(img, 0, 0);
+  groundCache = { key: plan.config_hash + plan.seed, c };
+  return c;
+}
+function draw() {
+  const c = $("map"), x = c.getContext("2d");
+  x.imageSmoothingEnabled = false;
+  x.setTransform(SCALE, 0, 0, SCALE, 0, 0);
+  x.drawImage(groundLayer(), 0, 0);
+  const [sx, sy] = plan.station;
+  x.fillStyle = "rgba(0,0,0,.35)"; x.fillRect(sx * TILE + 1, sy * TILE + 11, 14, 4);
+  x.fillStyle = "#4a3a30"; x.fillRect(sx * TILE + 2, sy * TILE + 4, 12, 9);
+  x.fillStyle = "#e08a20"; x.fillRect(sx * TILE + 5, sy * TILE + 6, 6, 4);
+  x.fillStyle = "#fbe07a"; x.fillRect(sx * TILE + 7, sy * TILE + 7, 2, 2);
+  const order = things.map((t) => ({ t, y: t.y * TILE + TILE })).concat([{ hero: true, y: player.py + TILE }]).sort((a, b) => a.y - b.y);
+  for (const o of order) {
+    if (o.hero) {
+      const fr = hero[player.dir][player.frame % hero[player.dir].length], cv = toCanvas(fr);
+      const hx = player.px + TILE / 2 - fr.w / 2, hy = player.py + TILE - fr.h + 4;
+      x.fillStyle = "rgba(0,0,0,.3)"; x.fillRect(player.px + 3, player.py + 13, 10, 3);
+      x.drawImage(cv, Math.round(hx), Math.round(hy));
+      continue;
+    }
+    const t = o.t, s = spriteOf(t), cv = toCanvas(s);
+    const dx = t.x * TILE + TILE / 2 - s.w / 2, dy = t.y * TILE + TILE - s.h;
+    x.drawImage(cv, Math.round(dx), Math.round(dy));
+    if (t.gather && mode === "play" && Math.abs(t.x - player.x) + Math.abs(t.y - player.y) <= 1) {
+      x.strokeStyle = "#fbe07a"; x.lineWidth = 1 / SCALE * 2; x.strokeRect(t.x * TILE + .5, t.y * TILE + .5, TILE - 1, TILE - 1);
+    }
+  }
+  x.setTransform(1, 0, 0, 1, 0, 0);
+}
+// ---- the panel
+function load() { return bag.reduce((a, b) => a + b.g, 0); }
+function panel() {
+  const L = load(), cap = PGRig.CARRY_GRAMS, sp = PGRig.speed(L, cap);
+  $("load").textContent = (L / 1000).toFixed(1) + " / " + cap / 1000 + " kg";
+  $("speed").textContent = "speed " + sp + "%";
+  $("meter").style.width = Math.min(100, Math.round(100 * L / cap)) + "%";
+  const counts = {};
+  bag.forEach((b) => { counts[b.type] = (counts[b.type] || 0) + 1; });
+  $("bag").innerHTML = Object.entries(counts).map(([t, n]) => {
+    const [g, src] = grams(t);
+    const chip = src === "grounded" ? '<span class="chip g">CRUCIBLE</span>' : src === "intentionally_ungrounded" ? '<span class="chip u">fantasy</span>' : '<span class="chip w">' + (src === "authored" ? "authored" : "typical") + "</span>";
+    return `<li><span>${n} × ${label(t)} ${chip}</span><span class="mono">${(n * g / 1000).toFixed(2)} kg</span></li>`;
+  }).join("") || '<li class="hint">Empty. Walk next to something glowing-edged and press E.</li>';
+  $("quests").innerHTML = quests.map((q) => `<li class="${q.delivered >= q.count ? "done" : ""}"><span>${q.delivered >= q.count ? "✓ " : ""}Bring ${q.count} ${label(q.type)}</span><span class="mono">${Math.min(q.delivered, q.count)}/${q.count}</span></li>`).join("") || '<li class="hint">No quests in this world: explore and build.</li>';
+  $("status").textContent = `steps ${steps} · at ${player.x},${player.y}` + (quests.length && quests.every((q) => q.delivered >= q.count) ? " · all quests done!" : "");
+}
+function toast(msg) { const t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2200); }
+// ---- play
+const walkable = (x, y) => x >= 0 && y >= 0 && x < plan.w && y < plan.h && plan.tiles[y * plan.w + x] === 0;
+function move(dx, dy) {
+  if (!plan || mode !== "play" || player.busy) return;
+  player.dir = dx + "," + dy;
+  const nx = player.x + dx, ny = player.y + dy;
+  if (!walkable(nx, ny)) { player.frame = 0; draw(); return; }
+  const sp = PGRig.speed(load(), PGRig.CARRY_GRAMS), frames = Math.max(4, Math.round(8 * 100 / sp));
+  player.busy = 1; steps += 1;
+  let k = 0;
+  const x0 = player.px, y0 = player.py, reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const tick = () => {
+    k += 1;
+    player.px = x0 + (dx * TILE * k) / frames; player.py = y0 + (dy * TILE * k) / frames;
+    player.frame = Math.floor(k / 2);
+    if (k >= frames || reduce) {
+      player.x = nx; player.y = ny; player.px = nx * TILE; player.py = ny * TILE; player.busy = 0; player.frame = 0;
+      draw(); panel(); if (walkQueue.length) { const [a, b] = walkQueue.shift(); move(a, b); }
+      return;
+    }
+    draw(); requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+function act() {
+  if (!plan || mode !== "play") return;
+  const [sx, sy] = plan.station;
+  if (Math.abs(sx - player.x) + Math.abs(sy - player.y) <= 1) { deliver(); return; }
+  const near = things.filter((t) => t.gather && Math.abs(t.x - player.x) + Math.abs(t.y - player.y) <= 1);
+  if (!near.length) { toast("Nothing to gather here. Look for a glowing edge."); return; }
+  const t = near[0], [g, src, note] = grams(t.type);
+  if (load() + g > PGRig.CARRY_GRAMS * 3 / 2) { toast("Too heavy to lift another " + label(t.type) + ". Take your pack to the forge."); return; }
+  bag.push({ type: t.type, g }); things.splice(things.indexOf(t), 1);
+  $("crucible").textContent = `${label(t.type)}: ${(g / 1000).toFixed(2)} kg. ${note || ""}`;
+  draw(); panel();
+}
+function deliver() {
+  let gave = 0;
+  for (const q of quests) {
+    while (q.delivered < q.count) {
+      const i = bag.findIndex((b) => b.type === q.type);
+      if (i < 0) break;
+      bag.splice(i, 1); q.delivered += 1; gave += 1;
+    }
+  }
+  if (gave) toast("Delivered " + gave + " to the forge.");
+  else if (bag.some((b) => b.type.startsWith("boc.ore."))) {
+    const ores = bag.filter((b) => b.type.startsWith("boc.ore."));
+    bag = bag.filter((b) => !b.type.startsWith("boc.ore."));
+    toast("Smelted " + ores.length + " ore at the forge (the slag stays behind).");
+  } else toast("The forge is warm. Bring what the quests ask for.");
+  if (quests.length && quests.every((q) => q.delivered >= q.count)) toast(`All quests done in ${steps} steps. Try world ${+$("seed").value + 1}?`);
+  draw(); panel();
+}
+let walkQueue = [];
+function walkTo(tx, ty) {  // shortest path over ground (breadth first), then step along it
+  if (!walkable(tx, ty) && !things.some((t) => t.x === tx && t.y === ty)) return;
+  const W = plan.w, prev = new Int32Array(W * plan.h).fill(-1), q = [player.y * W + player.x];
+  prev[q[0]] = q[0];
+  for (let h = 0; h < q.length; h++) {
+    const i = q[h], x = i % W, y = (i / W) | 0;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const nx = x + dx, ny = y + dy, j = ny * W + nx;
+      if (walkable(nx, ny) && prev[j] < 0) { prev[j] = i; q.push(j); }
+    }
+  }
+  let goal = ty * W + tx;
+  if (prev[goal] < 0) {
+    const cand = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => (ty + dy) * W + tx + dx).filter((j) => j >= 0 && j < prev.length && prev[j] >= 0);
+    if (!cand.length) return; goal = cand[0];
+  }
+  const path = [];
+  for (let i = goal; i !== player.y * W + player.x; i = prev[i]) path.unshift(i);
+  walkQueue = []; let px = player.x, py = player.y;
+  for (const i of path) { const x = i % W, y = (i / W) | 0; walkQueue.push([x - px, y - py]); px = x; py = y; }
+  if (walkQueue.length && !player.busy) { const [a, b] = walkQueue.shift(); move(a, b); }
+}
+// ---- build
+function buildPalette() {
+  const p = $("palette"); p.innerHTML = "";
+  const res = ((PRESETS.packs.find((q) => q.id === "boc.pack.biomes") || {}).residents || {})[plan ? plan.biome : "forest"] || [];
+  res.forEach((t) => opt(p, t, label(t) + " · " + t.split(".")[1]));
+}
+$("map").addEventListener("click", (e) => {
+  if (!plan) return;
+  const r = $("map").getBoundingClientRect(), tx = Math.floor((e.clientX - r.left) / (TILE * SCALE * r.width / $("map").width)), ty = Math.floor((e.clientY - r.top) / (TILE * SCALE * r.height / $("map").height));
+  if (mode === "play") { walkTo(tx, ty); return; }
+  const hit = things.findIndex((t) => t.x === tx && t.y === ty);
+  if (e.altKey) { if (hit >= 0) { things.splice(hit, 1); draw(); } return; }
+  if (!walkable(tx, ty) || hit >= 0) return;
+  const type = $("palette").value; if (!type) return;
+  const kind = type.startsWith("boc.flora.") ? "flora" : type.startsWith("boc.fungus.") ? "fungi" : type.startsWith("boc.ore.") ? "ores" : "fauna";
+  things.push({ kind, type, x: tx, y: ty, gather: kind === "fungi" || kind === "ores" ? 1 : 0, seed: (tx * 31 + ty * 17) % 1000, placed: true });
+  draw();
+});
+function setMode(m) { mode = m; $("modePlay").setAttribute("aria-pressed", String(m === "play")); $("modeBuild").setAttribute("aria-pressed", String(m === "build")); $("buildPanel").hidden = m !== "build"; if (m === "build") buildPalette(); draw(); }
+$("modePlay").onclick = () => setMode("play"); $("modeBuild").onclick = () => setMode("build");
+// ---- input
+const KEYS = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0], w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0], W: [0, -1], S: [0, 1], A: [-1, 0], D: [1, 0] };
+document.addEventListener("keydown", (e) => {
+  if (e.target.matches("input, select")) return;
+  if (KEYS[e.key]) { e.preventDefault(); walkQueue = []; move(...KEYS[e.key]); }
+  else if (e.key === "e" || e.key === "E" || e.key === " ") { e.preventDefault(); act(); }
+});
+document.querySelectorAll("#pad button").forEach((b) => b.addEventListener("click", () => { if (b.dataset.act) act(); else { walkQueue = []; move(...b.dataset.d.split(",").map(Number)); } }));
+$("newWorld").onclick = () => { newWorld(); if (mode === "build") buildPalette(); };
+["biome"].forEach((id) => { $(id).onchange = () => { newWorld(); if (mode === "build") buildPalette(); }; });
+["name", "job", "folk"].forEach((id) => { $(id).onchange = () => { hero = heroSprites(); store.set(id, $(id).value); draw(); }; });
+// ---- save
+let dl = null;
+try { if (window.claude && window.claude.use) window.claude.use("downloads").then((d) => { dl = d; }, () => {}); } catch (e) {}
+$("saveWorld").onclick = async () => {
+  const out = Object.assign({}, plan, { things, quests, tile: TILE, carry_grams: PGRig.CARRY_GRAMS, tiles_legend: { 0: "ground", 1: "water", 2: "rock" },
+    edited: things.some((t) => t.placed) || things.length !== plan.things.length, goblin: { name: $("name").value, job: $("job").value, folk: $("folk").value || null } });
+  const blob = new Blob([JSON.stringify(out, null, 1)], { type: "application/json" }), fn = `grounds-${plan.biome}-${plan.seed}.json`;
+  if (dl) { try { await dl.save({ filename: fn, data: blob }); toast("Saved " + fn); } catch (e) { if (!e || e.code !== "declined") toast("Could not save: " + (e && e.message || "")); } return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fn; document.body.appendChild(a); a.click(); a.remove();
+};
+// animals wander: a seeded stream per world, so the same world wanders the same way
+let wanderRng = null, wanderTimer = null;
+function wander() {
+  if (!plan || document.hidden) return;
+  if (!wanderRng || wanderRng._key !== plan.config_hash + plan.seed) { wanderRng = new PG.Rng(PG.derive(PG.masterSeed(plan.config_hash, plan.seed, 0), "fauna")); wanderRng._key = plan.config_hash + plan.seed; }
+  let moved = false;
+  for (const t of things) {
+    if (t.kind !== "fauna" || wanderRng.below(3) !== 0) continue;
+    const [dx, dy] = [[1, 0], [-1, 0], [0, 1], [0, -1]][wanderRng.below(4)], nx = t.x + dx, ny = t.y + dy;
+    const aquatic = t.type.startsWith("boc.fish.");
+    const ok = nx > 0 && ny > 0 && nx < plan.w - 1 && ny < plan.h - 1 && plan.tiles[ny * plan.w + nx] === (aquatic && plan.biome !== "underwater" ? 1 : 0);
+    if (ok && !things.some((o) => o !== t && o.x === nx && o.y === ny) && !(nx === player.x && ny === player.y)) { t.x = nx; t.y = ny; moved = true; }
+  }
+  if (moved && !player.busy) draw();
+}
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) wanderTimer = setInterval(wander, 900);
+window.addEventListener("resize", () => { if (plan) { fit(); draw(); } });
+newWorld();
+window.__grounds = { plan: () => plan, things: () => things, bag: () => bag, quests: () => quests, player: () => player, walkTo, act };  // for tests
+})();
+</script>

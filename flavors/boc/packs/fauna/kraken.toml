@@ -1,0 +1,69 @@
+# Kraken: Deep ocean legendary.
+schema = "pixelgoblin/type@1"
+id = "boc.fauna.kraken"
+tag = "creature"
+generator = "mask"
+license = "Proprietary"
+size = [32, 32]
+label = "Kraken"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "underwater"
+
+[provenance]
+source = "book-of-cities: fauna (underwater)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#150506", "#491210", "#933a2c", "#cd7158"]
+
+[[palette.ramps]]
+name = "coat_alt"
+weight = 1
+colors = ["#140c1f", "#4b2968", "#884daa", "#bc90cd"]
+
+[body]
+anchor = [2, 6]
+template = [
+  "....11....11..",
+  "....11....11..",
+  "....##22..####",
+  "....##22..####",
+  "....##########",
+  "....##########",
+  "..22##########",
+  "..22##########",
+  "..############",
+  "..############",
+  "1122##########",
+  "1122##########",
+  "11############",
+  "11############",
+  "..############",
+  "..############",
+  "..####..######",
+  "..####..######",
+  "..####....####",
+  "..####....####",
+]
+
+[features]
+eyes = 2
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "spines"
+chance = 50
+anchor = [10, 8]
+template = ["11..11", "11..11", "##..##", "##..##"]
+ramp = "coat_alt"

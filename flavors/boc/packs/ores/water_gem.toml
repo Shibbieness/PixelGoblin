@@ -1,0 +1,54 @@
+# Water-Gem (uncommon, fantasy)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.water_gem"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Water-Gem"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "uncommon"
+fantasy = true
+biome = "underwater"
+
+[provenance]
+source = "book-of-cities: ores (underwater)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "gem"
+weight = 1
+colors = ["#18563f", "#36c09d", "#a0ded4", "#ecf8f7"]
+
+[body]
+anchor = [1, 3]
+template = [
+  "......#",
+  ".....##",
+  "....1##",
+  "...####",
+  "..#####",
+  "..#####",
+  "...####",
+  "....###",
+  ".....##",
+]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "intentionally_ungrounded"
+density_kg_m3 = 3500
+category = "gem"
+chunk_grams = 1750
+note = "fantasy material: CRUCIBLE's rule is never to fill it from real data; the weight is authored"

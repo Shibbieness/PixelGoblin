@@ -1,0 +1,52 @@
+# Spirit-Shelf
+schema = "pixelgoblin/type@1"
+id = "boc.fungus.spirit_shelf"
+tag = "flora"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Spirit-Shelf"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+biome = "forest"
+
+[provenance]
+source = "book-of-cities: fungi (forest)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "cap"
+weight = 3
+colors = ["#5c5d61", "#8f8f94", "#c3c3c6", "#f2f2f3"]
+
+[[palette.ramps]]
+name = "cap_alt"
+weight = 1
+colors = ["#b4a692", "#dad4c8", "#f4f3f0", "#f4f4f0"]
+
+[[palette.ramps]]
+name = "stem"
+weight = 0
+colors = ["#cf9554", "#e4d5b2", "#f8f6ec"]
+
+[body]
+anchor = [1, 2]
+template = ["1######", "##2####", ".1#####", "..1111."]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "spots"
+chance = 55
+anchor = [5, 3]
+template = ["1.1", ".1."]
+ramp = "stem"

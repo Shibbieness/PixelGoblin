@@ -1,0 +1,22 @@
+# MASTER: quality ladder tier 4.
+schema = "pixelgoblin/type@1"
+id = "boc.rank.quality_master"
+tag = "ui"
+generator = "uikit"
+license = "Proprietary"
+size = [12, 12]
+label = "MASTER"
+tile = 12
+border = 3
+corner = "round"
+icons = 6
+texture = 16
+rank_order = 4
+
+[provenance]
+source = "book-of-cities-compendium: ranks"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#14121a"
+material = ["#1b1330", "#472c72", "#7a4eac", "#ad8bca", "#dbcae7"]

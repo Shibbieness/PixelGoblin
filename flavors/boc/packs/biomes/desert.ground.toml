@@ -1,0 +1,18 @@
+# Desert: Arid sand, rock, salt flats, glass desert and oases.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.desert.ground"
+tag = "terrain"
+generator = "autotile"
+license = "Proprietary"
+size = [16, 16]
+label = "Desert ground"
+tile = 16
+
+[provenance]
+source = "book-of-cities: biomes (Desert)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#664218"
+highlight = "#faf5eb"
+fill = ["#6d2910", "#bb591b", "#d99655", "#e9c89d"]

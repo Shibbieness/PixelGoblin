@@ -1,0 +1,33 @@
+# Infernal-touched: a trait overlay. Stack it after a race: --sub boc.race.sub.elf,boc.trait.sub.axis_infernal
+schema = "pixelgoblin/type@1"
+id = "boc.trait.sub.axis_infernal"
+extends = "boc.goblin"
+tag = "creature.humanoid.goblin"
+license = "Proprietary"
+label = "Infernal-touched"
+
+[provenance]
+source = "book-of-cities-compendium: traits"
+trait = "axis-infernal"
+summary = "Canonical axis. hellish/damned; paired-opposite of divine."
+visual = "inferred: the Compendium describes mechanics, not looks"
+
+[species]
+iris = ["red"]
+accessories = [{ item = "tattoo", chance = 90 }]
+
+[palette]
+
+[palette.hair]
+blond = ["#734a18", "#ba8627", "#d3b665", "#e6daa8", "#f9f7eb"]
+grey = ["#32302f", "#5e5c59", "#8a8884", "#b4b3b1", "#dededd"]
+silver = ["#6d7c8b", "#98a1ae", "#c4c8d0", "#f0f0f2", "#f1f1f4"]
+auburn = ["#150504", "#47170f", "#863c26", "#c7643b", "#da9f7f"]
+moss = ["#0f1307", "#212d10", "#4a672d", "#70a447", "#98c67b"]
+sea = ["#061313", "#12373b", "#2d6877", "#4598b6", "#82b7cf"]
+gold = ["#482e0c", "#936719", "#cda535", "#deca7a", "#f0e9c0"]
+
+[palette.iris]
+brown = ["#2a160a", "#5a3418", "#8a5a2e"]
+blue = ["#14284a", "#2e5aa0", "#6a9ae0"]
+silver = ["#4a4e58", "#8a90a0", "#d0d4e0"]

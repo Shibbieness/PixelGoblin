@@ -1,0 +1,18 @@
+# Tundra: Cold permafrost, glacier edge and frozen taiga.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.tundra.ground"
+tag = "terrain"
+generator = "autotile"
+license = "Proprietary"
+size = [16, 16]
+label = "Tundra ground"
+tile = 16
+
+[provenance]
+source = "book-of-cities: biomes (Tundra)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#a2a69a"
+highlight = "#edf0f7"
+fill = ["#2a6988", "#448bc6", "#8eaed4", "#ced9ec"]

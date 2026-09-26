@@ -13,6 +13,8 @@ Format: **Context → Decision → Consequences.** ADR-001 to ADR-008 are from t
 | 007 | Aseprite interop from the public spec only | Planned (P6); Aseprite-style sheet JSON ships now |
 | 008 | Named sub-seed streams per part | **Built and gated** (B01, and a falsify mutation) |
 
+ADR-009 to ADR-023 follow below, one section each.
+
 ## ADR-009 — Python reference engine before Rust (reverses the build order)
 
 **Context.** The design said: build the Rust core first. That was the right call for speed, but three things pointed the other way for the prototype. Book of Cities is sovereign Python and the first real consumer. The stack's discipline (SPIRE, Vanilla Core, ASSAY) is stdlib-only Python with zero dependencies. And a determinism contract needs an **oracle** to port against.
@@ -102,6 +104,30 @@ Format: **Context → Decision → Consequences.** ADR-001 to ADR-008 are from t
 **Decision.** `gen/beast.py` builds beasts directly as 3D solids in a cube twice the goblin's, and seats a rider by moving its lifted model onto the saddle with the legs re-posed. Decals carry a group, so a rider's face never paints onto its mount.
 
 **Consequences.** + Every view of a mount and rider comes from the same renderer as the goblins. − Beasts have no front *drawing* to check against; their gates are about the rig, not a drawing.
+
+## ADR-021 — Three ways in from Claude, one engine behind them
+
+**Context.** Mark asked for a widget, a plugin "for all of it", access in future chats, and the whole project packaged as a PseudoSkill. Different surfaces run different things: a published page runs JavaScript only; a plugin can run a local Python server; a skill capsule is read by Claude and may or may not have a shell.
+
+**Decision.** Three surfaces, each doing one job, none with its own copy of the logic. The **Pocket widget** is built by `tools/build_editor.py` from the same engine script as the workbench. The **plugin** bundles the engine inside its main skill (so the skill works even where only the skill folder is uploaded) and adds an MCP server that runs `cli.main` in the same process with stdout captured, so it returns the command line's exact bytes. The **PseudoSkill capsule** is forged by `tools/packaging_capsule.py` from one item table; indexes, tags, the dependency graph, the changelog and pretune hashes are generated, and the Forge validation checklist runs as code before anything is zipped. Gate B21 builds the plugin and capsule in a temporary folder and checks all three.
+
+**Consequences.** + Same name, same goblin everywhere, proved by a gate. + The capsule cannot drift from the repository, because it is regenerated from it. − The MCP server needs Python 3.11 where it runs. − The capsule is a snapshot; changes after the forge go through Companion Builder mode or a re-forge.
+
+## ADR-022 — Resource packs are generated from source catalogs, never hand-edited
+
+**Context.** Mark asked for basic resource packs "of and for all of the stuff" in the Book of Cities, the Compendium and the Aether Library. Those projects are large, still growing, and read-only to PixelGoblin; their documents describe mechanics far more than looks.
+
+**Decision.** Each source is extracted once into a JSON catalog (`flavors/boc/packs/sources/`), and `tools/build_packs.py` turns the catalogs into ordinary type files, one folder and `pack.toml` per pack. Folk and traits are **overlays**, so any job can be any folk, and overlays stack left to right. Colours named in words are resolved at tool time; every inferred colour is flagged. Ores carry CRUCIBLE's densities, and fantasy materials stay `intentionally_ungrounded`, as CRUCIBLE requires. Aether avatars are seeded from the soul name and marked as supplements.
+
+**Consequences.** + Every Book of Cities creature, plant and ore can be drawn today, from the command line, the workbench, the Pocket, the plugin and Goblin Grounds. + When a source changes, one command regenerates the pack and gate B22 refuses a stale one. − Most colours are guesses until Mark sets canonical palettes. − The mask icons are generic body plans, not hand-drawn creatures.
+
+## ADR-023 — Goblin Grounds: the engine owns the world, the page owns the play
+
+**Context.** Mark asked for a sandbox and minigame area, using CRUCIBLE and VI Builder. A minigame in a browser and a world file for a game engine must not disagree.
+
+**Decision.** `pixelgoblin/sandbox.py` plans the world (tiles, things, start, forge, quests) in the transpiler's integer subset, and the page runs the transpiled planner. Gathering weight is CRUCIBLE's density times a 500 cm³ chunk; carrying slows the goblin. VI Builder has no manifest yet, so PixelGoblin registers the LEXIS way (a registration profile) and the LATTICE way (a `process_record` with query, status and shutdown endpoints), in `packaging/vi-builder/`.
+
+**Consequences.** + The same biome and seed make the same world in the page and in `world.json` (gate B23 checks both). + The minigame is a real test of the packs: if an ore's weight is wrong, you feel it. − Animals do not move yet; the forge smelts but crafting has no recipes. Both are the next layer.
 
 —Shibbieness
 —Claude

@@ -168,7 +168,8 @@ footer{margin-top:12px;color:var(--mute);font-size:.8em;display:flex;flex-wrap:w
   <div class="app">
     <aside class="rail">
       <label>Role<select id="k-role"></select></label>
-      <label>Subspecies<select id="k-sub"></select></label>
+      <label>Folk or subspecies<select id="k-sub"></select></label>
+      <label>Trait (Compendium)<select id="k-trait"></select></label>
       <label>Clan colours<select id="k-team"><option value="">Own colours</option></select></label>
       <label>Name (a name is a seed)<input type="text" id="k-name" placeholder="e.g. Grubnak" autocomplete="off"></label>
       <label>Seed<input type="text" id="k-seed" value="7" inputmode="numeric"></label>
@@ -439,9 +440,17 @@ function paint(canvas, spr, scale, opts = {}) {
 }
 function toPngURL(spr, scale = 1) { const c = document.createElement("canvas"); paint(c, spr, scale); return c.toDataURL("image/png"); }
 function spriteCanvas(spr, scale) { const c = document.createElement("canvas"); c.className = "checker"; paint(c, spr, scale); return c; }
-function fillSelect(sel, filter) {
+function fillSelect(sel, filter) {  // grouped: vanilla, flavor, then one group per resource pack
   sel.innerHTML = "";
-  PRESETS.types.filter(filter).forEach((t) => { const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.id + (t.flavor ? "  (flavor)" : ""); sel.appendChild(o); });
+  const packOf = {};
+  (PRESETS.packs || []).forEach((p) => (p.types || []).forEach((id) => { packOf[id] = p.label; }));
+  const groups = new Map();
+  PRESETS.types.filter(filter).forEach((t) => {
+    const g = packOf[t.data.id] || (t.flavor ? "Book of Cities flavor" : "Vanilla pack");
+    if (!groups.has(g)) { const el = document.createElement("optgroup"); el.label = g; groups.set(g, el); }
+    const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.label ? `${t.data.label}  (${t.data.id})` : t.data.id; groups.get(g).appendChild(o);
+  });
+  groups.forEach((el) => sel.appendChild(el));
 }
 const typeById = (id) => (PRESETS.types.find((t) => t.data.id === id) || {}).data;
 
@@ -539,7 +548,15 @@ PGRig.setTables(PRESETS.teams || {}, Object.fromEntries(rigSubs.map((t) => [t.da
 (() => {
   const r = $("k-role"); rigRoles.forEach((t) => { const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.label || t.data.id; r.appendChild(o); });
   const sb = $("k-sub"); const o0 = document.createElement("option"); o0.value = ""; o0.textContent = "Common (role as written)"; sb.appendChild(o0);
-  rigSubs.forEach((t) => { const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.label || t.data.id; sb.appendChild(o); });
+  const og = (label) => { const g = document.createElement("optgroup"); g.label = label; return g; };
+  const gs = og("Goblin subspecies"), gr = og("Folk of the Book of Cities");
+  rigSubs.filter((t) => !t.data.id.startsWith("boc.trait.")).sort((a, b) => (a.data.label || "").localeCompare(b.data.label || "")).forEach((t) => {
+    const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.label || t.data.id; (t.data.id.startsWith("boc.race.") ? gr : gs).appendChild(o); });
+  sb.appendChild(gs); sb.appendChild(gr);
+  const tr = $("k-trait"); const t0 = document.createElement("option"); t0.value = ""; t0.textContent = "None"; tr.appendChild(t0);
+  rigSubs.filter((t) => t.data.id.startsWith("boc.trait.")).sort((a, b) => (a.data.label || "").localeCompare(b.data.label || "")).forEach((t) => {
+    const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.label || t.data.id; tr.appendChild(o); });
+  tr.value = store.get("k.trait", "");
   r.value = store.get("k.role", "boc.goblin.blacksmith"); if (!r.value && rigRoles.length) r.value = rigRoles[0].data.id;
   sb.value = store.get("k.sub", "");
   $("k-seed").value = store.get("k.seed", "7");
@@ -550,23 +567,22 @@ PGRig.setTables(PRESETS.teams || {}, Object.fromEntries(rigSubs.map((t) => [t.da
   beasts.forEach((t) => { const o = document.createElement("option"); o.value = t.data.id; o.textContent = t.data.label || t.data.id; mt.appendChild(o); });
 })();
 const withTeamSel = (data) => ($("k-team").value ? PGRig.withTeam(data, $("k-team").value) : data);
-function charData(roleId, subId) {
-  const base = typeById(roleId);
-  if (!subId) return base;
-  const sub = rigSubs.find((t) => t.data.id === subId);
-  return PGRig.compose(base, sub.own, subId);
+function charData(roleId, subId) {  // subId may stack overlays: "boc.race.sub.elf,boc.trait.sub.axis_frost"
+  if (!subId) return typeById(roleId);
+  return PGRig.composeId(roleId, subId);
 }
+const subVal = () => [$("k-sub").value, $("k-trait").value].filter(Boolean).join(",");
 const kSeed = () => { const v = ($("k-seed").value || "0").trim(); return /^\d+$/.test(v) ? v : "0"; };
 let kAnim = null;
 const nice = (k) => k.replace(/_/g, " ");
 function drawChars() {
   if (!rigRoles.length) return;
-  const roleId = $("k-role").value, subId = $("k-sub").value, seed = kSeed();
-  store.set("k.role", roleId); store.set("k.sub", subId); store.set("k.seed", seed); store.set("k.team", $("k-team").value);
+  const roleId = $("k-role").value, subId = subVal(), seed = kSeed();
+  store.set("k.role", roleId); store.set("k.sub", $("k-sub").value); store.set("k.trait", $("k-trait").value); store.set("k.seed", seed); store.set("k.team", $("k-team").value);
   const data = withTeamSel(charData(roleId, subId)), g = PGRig.genome(data, PGRig.streamsFor(data, seed));
   const eraAll = $("k-era").value || null, rim = $("k-rim").checked, trueSize = $("k-true").checked, anim = $("k-anim").value;
-  const role = typeById(roleId), sub = subId ? typeById(subId) : null;
-  $("k-title").textContent = `${role.label || roleId}${sub ? " · " + (sub.label || subId) : ""} · seed ${seed.length > 12 ? seed.slice(0, 12) + "…" : seed}`;
+  const role = typeById(roleId), subLabel = subId ? subId.split(",").map((x) => (typeById(x) || {}).label || x).join(" · ") : "";
+  $("k-title").textContent = `${role.label || roleId}${subLabel ? " · " + subLabel : ""} · seed ${seed.length > 12 ? seed.slice(0, 12) + "…" : seed}`;
   const box = $("k-chain"); box.innerHTML = "";
   const seen = new Set(), anims = [], checks = [];
   PGRig.TIERS.forEach((t) => {
@@ -695,7 +711,7 @@ function drawExtras() {
   });
   const tb = $("k-teams"); tb.innerHTML = "";
   if (tb.closest("details").open) {
-    const base = charData($("k-role").value, $("k-sub").value);
+    const base = charData($("k-role").value, subVal());
     [["", "own colours"]].concat(Object.keys(PRESETS.teams || {}).sort().map((k) => [k, PRESETS.teams[k].label || k])).forEach(([k, label]) => {
       const d = k ? PGRig.withTeam(base, k) : base, gg = PGRig.genome(d, PGRig.streamsFor(d, kSeed()));
       const f = document.createElement("figure"); f.appendChild(spriteCanvas(PGRig.render(d, gg, 64, {}).sprite, 2));
@@ -748,13 +764,13 @@ function drawRoster(subId, seed, current) {
     box.appendChild(b);
   });
 }
-["k-role", "k-sub", "k-team", "k-era", "k-anim", "k-rim", "k-true"].forEach((id) => { $(id).onchange = drawChars; });
+["k-role", "k-sub", "k-trait", "k-team", "k-era", "k-anim", "k-rim", "k-true"].forEach((id) => { $(id).onchange = drawChars; });
 $("k-seed").onchange = () => { $("k-name").value = ""; drawChars(); };
 $("k-name").oninput = () => { const n = $("k-name").value; if (n.trim()) { $("k-seed").value = PGRig.seedFromName(n); drawChars(); } };
 const stepSeed = (d) => { const v = (BigInt(kSeed()) + BigInt(d) + (1n << 64n)) % (1n << 64n); $("k-seed").value = v.toString(); $("k-name").value = ""; drawChars(); };
 $("k-next").onclick = () => stepSeed(1); $("k-prev").onclick = () => stepSeed(-1);
 function chainStrip() {
-  const data = charData($("k-role").value, $("k-sub").value), g = PGRig.genome(data, PGRig.streamsFor(data, kSeed()));
+  const data = charData($("k-role").value, subVal()), g = PGRig.genome(data, PGRig.streamsFor(data, kSeed()));
   const eraAll = $("k-era").value || null, rim = $("k-rim").checked;
   const sprs = PGRig.TIERS.map((t) => PGRig.render(data, g, t, { era: eraAll || PGRig.DEFAULT_CHAIN[t], rim }).sprite);
   const W = sprs.reduce((a, s) => a + s.w + 4, 4), H = 260;
@@ -767,9 +783,9 @@ function chainStrip() {
   }
   return out;
 }
-$("k-savechain").onclick = async () => saveFile(`${$("k-role").value}${$("k-sub").value ? "@" + $("k-sub").value.split(".").pop() : ""}-${kSeed()}-chain.png`, await pngBlob(chainStrip(), 1));
+$("k-savechain").onclick = async () => saveFile(`${$("k-role").value}${subVal() ? "@" + subVal().split(",").map((x) => x.split(".").pop()).join("@") : ""}-${kSeed()}-chain.png`, await pngBlob(chainStrip(), 1));
 $("k-edit").onclick = () => {
-  const data = charData($("k-role").value, $("k-sub").value);
+  const data = charData($("k-role").value, subVal());
   const g = PGRig.genome(data, PGRig.streamsFor(data, kSeed()));
   const fr = PGRig.POSES[$("k-anim").value || "idle"].map((p) => PGRig.render(data, g, 64, { era: $("k-era").value || null, pose: p, rim: $("k-rim").checked }).sprite);
   loadDoc(fr, 220); showTab("edit");
@@ -801,7 +817,7 @@ $("v-view").onclick = (ev) => {
     const d = typeById(c.role), g = PGRig.genome(d, PGRig.streamsFor(d, c.seed));
     const spr = PGRig.render(d, g, c.tier, {}).sprite;
     if (!spr.px[(y - c.y) * c.tier + (x - c.x)]) continue;
-    $("k-role").value = c.role; $("k-sub").value = ""; $("k-seed").value = String(c.seed); $("k-name").value = "";
+    $("k-role").value = c.role; $("k-sub").value = ""; $("k-trait").value = ""; $("k-seed").value = String(c.seed); $("k-name").value = "";
     $("v-pick").textContent = `${d.label || c.role}, seed ${c.seed}, drawn at ${c.tier} px.`;
     showTab("chars"); window.scrollTo({ top: 0 });
     return;
@@ -853,7 +869,7 @@ function citizen(p) {
   const box = $("c2-pick");
   const role = (typeById(p.role) || {}).label || p.role;
   box.innerHTML = `<h2 style="font-size:1rem;margin:0">${p.name}</h2><div class="hint">${role} · ${p.sub || "common"} goblin · ${p.team ? (PRESETS.teams[p.team] || {}).label || p.team : "no clan"} · house ${p.household}</div><div class="chain" id="c2-chain"></div><div class="inherit" id="c2-inh"></div>`;
-  const data0 = (() => { let d = p.sub ? PGRig.composeId(p.role, "boc.goblin.sub." + p.sub) : typeById(p.role); return p.team ? PGRig.withTeam(d, p.team) : d; })();
+  const data0 = (() => { let d = p.sub ? PGRig.composeId(p.role, PGRig.subId(p.sub)) : typeById(p.role); return p.team ? PGRig.withTeam(d, p.team) : d; })();
   const g = PGRig.genome(data0, PGRig.streamsFor(data0, p.seed, p.overrides || null));
   const ch = $("c2-chain");
   [16, 32, 64, 128].forEach((t) => { const f = document.createElement("figure"); f.appendChild(spriteCanvas(PGRig.render(data0, g, t, {}).sprite, Math.max(1, Math.floor(128 / t)))); const c = document.createElement("figcaption"); c.textContent = t + " px"; f.appendChild(c); ch.appendChild(f); });

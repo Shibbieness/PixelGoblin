@@ -1,0 +1,22 @@
+# UNCOMMON: rarity ladder tier 2.
+schema = "pixelgoblin/type@1"
+id = "boc.rank.rarity_uncommon"
+tag = "ui"
+generator = "uikit"
+license = "Proprietary"
+size = [12, 12]
+label = "UNCOMMON"
+tile = 12
+border = 2
+corner = "round"
+icons = 6
+texture = 12
+rank_order = 2
+
+[provenance]
+source = "book-of-cities-compendium: ranks"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#14121a"
+material = ["#0b1207", "#2a4b1d", "#4c873d", "#72ba66", "#a9d6a5"]

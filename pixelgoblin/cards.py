@@ -9,7 +9,7 @@ data for programs.
 
 from __future__ import annotations
 
-from . import font, sharecode
+from . import font, sharecode, typefile
 from .gen import rig
 from .sprite import TRANSPARENT, Sprite, blit
 
@@ -20,7 +20,7 @@ CELL = 128
 def card(tf, seed: int, tiers=rig.TIERS, eras=None, title: str | None = None) -> tuple[Sprite, dict]:
     g, chain = rig.chain(tf, seed, tiers, eras)
     code = sharecode.encode(tf.type_hash, seed)
-    title = title or tf.data.get("label") or tf.id
+    title = title or typefile.display_name(tf)
     widths = [256 if c["tier"] == 256 else CELL for c in chain]
     W = sum(widths) + 8 * (len(chain) + 1)
     H = 30 + 256 + 70 + 8
@@ -80,6 +80,27 @@ def labelled(items: list[tuple[str, Sprite]], cell: int, cols: int, label_rows: 
                 line = line[:-1]
             font.draw(out, x0 + (cell - font.text_width(line)) // 2, y0 + cell + 3 + 7 * k, line, 2 if k == 0 else 3)
     return out
+
+
+def labelled_pages(items: list[tuple[str, Sprite]], cell: int, cols: int, label_rows: int = 1, dark: bool = False) -> list[Sprite]:
+    """Like labelled, but split over several sheets when the sprites together need more than
+    256 colours (an indexed PNG's limit). Order is kept; each page is as full as it can be."""
+    pages, start = [], 0
+    while start < len(items):
+        lo, hi = start + 1, len(items)
+        best = lo
+        while lo <= hi:  # the longest run from `start` that fits in one palette
+            mid = (lo + hi) // 2
+            colours = set()
+            for _, sp in items[start:mid]:
+                colours.update(sp.palette[1:])
+            if len(colours) <= 250:
+                best, lo = mid, mid + 1
+            else:
+                hi = mid - 1
+        pages.append(labelled(items[start:best], cell, cols, label_rows, dark))
+        start = best
+    return pages
 
 
 def expressions(tf, seed: int, tier: int = 64, era: str | None = None) -> list[tuple[str, Sprite]]:

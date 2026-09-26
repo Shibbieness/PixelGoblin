@@ -1,0 +1,11 @@
+{
+  "name": "pixelgoblin",
+  "version": "0.1.0",
+  "description": "PixelGoblin: deterministic pixel-art goblins at every size from 8 to 256 px, seen from any side, in clan colours, riding mounts, and whole towns built from a list of names. Bundles the offline engine, the workbench and the pocket widget.",
+  "author": {
+    "name": "Shibbieness (Mark), M MAOU LLC",
+    "email": "shibbieness@gmail.com"
+  },
+  "license": "AGPL-3.0-or-later",
+  "keywords": ["pixel-art", "sprites", "goblins", "game-dev", "procedural", "isometric", "character-generator"]
+}

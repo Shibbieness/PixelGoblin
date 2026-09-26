@@ -30,7 +30,7 @@ python3 -m pixelgoblin view boc.goblin.guard --name Brakka --view iso_sw --out b
 python3 -m pixelgoblin city boc.city.goblintown flavors/boc/village/goblintown.names.txt --out town/
 ```
 
-Or open `editor/pixelgoblin.html` in a browser. It is one file and works offline.
+Or open `editor/pixelgoblin.html` (the full workbench), `editor/pixelgoblin-pocket.html` (the quick maker) or `editor/pixelgoblin-grounds.html` (the Goblin Grounds sandbox) in a browser. Each is one file and works offline.
 
 ## Where to read next
 
@@ -44,6 +44,9 @@ Or open `editor/pixelgoblin.html` in a browser. It is one file and works offline
 | draw one character at 8 to 256 px | `docs/explanation/tier-chain.md` |
 | see a character from the side, behind, isometric or above | `docs/explanation/views.md` |
 | build a city from a list of names | `docs/howto/build-a-city.md` |
+| use it from Claude (widget, plugin, PseudoSkill) | `docs/howto/use-from-claude.md` |
+| draw the Book of Cities' folk, plants, animals and ores | `docs/howto/use-resource-packs.md` |
+| play or export a Goblin Grounds sandbox world | `docs/howto/play-goblin-grounds.md` |
 | look up a command | `docs/reference/cli.md` |
 | look up a type-file field | `docs/reference/type-files.md` |
 | understand "same seed, same sprite" | `docs/explanation/determinism.md` |

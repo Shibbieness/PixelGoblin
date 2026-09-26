@@ -1,0 +1,44 @@
+# Black-Pearl (rare)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.black_pearl"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Black-Pearl"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "rare"
+fantasy = false
+biome = "coast"
+
+[provenance]
+source = "book-of-cities: ores (coast)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "gem"
+weight = 1
+colors = ["#0d0c0e", "#0e0c0e", "#423a42", "#8a7a88"]
+
+[body]
+anchor = [1, 4]
+template = ["...####", "..#####", ".######", ".######", ".######", "..#####", "...####"]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "category_default"
+density_kg_m3 = 1300
+category = "organic"
+chunk_grams = 650
+note = "CRUCIBLE has no density here; a typical organic density is used"

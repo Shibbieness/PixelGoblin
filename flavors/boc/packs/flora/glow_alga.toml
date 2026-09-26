@@ -1,0 +1,28 @@
+# Glow-Alga: Primary light source in some cave lakes.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.glow_alga"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [16, 16]
+label = "Glow-Alga"
+axiom = "X"
+iterations = 2
+step = [1, 2]
+leaf_radius = 0
+fruit_chance = 10
+trunk_width = 1
+biome = "underwater"
+
+[provenance]
+source = "book-of-cities: flora (underwater)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F[+FX][-FX]", weight = 2 }, { to = "F[+FX]FX", weight = 1 }, { to = "F[-FX]FX", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#6ac9d5"
+bark = ["#131f0c", "#4c873d", "#95cd90"]
+leaf = ["#131f0c", "#396829", "#5caa4d", "#95cd90"]

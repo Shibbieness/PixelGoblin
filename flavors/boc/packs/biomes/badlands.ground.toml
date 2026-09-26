@@ -1,0 +1,18 @@
+# Badlands: Eroded canyon lands, plateaus, volcanic ash and scarred battlefields.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.badlands.ground"
+tag = "terrain"
+generator = "autotile"
+license = "Proprietary"
+size = [16, 16]
+label = "Badlands ground"
+tile = 16
+
+[provenance]
+source = "book-of-cities: biomes (Badlands)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#1f0d0d"
+highlight = "#f2f2f2"
+fill = ["#3f3d3e", "#6c696a", "#989596", "#c3c2c2"]

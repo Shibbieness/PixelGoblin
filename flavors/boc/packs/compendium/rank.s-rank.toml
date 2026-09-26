@@ -1,0 +1,22 @@
+# S-Rank: Any one of quality/rarity/cultivation at LEGENDARY (S-Rank quality).
+schema = "pixelgoblin/type@1"
+id = "boc.rank.s_rank"
+tag = "ui"
+generator = "uikit"
+license = "Proprietary"
+size = [12, 12]
+label = "S-Rank"
+tile = 12
+border = 2
+corner = "round"
+icons = 6
+texture = 10
+rank_order = 1
+
+[provenance]
+source = "book-of-cities-compendium: ranks"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#14121a"
+material = ["#0b0d0f", "#22272d", "#4b525f", "#747d92", "#a7acba"]

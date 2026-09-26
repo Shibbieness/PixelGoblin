@@ -246,6 +246,9 @@ def genome(data: dict, S: Streams) -> dict:
     g["eye"] = _rng_range(b, tuple(sp.get("eye", [100, 120])))
     g["leg_pct"] = leg_pct
     g["hunch"] = 1 if age == "elder" else 0
+    stature = sp.get("stature", None)
+    if stature is not None:  # other folk (dwarves, elves): drawn only when a species sets it, so no existing stream moves
+        g["height"] = min(1000, g["height"] * _rng_range(b, tuple(stature)) // 100)
     f = S.rng("g/face")
     g["expression"] = _pick(f, role.get("expression", ["neutral"]), "neutral")
     g["iris"] = _pick(f, sp.get("iris", ["amber"]), "amber")

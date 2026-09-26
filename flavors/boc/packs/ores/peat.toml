@@ -1,0 +1,44 @@
+# Peat (common)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.peat"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Peat"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "common"
+fantasy = false
+biome = "swamp"
+
+[provenance]
+source = "book-of-cities: ores (swamp)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "rock"
+weight = 1
+colors = ["#130907", "#130b07", "#523822", "#9a7040"]
+
+[body]
+anchor = [1, 4]
+template = ["...1###", "..#####", ".######", "1######", "#######", "1######", ".######", "..1####"]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "category_default"
+density_kg_m3 = 1300
+category = "organic"
+chunk_grams = 650
+note = "CRUCIBLE has no density here; a typical organic density is used"

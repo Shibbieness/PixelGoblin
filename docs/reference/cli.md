@@ -449,3 +449,55 @@ pixelgoblin city boc.city.goblintown flavors/boc/village/goblintown.names.txt --
 - `--seed` — village seed
 - `--tier` — size of the household sheet
 - `--out` — output folder
+
+## `packs`
+
+List the resource packs: what each holds, where it came from, how many colours were inferred.
+
+```
+pixelgoblin packs
+```
+
+
+## `pack`
+
+Every type in one resource pack on one sheet (races and traits are shown on a job).
+
+```
+pixelgoblin pack boc.pack.ores --out ores.png --scale 3
+```
+
+- `pack` — pack id like boc.pack.ores, or its folder name like ores
+- `--seed`
+- `--role` — the job that shows races and traits
+- `--out`
+- `--scale`
+
+## `avatar`
+
+A named soul's avatar (souls.toml): seeded from the soul name, offered as a supplement, never an overwrite.
+
+```
+pixelgoblin avatar Aelren --view iso_sw --out aelren.png --scale 3
+```
+
+- `soul` — a soul name from any souls.toml (like Aelren), or any name
+- `--role` — job to draw them as (default: the soul's own, else father)
+- `--sub` — race or overlay (default: the soul's own)
+- `--view`
+- `--tier`
+- `--out`
+- `--scale`
+
+## `sandbox`
+
+Goblin Grounds: a sandbox world from a biome's resource packs, with material weights, for games.
+
+```
+pixelgoblin sandbox --biome mountain --seed 3 --out grounds/
+```
+
+- `--biome` — forest, mountain, coast, swamp, plain, desert, tundra, badlands, underwater
+- `--seed`
+- `--size` — tiles, like 28x18
+- `--out` — output folder: world.json, atlas.png, map.png

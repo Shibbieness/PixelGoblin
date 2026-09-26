@@ -18,6 +18,13 @@ Labels: **Built** means it runs and is checked in this repo. **Designed** means 
 | **Runic / QRen** | Share codes are 19 bytes and could carry a runic rendering. A full recipe fits one QRen archive today. | Share codes **Built**; runic rendering **Designed** |
 | **LATTICE / WEAVE** | Docs follow Diátaxis with one subject per page, ready for WEAVE's atomicity and anchor stages. | **Designed** (WEAVE pass not run) |
 | **Dropzone** | `pixelgoblin watch ./dropzone`: an `image.png` with an `image.tag` converts automatically into a review queue. | **Built** (polling; no gate yet) |
+| **Book of Cities resource packs** | `flavors/boc/packs/`: 37 folk, 9 biomes (sky and ground), 100 plants and fungi, 65 animals and fish, 60 ores, the stations and districts as data (`pixelgoblin packs`). | **Built** (colours mostly inferred; see `docs/howto/use-resource-packs.md`) |
+| **Book of Cities Compendium** | Rank badges as UI kits, 14 trait overlays (stackable after a folk), and the Compendium catalog as data. | **Built** (visuals inferred: the Compendium describes mechanics) |
+| **Aether Library (souls)** | `packs/aether/souls.toml`: named souls as avatar seeds (`pixelgoblin avatar`), Brackrun-Hollow as a mixed-folk city; supplement-but-never-overwrite. | **Built** (an Aether-side call is **Designed**) |
+| **CRUCIBLE (weights)** | Every ore carries CRUCIBLE's density (or says why not); Goblin Grounds weighs gathered ore with it. | **Built** |
+| **VI Builder** | `packaging/vi-builder/`: a registration profile (Tier 4a knowledge, Tier 2b engine) and a `process_record` with query, status and shutdown endpoints. | **Designed** (VI Builder's own registry is not built yet) |
+| **Goblin Grounds** | The sandbox and minigame: `editor/pixelgoblin-grounds.html` and `pixelgoblin sandbox`. | **Built** (gate B23) |
+| **PseudoSkills Builder** | `tools/packaging_capsule.py` forges `pixelgoblin-pseudoskill.skill` in the Builder's capsule structure and runs its validation checklist as code (gate B21). The plugin (`dist/pixelgoblin.plugin`) carries three skills and an MCP server. | **Built** |
 | **CALS** | A routing rule for the future model slot: "strict palette and commercial → core only; concept exploration → optional model slot, always re-quantised". | **Designed** |
 
 —Shibbieness

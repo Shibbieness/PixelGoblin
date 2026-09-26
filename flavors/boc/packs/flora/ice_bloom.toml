@@ -1,0 +1,28 @@
+# Ice-bloom: Grows only at high elevation.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.ice_bloom"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [16, 24]
+label = "Ice-bloom"
+axiom = "FFX]"
+iterations = 2
+step = [1, 2]
+leaf_radius = 2
+fruit_chance = 60
+trunk_width = 1
+biome = "mountain"
+
+[provenance]
+source = "book-of-cities: flora (mountain)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F[+FL]FX", weight = 2 }, { to = "F[-FL]FX", weight = 2 }, { to = "FFX", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#adc3e0"
+bark = ["#131f0c", "#4c873d", "#95cd90"]
+leaf = ["#205168", "#3b85c1", "#98b5d8", "#ecf0f8"]

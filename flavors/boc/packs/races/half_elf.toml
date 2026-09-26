@@ -1,0 +1,43 @@
+# Half-Elf: an overlay for any role, like a subspecies: typefile.compose(role, 'boc.race.sub.half_elf'), or --sub half-elf ... use the full id.
+schema = "pixelgoblin/type@1"
+id = "boc.race.sub.half_elf"
+extends = "boc.goblin"
+tag = "creature.humanoid.half-elf"
+license = "Proprietary"
+label = "Half-Elf"
+
+[provenance]
+source = "book-of-cities: races (variant of elf)"
+summary = "Mixed-race; blended elven and human aesthetics per upbringing."
+colors = "inferred from the name (the source states none)"
+
+[species]
+stature = [112, 118]
+build = ["slim", "average"]
+ear_len = [52, 78]
+ear_lift = [4, 20]
+ear_w = [24, 30]
+nose = [66, 86]
+head_w = [92, 100]
+eye = [92, 108]
+iris = ["brown", "blue", "green", "amber"]
+hair_color = ["blond", "silver", "black", "auburn"]
+
+[palette]
+
+[palette.materials]
+skin = ["#c5582b", "#dd9061", "#e5c4a7", "#f7eee3", "#f9f4eb"]
+
+[palette.hair]
+blond = ["#734a18", "#ba8627", "#d3b665", "#e6daa8", "#f9f7eb"]
+grey = ["#32302f", "#5e5c59", "#8a8884", "#b4b3b1", "#dededd"]
+silver = ["#6d7c8b", "#98a1ae", "#c4c8d0", "#f0f0f2", "#f1f1f4"]
+auburn = ["#150504", "#47170f", "#863c26", "#c7643b", "#da9f7f"]
+moss = ["#0f1307", "#212d10", "#4a672d", "#70a447", "#98c67b"]
+sea = ["#061313", "#12373b", "#2d6877", "#4598b6", "#82b7cf"]
+gold = ["#482e0c", "#936719", "#cda535", "#deca7a", "#f0e9c0"]
+
+[palette.iris]
+brown = ["#2a160a", "#5a3418", "#8a5a2e"]
+blue = ["#14284a", "#2e5aa0", "#6a9ae0"]
+silver = ["#4a4e58", "#8a90a0", "#d0d4e0"]

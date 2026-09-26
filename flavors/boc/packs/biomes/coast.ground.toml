@@ -1,0 +1,18 @@
+# Coast: Land-sea interface: beaches, cliffs, mangroves, frozen coasts.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.coast.ground"
+tag = "terrain"
+generator = "autotile"
+license = "Proprietary"
+size = [16, 16]
+label = "Coast ground"
+tile = 16
+
+[provenance]
+source = "book-of-cities: biomes (Coast)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#7c542b"
+highlight = "#f3f2f2"
+fill = ["#242120", "#534d4a", "#817974", "#aba7a2"]

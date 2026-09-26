@@ -1,0 +1,62 @@
+# Polar-Bear: Apex arctic predator.
+schema = "pixelgoblin/type@1"
+id = "boc.fauna.polar_bear"
+tag = "creature"
+generator = "mask"
+license = "Proprietary"
+size = [24, 24]
+label = "Polar-Bear"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "tundra"
+
+[provenance]
+source = "book-of-cities: fauna (tundra)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#b4a692", "#dad4c8", "#f4f3f0", "#f4f4f0"]
+
+[body]
+anchor = [2, 2]
+template = [
+  "...11.....",
+  "...11.....",
+  "...##1....",
+  ".....#####",
+  ".....#####",
+  "...22#####",
+  "...#######",
+  "...#######",
+  ".....#####",
+  "......####",
+  "......####",
+  "...22#####",
+  "..2#######",
+  "..2#######",
+  "..########",
+  "..###.####",
+  "..###.####",
+  "..###...#.",
+  "..1##.....",
+]
+
+[features]
+eyes = 2
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "horns"
+chance = 35
+anchor = [8, 2]
+template = ["11..", "11..", "##1.", "..#."]

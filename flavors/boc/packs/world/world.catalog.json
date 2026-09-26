@@ -1,0 +1,347 @@
+{
+ "schema": "pixelgoblin/catalog@1",
+ "id": "boc.catalog.world",
+ "license": "Proprietary",
+ "source": "book-of-cities",
+ "stations": [
+  {
+   "id": "improvised_forge",
+   "name": "Improvised Forge",
+   "tier": 1,
+   "tier_name": "IMPROVISED",
+   "summary": "Pit of rocks, hand-bellows, clay-lined firebricks; no parent station needed."
+  },
+  {
+   "id": "basic_forge",
+   "name": "Basic Forge",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "summary": "Proper stone hearth and iron-cast anvil; hamlet/village default."
+  },
+  {
+   "id": "standard_forge",
+   "name": "Standard Forge",
+   "tier": 3,
+   "tier_name": "STANDARD",
+   "summary": "Urban default with ventilation; can make MASTER-tier weapons."
+  },
+  {
+   "id": "masterwork_forge",
+   "name": "Masterwork Forge",
+   "tier": 4,
+   "tier_name": "MASTERWORK",
+   "summary": "Heirloom forge with Mithril plate and Heart-Ore anvil."
+  },
+  {
+   "id": "legendary_forge",
+   "name": "Legendary Forge",
+   "tier": 5,
+   "tier_name": "LEGENDARY",
+   "summary": "Unique; Adamantite plate and Dragon-Iron core, ritual-forged."
+  },
+  {
+   "id": "improvised_carpenters_bench",
+   "name": "Improvised Carpenter's Bench",
+   "tier": 1,
+   "tier_name": "IMPROVISED",
+   "summary": "Planks laid across two stumps."
+  },
+  {
+   "id": "improvised_alchemy_station",
+   "name": "Improvised Alchemy Station",
+   "tier": 1,
+   "tier_name": "IMPROVISED",
+   "summary": "Portable cauldron over a fire ring."
+  },
+  {
+   "id": "basic_alchemy_station",
+   "name": "Basic Alchemy Station",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "summary": "Glass distillery and proper reagent shelves."
+  },
+  {
+   "id": "basic_carpenters_bench",
+   "name": "Basic Carpenter's Bench",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "summary": "Real work surface with clamps."
+  },
+  {
+   "id": "scribing_desk",
+   "name": "Scribing Desk",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Writing desks with ink, parchment, quill and drying racks. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "loom",
+   "name": "Loom",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Tailoring loom with cutting tables. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "tanning_rack",
+   "name": "Tanning Rack",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Leather-working rack. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "jewelry_working_station",
+   "name": "Jewelry-working Station",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Fine metal and gem work. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "binding_frame",
+   "name": "Binding Frame",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Tome-binding ritual frame; mage academies hold STANDARD ones. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "enchanting_pedestal",
+   "name": "Enchanting Pedestal",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Magical-item work. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "anvil",
+   "name": "Anvil",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Smithy fixture paired with the forge. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "quenching_tank",
+   "name": "Quenching Tank",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Smithy fixture for quenching. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "distillation_apparatus",
+   "name": "Distillation Apparatus",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Alchemy lab still. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "lathe",
+   "name": "Lathe",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Carpentry workshop fixture. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  },
+  {
+   "id": "brewing_vats",
+   "name": "Brewing Vats",
+   "tier": 2,
+   "tier_name": "BASIC",
+   "tiers_available": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "summary": "Alchemy lab vats. Same 5-tier recipe chain as the forge (shown at BASIC)."
+  }
+ ],
+ "districts": [
+  {
+   "id": "residential",
+   "name": "Residential District",
+   "kind": "district",
+   "summary": "70% housing, 20% small shop, 10% communal."
+  },
+  {
+   "id": "market",
+   "name": "Market District",
+   "kind": "district",
+   "summary": "Shops and stalls; goblin markets blur shop and stall."
+  },
+  {
+   "id": "civic",
+   "name": "Civic District",
+   "kind": "district",
+   "summary": "Civic buildings, official housing, plazas."
+  },
+  {
+   "id": "temple",
+   "name": "Temple District",
+   "kind": "district",
+   "summary": "Temples, clergy housing, gardens."
+  },
+  {
+   "id": "industrial",
+   "name": "Industrial District",
+   "kind": "district",
+   "summary": "Workshops, storage, worker housing."
+  },
+  {
+   "id": "military",
+   "name": "Military District",
+   "kind": "district",
+   "summary": "Barracks, training, armory, command."
+  },
+  {
+   "id": "artisan",
+   "name": "Artisan District",
+   "kind": "district",
+   "summary": "Workshop-shops with master and apprentice housing."
+  },
+  {
+   "id": "port",
+   "name": "Port District",
+   "kind": "district",
+   "summary": "Docks, warehouses, ship-supply shops, taverns."
+  },
+  {
+   "id": "outskirts",
+   "name": "Outskirts",
+   "kind": "district",
+   "summary": "Farms, small-holdings, road-side."
+  },
+  {
+   "id": "inn",
+   "name": "Inn",
+   "kind": "building",
+   "summary": "Mandatory in every city; rest/heal venue."
+  },
+  {
+   "id": "church",
+   "name": "Church",
+   "kind": "building",
+   "summary": "Mandatory; race-appropriate variant."
+  },
+  {
+   "id": "general_shop",
+   "name": "General Shop",
+   "kind": "building",
+   "summary": "Mandatory general store."
+  },
+  {
+   "id": "training_center",
+   "name": "Training Center",
+   "kind": "building",
+   "summary": "Mandatory ML-backed training hub."
+  },
+  {
+   "id": "cartographer",
+   "name": "Cartographer",
+   "kind": "building",
+   "summary": "Map kiosk selling dRAM slices."
+  },
+  {
+   "id": "lord_s_seat",
+   "name": "Lord's Seat",
+   "kind": "building",
+   "summary": "City authority venue."
+  },
+  {
+   "id": "guildhall",
+   "name": "Guildhall",
+   "kind": "building",
+   "summary": "Towns+; STANDARD member stations."
+  },
+  {
+   "id": "mage_shop",
+   "name": "Mage Shop",
+   "kind": "building",
+   "summary": "Towns+; goblins substitute a tinkerer-alchemist."
+  },
+  {
+   "id": "blacksmith",
+   "name": "Blacksmith",
+   "kind": "building",
+   "summary": "Towns+; forge-centered smithy."
+  },
+  {
+   "id": "library",
+   "name": "Library",
+   "kind": "building",
+   "summary": "Cities+; library or archive."
+  },
+  {
+   "id": "herbalist_alchemist",
+   "name": "Herbalist-Alchemist",
+   "kind": "building",
+   "summary": "Guaranteed at HAMLET scale; processes tended-adjacency yield."
+  }
+ ]
+}

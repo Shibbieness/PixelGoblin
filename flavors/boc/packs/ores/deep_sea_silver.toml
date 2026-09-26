@@ -1,0 +1,59 @@
+# Deep-Sea-Silver (rare)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.deep_sea_silver"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Deep-Sea-Silver"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "rare"
+fantasy = false
+biome = "underwater"
+
+[provenance]
+source = "book-of-cities: ores (underwater)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "stone"
+weight = 1
+colors = ["#2f2d2a", "#615d57", "#918e86", "#bfbdb8"]
+
+[[palette.ramps]]
+name = "ore"
+weight = 0
+colors = ["#273d50", "#5072a2", "#a1aecb", "#eff0f6"]
+
+[body]
+anchor = [1, 4]
+template = ["...1###", "..#####", ".######", "1######", "#######", "1######", ".######", "..1####"]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "grounded"
+density_kg_m3 = 10490
+category = "metal"
+crucible_ref = "crucible.material.7"
+crucible_name = "Silver"
+melting_point_K = 1235
+chunk_grams = 5245
+note = "density from CRUCIBLE"
+
+[[parts]]
+name = "vein"
+chance = 100
+anchor = [1, 6]
+template = ["..#....", ".##.#..", "..#.##.", "....#.."]
+ramp = "ore"

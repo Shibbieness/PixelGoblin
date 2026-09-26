@@ -1,0 +1,28 @@
+# Desert-rose: Rare.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.desert_rose"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [16, 24]
+label = "Desert-rose"
+axiom = "FFX]"
+iterations = 2
+step = [1, 2]
+leaf_radius = 2
+fruit_chance = 60
+trunk_width = 1
+biome = "desert"
+
+[provenance]
+source = "book-of-cities: flora (desert)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F[+FL]FX", weight = 2 }, { to = "F[-FL]FX", weight = 2 }, { to = "FFX", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#edc3cb"
+bark = ["#131f0c", "#4c873d", "#95cd90"]
+leaf = ["#8b204f", "#d54a76", "#e6adb9", "#f9ebed"]

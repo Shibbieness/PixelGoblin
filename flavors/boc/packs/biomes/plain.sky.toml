@@ -1,0 +1,41 @@
+# Plain: Open grassland, prairie, steppe and flowering meadows.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.plain.sky"
+tag = "env"
+generator = "parallax"
+license = "Proprietary"
+size = [160, 90]
+label = "Plain sky"
+stars = 0
+
+[provenance]
+source = "book-of-cities: biomes (Plain)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+sky = ["#122a3f", "#244a7a", "#3f65ab", "#6d88ca", "#a5b2de"]
+star = "#fff4e0"
+
+[[layers]]
+name = "far"
+colors = ["#5b5c1d", "#8ea13e", "#b2cb7a"]
+base = 60
+periods = [40, 12]
+amps = [12, 4]
+scroll = 20
+
+[[layers]]
+name = "mid"
+colors = ["#704613", "#cda535", "#e6dc9b"]
+base = 74
+periods = [26, 9]
+amps = [8, 3]
+scroll = 50
+
+[[layers]]
+name = "ground"
+colors = ["#6f4831", "#b5946b", "#dfd5c0"]
+base = 88
+periods = [16, 5]
+amps = [3, 2]
+scroll = 100

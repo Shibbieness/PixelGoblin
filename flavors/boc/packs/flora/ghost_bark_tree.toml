@@ -1,0 +1,28 @@
+# Ghost-bark tree: Pale Haunted Forest tree.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.ghost_bark_tree"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [40, 48]
+label = "Ghost-bark tree"
+axiom = "FFX"
+iterations = 4
+step = [2, 3]
+leaf_radius = 2
+fruit_chance = 10
+trunk_width = 2
+biome = "forest"
+
+[provenance]
+source = "book-of-cities: flora (forest)"
+colors = "as stated in the source"
+
+[rules]
+X = [{ to = "F[+X][-X]FX", weight = 3 }, { to = "F[+X]F[-X]X", weight = 2 }, { to = "FF[++X][-X]X", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#a9a9ad"
+bark = ["#130a07", "#603f27", "#b78850"]
+leaf = ["#131f0c", "#396829", "#5caa4d", "#95cd90"]

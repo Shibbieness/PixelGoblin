@@ -1,0 +1,43 @@
+# Bone-Coral (uncommon, fantasy)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.bone_coral"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Bone-Coral"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "uncommon"
+fantasy = true
+
+[provenance]
+source = "book-of-cities: ores"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "rock"
+weight = 1
+colors = ["#b7986f", "#d6c9ac", "#f3f2ea", "#f6f5ef"]
+
+[body]
+anchor = [1, 4]
+template = ["...1###", "..#####", ".######", "1######", "#######", "1######", ".######", "..1####"]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "intentionally_ungrounded"
+density_kg_m3 = 1300
+category = "organic"
+chunk_grams = 650
+note = "fantasy material: CRUCIBLE's rule is never to fill it from real data; the weight is authored"

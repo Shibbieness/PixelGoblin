@@ -1,0 +1,69 @@
+# Forest-Treant: Deep Forest/Enchanted Grove only.
+schema = "pixelgoblin/type@1"
+id = "boc.fauna.forest_treant"
+tag = "creature"
+generator = "mask"
+license = "Proprietary"
+size = [32, 32]
+label = "Forest-Treant"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "forest"
+
+[provenance]
+source = "book-of-cities: fauna (forest)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#130a07", "#3e2516", "#845a36", "#be9462"]
+
+[[palette.ramps]]
+name = "coat_alt"
+weight = 1
+colors = ["#0f1508", "#3e6023", "#66a247", "#97ca85"]
+
+[body]
+anchor = [2, 6]
+template = [
+  "....11....11..",
+  "....11....11..",
+  "....##22..####",
+  "....##22..####",
+  "....##########",
+  "....##########",
+  "..22##########",
+  "..22##########",
+  "..############",
+  "..############",
+  "1122##########",
+  "1122##########",
+  "11############",
+  "11############",
+  "..############",
+  "..############",
+  "..####..######",
+  "..####..######",
+  "..####....####",
+  "..####....####",
+]
+
+[features]
+eyes = 2
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "spines"
+chance = 50
+anchor = [10, 8]
+template = ["11..11", "11..11", "##..##", "##..##"]
+ramp = "coat_alt"

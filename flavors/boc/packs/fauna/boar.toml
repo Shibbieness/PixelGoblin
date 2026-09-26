@@ -1,0 +1,56 @@
+# Boar: Aggressive; tusks.
+schema = "pixelgoblin/type@1"
+id = "boc.fauna.boar"
+tag = "creature"
+generator = "mask"
+license = "Proprietary"
+size = [20, 20]
+label = "Boar"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "forest"
+
+[provenance]
+source = "book-of-cities: fauna (forest)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#130907", "#130b07", "#523822", "#9a7040"]
+
+[body]
+anchor = [3, 3]
+template = [
+  "..1....",
+  "..#1...",
+  "...####",
+  "..2####",
+  "..#####",
+  "...####",
+  "....###",
+  "..2####",
+  ".2#####",
+  ".######",
+  ".##.###",
+  ".##..#.",
+  ".1#....",
+]
+
+[features]
+eyes = 2
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "horns"
+chance = 35
+anchor = [7, 3]
+template = ["1..", "#1.", ".#."]

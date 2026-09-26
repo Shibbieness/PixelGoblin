@@ -1,0 +1,28 @@
+# Salt-grass: Beach-hardy.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.salt_grass"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [16, 16]
+label = "Salt-grass"
+axiom = "X"
+iterations = 2
+step = [1, 2]
+leaf_radius = 0
+fruit_chance = 10
+trunk_width = 1
+biome = "coast"
+
+[provenance]
+source = "book-of-cities: flora (coast)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F[+FX][-FX]", weight = 2 }, { to = "F[+FX]FX", weight = 1 }, { to = "F[-FX]FX", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#b89468"
+bark = ["#131f0c", "#4c873d", "#95cd90"]
+leaf = ["#3c6126", "#5eaa43", "#94c98a", "#d2e9d0"]

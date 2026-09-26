@@ -1,0 +1,64 @@
+# Swamp-Gator: Predatory reptile.
+schema = "pixelgoblin/type@1"
+id = "boc.fauna.swamp_gator"
+tag = "creature"
+generator = "mask"
+license = "Proprietary"
+size = [24, 24]
+label = "Swamp-Gator"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "swamp"
+
+[provenance]
+source = "book-of-cities: fauna (swamp)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#0b1207", "#192e12", "#3d7234", "#5fb359"]
+
+[[palette.ramps]]
+name = "coat_alt"
+weight = 1
+colors = ["#121007", "#48451d", "#878a41", "#b5be73"]
+
+[body]
+anchor = [2, 4]
+template = [
+  "...11...1.",
+  "...11...1.",
+  "...##2..##",
+  "...#######",
+  "...#######",
+  "..2#######",
+  "..########",
+  "..########",
+  "112#######",
+  "11########",
+  "11########",
+  "..########",
+  "..###.####",
+  "..###.####",
+  "..###...##",
+]
+
+[features]
+eyes = 2
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "spines"
+chance = 50
+anchor = [8, 5]
+template = ["11.1", "11.1", "##.#"]
+ramp = "coat_alt"

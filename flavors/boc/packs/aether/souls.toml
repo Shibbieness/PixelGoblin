@@ -1,0 +1,52 @@
+# The Aether Library's named souls, as PixelGoblin avatar seeds (pixelgoblin avatar <name>).
+schema = "pixelgoblin/souls@1"
+id = "boc.aether.souls"
+license = "Proprietary"
+rule = "supplement-but-never-overwrite: a PixelGoblin avatar is a new appearance offered for a soul; it never replaces an existing identity, and nothing is written into the Aether Library"
+seed = "seed = seed_from_name('soul:' + soul_name); soul_name survives reincarnation, so the avatar does too"
+source = "aether-library: GLOSSARY.md, canonical documents, db (read-only)"
+
+[[entities]]
+id = "aelren"
+name = "Aelren of Brackrun-Hollow"
+soul_name = "Aelren of Brackrun-Hollow"
+role = "boc.goblin.elder_scholar"
+sub = "boc.race.sub.human"
+kind = "character (Class 1, Pathway A)"
+summary = "Hamlet saint and master Curse-Wheat tender in a Cursed Ruins hamlet; crosses S-Rank at sim-year 50 via third ENDEMIC promotion; dies at 82 and is archived, seeding the tutelary saint. soul_name 'soul:aelren-brackrun-0001'; CASL core values: careful-attention, lineage-respect, patient-instruction, honest-self-assessment."
+
+[[entities]]
+id = "hessel"
+name = "Hessel Bookbinder"
+soul_name = "Hessel Bookbinder"
+role = "boc.goblin.arcanist"
+sub = "boc.race.sub.human"
+kind = "character (Class 2, Pathway B)"
+summary = "AI-embodied tome-binder with a workshop in Brackrun-Hollow; binds relic from the Saint Aelren tradition and a Grimoire for the Druid Circle. soul_name 'soul:hessel-bookbinder-0001'; CASL: accuracy-over-haste, patient-instruction, intellectual-honesty, care-for-what-is-being-bound."
+
+[[entities]]
+id = "tiwa"
+name = "Tiwa"
+soul_name = "Tiwa"
+role = "boc.goblin.teenager"
+sub = "boc.race.sub.human"
+kind = "character (NPC, apprentice)"
+summary = "Hessel's first apprentice, daughter of the local hunter; rushes, later learns to teach."
+
+[[entities]]
+id = "maerin-joren"
+name = "Maerin the Cartographer / Joren the Boy-Apprentice"
+soul_name = "Maerin the Cartographer / Joren the Boy-Apprentice"
+role = "boc.goblin.shaman"
+sub = "boc.race.sub.human"
+kind = "character (Class 4, Pathway A -> D)"
+summary = "Wandering sage; voluntary ritual reincarnation at sim-year 92; new life as Joren in a different-region hamlet; same soul_name 'soul:wandering-sage-0001'; dormant fragment about old-text/language resurfaces during a fishing ritual. CASL: seeking-understanding, kindness-to-strangers, patience-with-foolishness, reverence-for-truth."
+
+[[entities]]
+id = "tutelary-saint"
+name = "Hamlet tutelary saint (Saint Aelren tradition)"
+soul_name = "Hamlet tutelary saint (Saint Aelren tradition)"
+role = "boc.goblin.village_chief"
+sub = "boc.race.sub.human"
+kind = "deity / minor-divine AINPC"
+summary = "Minor-deity emergence drawing on Aelren's seeded-back substrate; embedding-substrate-eligible."

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "pixelgoblin": {
+      "command": "python3",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/server/pixelgoblin_mcp.py"]
+    }
+  }
+}

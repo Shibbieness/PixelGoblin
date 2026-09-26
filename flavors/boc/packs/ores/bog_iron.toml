@@ -1,0 +1,59 @@
+# Bog-Iron (common)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.bog_iron"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Bog-Iron"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "common"
+fantasy = false
+biome = "swamp"
+
+[provenance]
+source = "book-of-cities: ores (swamp)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "stone"
+weight = 1
+colors = ["#2f2d2a", "#615d57", "#918e86", "#bfbdb8"]
+
+[[palette.ramps]]
+name = "ore"
+weight = 0
+colors = ["#150704", "#281008", "#854725", "#d08a55"]
+
+[body]
+anchor = [1, 4]
+template = ["...1###", "..#####", ".######", "1######", "#######", "1######", ".######", "..1####"]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "grounded"
+density_kg_m3 = 7874
+category = "metal"
+crucible_ref = "crucible.element.26"
+crucible_name = "Iron"
+melting_point_K = 1811
+chunk_grams = 3937
+note = "density from CRUCIBLE"
+
+[[parts]]
+name = "vein"
+chance = 100
+anchor = [1, 6]
+template = ["..#....", ".##.#..", "..#.##.", "....#.."]
+ramp = "ore"

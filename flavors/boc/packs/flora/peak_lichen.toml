@@ -1,0 +1,28 @@
+# Peak-lichen: Ancient slow-growing lichen.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.peak_lichen"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [16, 16]
+label = "Peak-lichen"
+axiom = "X"
+iterations = 2
+step = [1, 2]
+leaf_radius = 0
+fruit_chance = 10
+trunk_width = 1
+biome = "mountain"
+
+[provenance]
+source = "book-of-cities: flora (mountain)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F[+FX][-FX]", weight = 2 }, { to = "F[+FX]FX", weight = 1 }, { to = "F[-FX]FX", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#62825d"
+bark = ["#131f0c", "#4c873d", "#95cd90"]
+leaf = ["#131f0c", "#396829", "#5caa4d", "#95cd90"]

@@ -1,0 +1,53 @@
+# Void-Glass (legendary, fantasy)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.void_glass"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Void-Glass"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "legendary"
+fantasy = true
+
+[provenance]
+source = "book-of-cities: ores"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "gem"
+weight = 1
+colors = ["#0b0812", "#181024", "#5f407c", "#a884c0"]
+
+[body]
+anchor = [1, 3]
+template = [
+  "......#",
+  ".....##",
+  "....1##",
+  "...####",
+  "..#####",
+  "..#####",
+  "...####",
+  "....###",
+  ".....##",
+]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "intentionally_ungrounded"
+density_kg_m3 = 3500
+category = "gem"
+chunk_grams = 1750
+note = "fantasy material: CRUCIBLE's rule is never to fill it from real data; the weight is authored"

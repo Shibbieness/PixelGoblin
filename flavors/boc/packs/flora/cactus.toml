@@ -1,0 +1,28 @@
+# Cactus: Saguaro/barrel/prickly-pear equivalents.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.cactus"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [24, 32]
+label = "Cactus"
+axiom = "FFX"
+iterations = 3
+step = [2, 3]
+leaf_radius = 1
+fruit_chance = 20
+trunk_width = 2
+biome = "desert"
+
+[provenance]
+source = "book-of-cities: flora (desert)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F[++FF]FX", weight = 1 }, { to = "F[--FF]FX", weight = 1 }, { to = "FFX", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#e08aa0"
+bark = ["#131f0c", "#4c873d", "#95cd90"]
+leaf = ["#131f0c", "#396829", "#5caa4d", "#95cd90"]

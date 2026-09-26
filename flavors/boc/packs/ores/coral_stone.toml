@@ -1,0 +1,54 @@
+# Coral-Stone (uncommon)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.coral_stone"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Coral-Stone"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "uncommon"
+fantasy = false
+biome = "underwater"
+
+[provenance]
+source = "book-of-cities: ores (underwater)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "gem"
+weight = 1
+colors = ["#9b6f3b", "#cfb581", "#efeadb", "#f7f6ed"]
+
+[body]
+anchor = [1, 3]
+template = [
+  "......#",
+  ".....##",
+  "....1##",
+  "...####",
+  "..#####",
+  "..#####",
+  "...####",
+  "....###",
+  ".....##",
+]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "category_default"
+density_kg_m3 = 3500
+category = "gem"
+chunk_grams = 1750
+note = "CRUCIBLE has no density here; a typical gem density is used"

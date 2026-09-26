@@ -1,0 +1,68 @@
+# Wild-Horse: Tameable mount.
+schema = "pixelgoblin/type@1"
+id = "boc.fauna.wild_horse"
+tag = "creature"
+generator = "mask"
+license = "Proprietary"
+size = [24, 24]
+label = "Wild-Horse"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "plain"
+
+[provenance]
+source = "book-of-cities: fauna (plain)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#130906", "#562f1b", "#9c663b", "#caa073"]
+
+[[palette.ramps]]
+name = "coat_alt"
+weight = 1
+colors = ["#150705", "#542515", "#9d5832", "#cf9466"]
+
+[body]
+anchor = [2, 2]
+template = [
+  "...11.....",
+  "...11.....",
+  "...##1....",
+  ".....#####",
+  ".....#####",
+  "...22#####",
+  "...#######",
+  "...#######",
+  ".....#####",
+  "......####",
+  "......####",
+  "...22#####",
+  "..2#######",
+  "..2#######",
+  "..########",
+  "..###.####",
+  "..###.####",
+  "..###...#.",
+  "..1##.....",
+]
+
+[features]
+eyes = 2
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "horns"
+chance = 35
+anchor = [8, 2]
+template = ["11..", "11..", "##1.", "..#."]
+ramp = "coat_alt"

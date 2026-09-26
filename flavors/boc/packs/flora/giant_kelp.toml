@@ -1,0 +1,28 @@
+# Giant Kelp: Structural kelp forming the forest.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.giant_kelp"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [24, 40]
+label = "Giant Kelp"
+axiom = "FX"
+iterations = 4
+step = [2, 3]
+leaf_radius = 1
+fruit_chance = 30
+trunk_width = 1
+biome = "underwater"
+
+[provenance]
+source = "book-of-cities: flora (underwater)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F+F[-L]X", weight = 2 }, { to = "F-F[+L]X", weight = 2 }, { to = "FF[+X]X", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#6a572b"
+bark = ["#131f0c", "#4c873d", "#95cd90"]
+leaf = ["#131f0c", "#396829", "#5caa4d", "#95cd90"]

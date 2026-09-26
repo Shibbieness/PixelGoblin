@@ -101,14 +101,41 @@ def search_path() -> list[Path]:
     return [REPO / "types" / "vanilla", REPO / "flavors"]
 
 
+_BY_ID: dict = {}
+
+
+def _id_index(root: Path) -> dict:
+    """id -> path for one root, rebuilt whenever a file there is added, removed or changed.
+    Ids are read from each file's head (cheap); the match is confirmed by a full parse."""
+    stats = [f.stat().st_mtime_ns for f in Path(root).rglob("*.toml")]
+    sig = (len(stats), max(stats, default=0))
+    hit = _BY_ID.get(str(root))
+    if hit and hit[0] == sig:
+        return hit[1]
+    idx: dict = {}
+    for f in type_files(root):
+        m = re.search(r'^id\s*=\s*"([^"]+)"', f.read_text(encoding="utf-8")[:4000], re.M)
+        if m:
+            idx.setdefault(m.group(1), f)
+    _BY_ID[str(root)] = (sig, idx)
+    return idx
+
+
 def find_by_id(type_id: str, extra: list[Path] | None = None) -> Path:
     for root in (extra or []) + search_path():
         if not root.exists():
             continue
-        for p in type_files(root):
+        p = _id_index(root).get(type_id)
+        if p is not None:
             try:
                 if tomllib.loads(p.read_text()).get("id") == type_id:
                     return p
+            except tomllib.TOMLDecodeError:
+                pass
+        for q in type_files(root):  # slow path: an id not on its own line near the top
+            try:
+                if q != p and tomllib.loads(q.read_text()).get("id") == type_id:
+                    return q
             except tomllib.TOMLDecodeError:
                 continue
     raise TypeFileError([f"no type file with id {type_id!r} on the search path"])
@@ -261,6 +288,7 @@ def validate(data: dict) -> list[str]:
             v.p.append(f"`size` {size} must be between 4 and {limit} on each side")
         else:
             W, H = size
+    _validate_variety(v)
     if gen == "mask":
         _validate_mask(v, W, H)
     elif gen == "lsystem":
@@ -399,6 +427,12 @@ def _validate_mask(v: _V, W, H):
             if ax < 1 or ay < 1 or ax + fw > W - 1 or ay + len(t) > H - 1:
                 sub.p.append(f"template ({fw}x{len(t)} at {anchor}) does not fit inside size {W}x{H} with a 1-pixel border for the outline")
         v.p += [f"{label}: {m}" for m in sub.p]
+
+
+def _validate_variety(v: _V):
+    vm = v.d.get("variety_min")
+    if vm is not None and (not isinstance(vm, int) or isinstance(vm, bool) or not 50 <= vm <= 100):
+        v.p.append("`variety_min` must be a whole number from 50 to 100 (how many of 100 seeds must differ; 90 if left out)")
 
 
 def _validate_lsystem(v: _V):
@@ -559,6 +593,10 @@ def _validate_rig(v: _V):
             r = sec.get(key)
             if r is not None and (not isinstance(r, list) or len(r) != 2 or not all(isinstance(x, int) for x in r) or r[0] > r[1]):
                 v.p.append(f"`{section}.{key}` must be [low, high] whole numbers")
+        st = sec.get("stature")
+        if st is not None and (not isinstance(st, list) or len(st) != 2 or not all(isinstance(x, int) and not isinstance(x, bool) for x in st)
+                               or st[0] > st[1] or st[0] < 50 or st[1] > 125):
+            v.p.append(f"`{section}.stature` must be [low, high] whole percentages between 50 and 125 (100 is goblin height)")
 
 
 TEAMS_SCHEMA = "pixelgoblin/teams@1"
@@ -612,17 +650,87 @@ def with_team(tf: TypeFile, team: str | dict) -> TypeFile:
     return TypeFile(data, tf.type_hash, f"{tf.source}+team:{t['name']}")
 
 
-def compose(base_id: str, overlay_id: str) -> TypeFile:
-    """Overlay a variant (subspecies, era, outfit) onto a role: the overlay's OWN
-    keys win; its inherited keys are ignored, so the role keeps its outfit."""
+OVERLAY_PREFIXES = ("boc.goblin.sub.", "boc.race.sub.", "boc.trait.sub.")
+
+
+def overlay_id(name: str) -> str:
+    """A short overlay name to its id: `snow` (a goblin subspecies), `dwarf` (a race),
+    `axis_frost` (a Compendium trait). Full ids and paths pass through unchanged."""
+    if "." in name or "/" in name:
+        return name
+    known = {tf_id for root in search_path() for tf_id in _ids_under(root)}
+    for pre in OVERLAY_PREFIXES:
+        if pre + name.replace("-", "_") in known:
+            return pre + name.replace("-", "_")
+    near = difflib.get_close_matches(name, sorted(i.rsplit(".", 1)[-1] for i in known if any(i.startswith(p) for p in OVERLAY_PREFIXES)), 1)
+    raise TypeFileError([f"no overlay called {name!r}" + (f" — did you mean {near[0]!r}?" if near else "")])
+
+
+_ID_CACHE: dict = {}
+
+
+def _ids_under(root) -> list[str]:
+    key = str(root)
+    if key not in _ID_CACHE:
+        ids = []
+        for p in type_files(Path(root)) if Path(root).exists() else []:
+            m = re.search(r'^id\s*=\s*"([^"]+)"', p.read_text(encoding="utf-8")[:4000], re.M)
+            if m:
+                ids.append(m.group(1))
+        _ID_CACHE[key] = ids
+    return _ID_CACHE[key]
+
+
+def compose(base_id: str, overlay_id_: str) -> TypeFile:
+    """Overlay a variant (subspecies, race, trait, era, outfit) onto a role: the overlay's
+    OWN keys win; its inherited keys are ignored, so the role keeps its outfit.
+    Several overlays stack left to right: `boc.race.sub.elf,boc.trait.sub.axis_frost`."""
     base_p = find_by_id(base_id) if not Path(base_id).exists() else Path(base_id)
-    over_p = find_by_id(overlay_id) if not Path(overlay_id).exists() else Path(overlay_id)
     data = resolve_raw(base_p)
-    own = _read_toml(over_p)
-    for k in ("schema", "id", "tag", "extends", "generator", "license"):
-        own.pop(k, None)
-    if "role" in own:
-        own.pop("role")
-    data = _merge(data, own)
-    data["id"] = f"{data['id']}@{_read_toml(over_p).get('id', overlay_id).split('.')[-1]}"
-    return from_dict(data, f"{base_p}+{over_p}")
+    srcs = [str(base_p)]
+    for one in [o.strip() for o in overlay_id_.split(",") if o.strip()]:
+        one = overlay_id(one)
+        over_p = find_by_id(one) if not Path(one).exists() else Path(one)
+        own = _read_toml(over_p)
+        oid = own.get("id", one)
+        for k in ("schema", "id", "tag", "extends", "generator", "license"):
+            own.pop(k, None)
+        if "role" in own:
+            own.pop("role")
+        data = _merge(data, own)
+        data["id"] = f"{data['id']}@{oid.split('.')[-1]}"
+        srcs.append(str(over_p))
+    return from_dict(data, "+".join(srcs))
+
+
+def display_name(tf: "TypeFile") -> str:
+    """A composed character's name for people: the job, then each overlay ("Blacksmith · Dwarf · Flame-touched").
+    The data's own `label` is left alone (it is part of the type hash)."""
+    if "@" not in tf.id:
+        return tf.data.get("label") or tf.id
+    base, *overs = tf.id.split("@")
+    names = []
+    try:
+        names.append(load(base).data.get("label") or base)
+    except TypeFileError:
+        names.append(base)
+    for o in overs:
+        try:
+            names.append(load(overlay_id(o)).data.get("label") or o)
+        except TypeFileError:
+            names.append(o)
+    return " · ".join(names)
+
+
+PACK_SCHEMA = "pixelgoblin/pack@1"
+
+
+def packs() -> list[dict]:
+    """Every resource pack manifest on the search path (pack.toml, schema pixelgoblin/pack@1)."""
+    out = []
+    for root in search_path():
+        for p in sorted(Path(root).rglob("pack.toml")):
+            raw = _read_toml(p)
+            if raw.get("schema") == PACK_SCHEMA:
+                out.append(dict(raw, path=str(p)))
+    return out

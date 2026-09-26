@@ -7,7 +7,7 @@ PixelGoblin ports the self-checking discipline from SPIRE (Shibbieness / M MAOU 
 | SPIRE rule | Here |
 |---|---|
 | Plan gates (G) and build gates (B) are separate namespaces | `tests/gate.py`; each B declares the Gs it covers |
-| A gate must be able to fail | `tests/falsify.py`: 43 mutations, each naming the gate that must catch it |
+| A gate must be able to fail | `tests/falsify.py`: 51 mutations, each naming the gate that must catch it |
 | Restore on start (SIGKILL cannot be caught) | `falsify.py` restores `.falsify_backup/` before doing anything |
 | No assertion over an empty population | `Check.population()`; every absence check builds a control first |
 | Counts are derived, never typed | `tests/FLOOR.json` ratchet; lowering needs a witness and a reason |
@@ -52,6 +52,9 @@ PixelGoblin ports the self-checking discipline from SPIRE (Shibbieness / M MAOU 
 | B18 | views: orthographic agreement (heights, widths, depths), the model's front against the drawing, faces hidden from behind, a full turn returns to the front, the side walk moves in depth | G27 |
 | B19 | city: deterministic census, adding or removing a citizen changes nobody else, children inherit from their parents, households share subspecies and clan, the village holds its bands | G28 |
 | B20 | 8 px icons are unique, 8-bit eyes use the outline colour, data items draw, clans keep the type hash, riders sit on mounts, zoom sizes, props gain detail with size | G29 |
+| B21 | packaging: the pocket widget embeds the current engine; the plugin is valid (manifest, skills, MCP paths); its MCP server writes only protocol messages and draws byte-identical pixels; the PseudoSkill capsule passes every Forge validation check, with a missing-slot control | G30 |
+| B22 | resource packs: current with their sources, unique ids, honest manifests, every sprite draws, folk and traits stack with two legs at every tier and keep their stature, grounded ores carry CRUCIBLE's densities and fantasy ores stay ungrounded, avatars are supplements, Brackrun-Hollow builds, JavaScript parity for folk, traits and pack sprites | G31 |
+| B23 | Goblin Grounds: everything gatherable is reachable (with a walled-off control), quests fit the world, no two things share a tile, speed falls with load, CRUCIBLE weights reach the export, the page plans the engine's exact world (including a 64-bit seed) | G32 |
 
 —Shibbieness
 —Claude

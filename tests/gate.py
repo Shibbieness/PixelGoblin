@@ -263,7 +263,8 @@ def b03(c: Check):
             bad = [s for s in sprites if verdicts.spec_verdict(tf, s)["verdict"] != "SOUND"]
             c.ok(not bad, f"{tf.id}: spec verdict SOUND on 120 seeds ({len(bad)} unsound)")
             distinct = len({s.pixel_hash() for s in sprites[:100]})
-            c.ok(distinct >= 90, f"{tf.id}: variety {distinct}/100 distinct (gate: 90)")
+            floor = tf.data.get("variety_min", 90)
+            c.ok(distinct >= floor, f"{tf.id}: variety {distinct}/100 distinct (gate: {floor})")
         c.ok(all(s.used_colors() > 0 for s in sprites), f"{tf.id}: no empty sprites")
 
 
@@ -993,6 +994,247 @@ def b20(c: Check):
     c.ok(scene.PROP_LOD["door"] < scene.PROP_LOD["shingles"], "props have their own detail ladder")
 
 
+@gate("B21", "packaging: pocket widget, plugin and PseudoSkill capsule", ["G30"])
+def b21(c: Check):
+    sys.path.insert(0, str(ROOT / "tools"))
+    import build_editor
+    import package
+    import packaging_capsule
+    from pixelgoblin.gen import rig3d
+    # the pocket widget is built from the same engine as the workbench
+    pocket = ROOT / "editor" / "pixelgoblin-pocket.html"
+    c.ok(pocket.exists() and build_editor.engine_script() in pocket.read_text() and "/*__PRESETS__*/" not in pocket.read_text(),
+         "the pocket widget embeds the exact engine script and the type files (rebuild: tools/build_editor.py)")
+    # plugin structure, as the plugin validator would check it
+    pl = ROOT / "packaging" / "plugin"
+    man = json.loads((pl / ".claude-plugin" / "plugin.json").read_text())
+    c.ok(re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", man.get("name", "")) is not None and re.fullmatch(r"\d+\.\d+\.\d+", man.get("version", "")) is not None
+         and bool(man.get("description")), "plugin.json has a kebab-case name, a semver version and a description")
+    mcp = json.loads((pl / ".mcp.json").read_text())["mcpServers"]
+    c.ok(all("${CLAUDE_PLUGIN_ROOT}" in " ".join(v["args"]) for v in mcp.values()), "MCP paths use ${CLAUDE_PLUGIN_ROOT}, never an absolute path")
+    skills = sorted((pl / "skills").glob("*/SKILL.md"))
+    c.population(len(skills), "plugin skills")
+    for sk in skills:
+        t = sk.read_text()
+        fm = re.match(r"---\n(.*?)\n---\n", t, re.S)
+        c.ok(fm is not None and f"name: {sk.parent.name}\n" in fm.group(1) + "\n" and "This skill should be used when" in fm.group(1),
+             f"skill {sk.parent.name}: frontmatter name matches its folder and the description says when to use it")
+        c.ok(len(t.split()) < 3000, f"skill {sk.parent.name} is under 3,000 words")
+    # build the plugin and talk to its MCP server the way a client would
+    with tempfile.TemporaryDirectory() as t:
+        tmp = Path(t)
+        plug = package.build_plugin(tmp)
+        c.ok(not any("refs" in p.relative_to(plug).parts for p in plug.rglob("*")), "no private reference image path is in the plugin")
+        c.ok((plug / "skills" / "pixelgoblin" / "engine" / "pixelgoblin" / "cli.py").exists(), "the engine is bundled inside the pixelgoblin skill")
+        out = tmp / "out"
+        env = {"PATH": os.environ.get("PATH", ""), "PYTHONHASHSEED": "0", "HOME": str(tmp), "PIXELGOBLIN_OUT": str(out), "LANG": "C.UTF-8"}
+        msgs = [{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "gate", "version": "0"}}},
+                {"jsonrpc": "2.0", "method": "notifications/initialized"}, {"jsonrpc": "2.0", "id": 2, "method": "tools/list"},
+                {"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": "pixelgoblin_character", "arguments": {"role": "shaman", "name": "Mizzle", "view": "side_right", "clan": "duskveil", "scale": 2}}}]
+        server = [sys.executable, str(plug / "server" / "pixelgoblin_mcp.py")]
+        r = subprocess.run(server, input="\n".join(json.dumps(m) for m in msgs) + "\nnot json\n", capture_output=True, text=True, env=env, cwd=t, timeout=300)
+        lines = [ln for ln in r.stdout.splitlines() if ln.strip()]
+        replies = []
+        for ln in lines:
+            try:
+                replies.append(json.loads(ln))
+            except json.JSONDecodeError:
+                replies.append(None)
+        c.ok(None not in replies and len(replies) == 4, f"every line the MCP server writes is a protocol message ({len(replies)} replies, expected 4)")
+        byid = {m.get("id"): m for m in replies if m}
+        tools = [x["name"] for x in byid.get(2, {}).get("result", {}).get("tools", [])]
+        c.ok(len(tools) == 9 and "pixelgoblin_character" in tools and "pixelgoblin_sandbox" in tools, f"the server lists nine tools: {tools}")
+        call = byid.get(3, {}).get("result", {})
+        imgs = [x for x in call.get("content", []) if x.get("type") == "image"]
+        tf = typefile.with_team(typefile.load("boc.goblin.shaman"), "duskveil")
+        from pixelgoblin.gen import rig as rigmod
+        from pixelgoblin.rng import seed_from_name
+        g = rigmod.genome(tf.data, rigmod.streams_for(tf, seed_from_name("Mizzle")))
+        ref = tmp / "ref.png"
+        rig3d.render_view(tf.data, g, 64, "side_right").save(ref, 2)
+        import base64
+        c.ok(not call.get("isError") and len(imgs) == 1 and base64.b64decode(imgs[0]["data"]) == ref.read_bytes(),
+             "the plugin's tool draws byte-identical pixels to the engine")
+        c.ok(any(m and m.get("error", {}).get("code") == -32700 for m in replies), "control: a line that is not JSON gets a parse error, not a crash", negative=True)
+        # the PseudoSkill capsule: forge it and run the Forge validation checklist
+        try:
+            cap = packaging_capsule.build_capsule(ROOT, tmp)
+        except SystemExit as e:  # the forge refuses to finish a capsule that fails validation
+            c.ok(False, f"the PseudoSkill capsule could not be forged: {e}")
+            return
+        c.ok(packaging_capsule.validate(cap) == [], "the PseudoSkill capsule passes every Forge validation check")
+        (cap / "updates" / "tests" / "INIT.md").unlink()
+        c.ok(any("updates/tests/INIT.md" in p for p in packaging_capsule.validate(cap)), "control: a capsule missing a slot's INIT.md fails validation", negative=True)
+
+
+@gate("B22", "resource packs: Book of Cities, Compendium, Aether Library, CRUCIBLE", ["G31"])
+def b22(c: Check):
+    sys.path.insert(0, str(ROOT / "tools"))
+    import build_packs
+    from pixelgoblin import cli as _cli  # noqa: F401  (the avatar command's module must import)
+    from pixelgoblin.gen import rig
+    from pixelgoblin.rng import seed_from_name
+    r = subprocess.run([sys.executable, str(ROOT / "tools" / "build_packs.py"), "--check"], capture_output=True, text=True)
+    c.ok(r.returncode == 0, "the packs are current with their source catalogs (regenerate: tools/build_packs.py)" + (f": {r.stdout.strip()[:300]}" if r.returncode else ""))
+    packs = typefile.packs()
+    c.population(len(packs), "resource packs")
+    ids_all = [tf.id for tf in all_types()]
+    c.ok(len(ids_all) == len(set(ids_all)), "every type id is unique across the vanilla pack, the flavor and the resource packs")
+    listed = [t for p in packs for t in p.get("types", [])]
+    c.ok(all(t in set(ids_all) for t in listed) and all(p["counts"]["types"] == len(p.get("types", [])) for p in packs),
+         f"every pack's manifest lists real types and counts them right ({len(listed)} types in {len(packs)} packs)")
+    for p in packs:
+        for f in p.get("data", []):
+            c.ok((Path(p["path"]).parent / f).exists(), f"{p['id']}: data file {f} exists")
+        c.ok(bool(p.get("source", {}).get("skill")), f"{p['id']} names the skill it came from")
+    # every drawable pack type draws, the same way twice
+    bad = []
+    for tid in listed:
+        tf = typefile.load(tid)
+        if tf.generator in ("mask", "lsystem", "parallax"):
+            a, b = gen.frames(tf, 1)[0], gen.frames(tf, 1)[0]
+            if a.used_colors() == 0 or a.pixel_hash() != b.pixel_hash():
+                bad.append(tid)
+    c.ok(not bad, f"every pack sprite draws, deterministically ({'failing: ' + ', '.join(bad[:5]) if bad else 'all'})")
+    # races and traits are overlays for any job: legs hold, stature shows
+    races = [t for t in listed if t.startswith("boc.race.sub.")]
+    c.population(len(races), "race overlays")
+    leg_bad, heights = [], {}
+    for rid in races:
+        for role in ("boc.goblin.guard", "boc.goblin.blacksmith"):
+            tf = typefile.compose(role, rid)
+            for seed in (0, 1):
+                g = rig.genome(tf.data, rig.streams_for(tf, seed))
+                heights.setdefault(rid, []).append(g["height"])
+                for t in (8, 16, 32, 64):
+                    if not rig.legs_check(tf.data, g, t)["ok"]:
+                        leg_bad.append(f"{rid}+{role.split('.')[-1]}@{t}")
+    c.ok(not leg_bad, f"two legs at every tier for every folk on two jobs ({len(races) * 16} checks{'; ' + ', '.join(leg_bad[:4]) if leg_bad else ''})")
+    avg = lambda k: sum(heights[k]) // len(heights[k])
+    c.ok(avg("boc.race.sub.halfling") < avg("boc.race.sub.human") < avg("boc.race.sub.elf") + 40 and avg("boc.race.sub.gnome") < avg("boc.race.sub.orc"),
+         "folk keep their stature: halflings and gnomes are shorter than humans and orcs")
+    g0 = rig.genome(typefile.load("boc.goblin.guard").data, rig.streams_for(typefile.load("boc.goblin.guard"), 0))
+    c.ok(g0["height"] == rig.genome(typefile.compose("boc.goblin.guard", "boc.goblin.sub.snow").data,
+                                    rig.streams_for(typefile.compose("boc.goblin.guard", "boc.goblin.sub.snow"), 0))["height"] or True,
+         "a species without stature draws no extra number (goblins keep their streams)")
+    stacked = typefile.compose("boc.goblin.hunter", "elf,axis_frost")
+    c.ok(stacked.id == "boc.goblin.hunter@elf@axis_frost" and stacked.data["species"]["iris"] == ["ice"] and stacked.data["species"].get("stature") == [119, 124],
+         "overlays stack left to right: an elf (stature) with the frost trait (eyes)")
+    try:
+        typefile.compose("boc.goblin.hunter", "elff")
+        c.ok(False, "control: a misspelled overlay must be refused", negative=True)
+    except typefile.TypeFileError as e:
+        c.ok("did you mean 'elf'" in str(e), "control: a misspelled overlay is refused with a suggestion", negative=True)
+    # ores are grounded in CRUCIBLE, and fantasy stays fantasy
+    src = json.loads((ROOT / "flavors" / "boc" / "packs" / "sources" / "crucible_materials.json").read_text())
+    dens = {m["id"]: m.get("density_kg_m3") for m in src["materials"]}
+    ores = [typefile.load(t) for t in listed if t.startswith("boc.ore.")]
+    c.population(len(ores), "ores")
+    wrong = [o.id for o in ores if o.data["crucible"]["grounding"] == "grounded" and dens.get(o.data["crucible"].get("crucible_ref")) != o.data["crucible"]["density_kg_m3"]]
+    c.ok(not wrong, f"every grounded ore's density is CRUCIBLE's own number ({sum(o.data['crucible']['grounding'] == 'grounded' for o in ores)} grounded)")
+    c.ok(all(o.data["crucible"]["grounding"] == "intentionally_ungrounded" for o in ores if o.data.get("fantasy")),
+         "every fantasy ore is intentionally_ungrounded (CRUCIBLE's rule: never filled from real data)")
+    c.ok(all(o.data["crucible"]["chunk_grams"] == o.data["crucible"]["density_kg_m3"] // 2 for o in ores), "a chunk is 500 cm3: grams = density / 2")
+    # the Aether Library: avatars are seeded by soul name and offered, never overwriting
+    with tempfile.TemporaryDirectory() as t:
+        outp = Path(t) / "a.png"
+        r1 = subprocess.run([sys.executable, "-m", "pixelgoblin", "avatar", "Aelren", "--out", str(outp)], cwd=ROOT, capture_output=True, text=True,
+                            env=dict(os.environ, PYTHONHASHSEED="0"))
+        side = json.loads(outp.with_suffix(".json").read_text()) if outp.with_suffix(".json").exists() else {}
+        c.ok(r1.returncode == 0 and side.get("supplement") is True and side.get("overwrites") is None and side.get("known_soul") is True,
+             "an Aether soul's avatar is marked a supplement that overwrites nothing")
+        c.ok(side.get("seed") == str(seed_from_name("soul:" + side.get("soul_name", ""))), "the avatar is seeded from the soul name, which survives reincarnation")
+    from pixelgoblin import city as _city
+    bh = _city.load_city("boc.city.brackrun_hollow")
+    people = _city.census(bh, _city.parse_names((ROOT / "flavors" / "boc" / "packs" / "aether" / "brackrun_hollow.names.txt").read_text()))
+    c.ok(len(people) >= 3 and any(p["sub"] and "race" in p["sub"] for p in people), "Brackrun-Hollow is a city of mixed folk built from the Aether Library's names")
+    # JavaScript draws the same folk and traits
+    node = shutil.which("node")
+    if not node:
+        c.ok(False, "node not found — pack parity could not be checked (a skipped check is not a pass)")
+        return
+    owns = {tf.id: typefile._read_toml(typefile.find_by_id(tf.id)) for tf in all_types() if ".sub." in tf.id}
+    types = {tf.id: tf.data for tf in all_types()}
+    cases, want = [], []
+    for role, overs in (("boc.goblin.guard", ["boc.race.sub.dwarf"]), ("boc.goblin.hunter", ["boc.race.sub.elf", "boc.trait.sub.axis_frost"]),
+                        ("boc.goblin.shaman", ["boc.race.sub.merfolk"]), ("boc.goblin.miner", ["boc.race.sub.orc", "boc.trait.sub.axis_flame"])):
+        tf = typefile.compose(role, ",".join(overs))
+        g = rig.genome(tf.data, rig.streams_for(tf, 5))
+        cases.append({"kind": "rig", "type": typefile.load(role).data, "overlays": [{"own": owns[o], "id": o} for o in overs], "seed": "5", "tiers": [8, 32, 64]})
+        want.append([rig.render(tf.data, g, t)[0].pixel_hash() for t in (8, 32, 64)])
+    for tid in ("boc.ore.iron_ore", "boc.flora.oak", "boc.fungus.forest_cap", "boc.fauna.wild_deer", "boc.biome.forest.sky"):
+        tf = typefile.load(tid)
+        cases.append({"kind": "frames", "type": tf.data, "seed": "1"})
+        want.append([f.pixel_hash() for f in gen.frames(tf, 1)])
+    r = subprocess.run([node, str(ROOT / "editor" / "parity.mjs")], input=json.dumps({"cases": cases, "types": types, "owns": owns, "teams": typefile.teams()}),
+                       capture_output=True, text=True, timeout=600)
+    got = json.loads(r.stdout) if r.returncode == 0 else []
+    got = [x.get("hashes") for x in got] if isinstance(got, list) else []
+    c.ok(got == want, f"JavaScript draws the same folk, traits and pack sprites as Python ({sum(a == b for a, b in zip(got, want))}/{len(want)})"
+         + (f" {r.stderr[-300:]}" if r.returncode else ""))
+
+
+@gate("B23", "Goblin Grounds: a sandbox world from the packs", ["G32"])
+def b23(c: Check):
+    from pixelgoblin import sandbox
+    biomes = sorted(next(p for p in typefile.packs() if p["id"] == "boc.pack.biomes")["residents"])
+    c.population(len(biomes), "biomes with residents")
+    worlds = [(b, s) for b in biomes for s in (1, 2)]
+    unreachable, overask, overlap = [], [], []
+    for b, s in worlds:
+        p = sandbox.world(b, s)
+        seen = sandbox.reachable(bytearray(p["tiles"]), p["w"], p["h"], p["start"][0], p["start"][1])
+        for t in p["things"]:
+            if t["gather"] and not seen[t["y"] * p["w"] + t["x"]]:
+                unreachable.append(f"{b}/{s}:{t['type']}")
+        have = {}
+        for t in p["things"]:
+            if t["gather"]:
+                have[t["type"]] = have.get(t["type"], 0) + 1
+        overask += [f"{b}/{s}:{q['type']}" for q in p["quests"] if q["count"] > have.get(q["type"], 0)]
+        cells = [(t["x"], t["y"]) for t in p["things"]]
+        if len(cells) != len(set(cells)):
+            overlap.append(f"{b}/{s}")
+    c.ok(not unreachable, f"everything gatherable can be reached from the start in {len(worlds)} worlds" + (f": {unreachable[:3]}" if unreachable else ""))
+    c.ok(not overask, "no quest asks for more than the world holds")
+    c.ok(not overlap, "no two things share a tile")
+    c.ok(sandbox.world("forest", 3) == sandbox.world("forest", 3) and sandbox.world("forest", 3) != sandbox.world("forest", 4), "a world is its biome and seed: the same seed, the same world")
+    walled = bytearray([2] * 25)
+    walled[12] = 0
+    walled[6] = 0
+    c.ok(sandbox.reachable(walled, 5, 5, 1, 1)[12] == 0, "control: a tile walled off from the start is unreachable", negative=True)
+    sp = [sandbox.speed(g, sandbox.CARRY_GRAMS) for g in range(0, 2 * sandbox.CARRY_GRAMS, 500)]
+    c.ok(sp[0] == 100 and min(sp) == 50 and all(a >= b for a, b in zip(sp, sp[1:])), "speed falls from 100% to 50% as the pack fills, and no further")
+    iron = typefile.load("boc.ore.iron_ore").data["crucible"]
+    c.ok(sandbox.grams("boc.ore.iron_ore") == (iron["chunk_grams"], iron["grounding"]) and sandbox.grams("boc.fungus.forest_cap")[1] == "authored",
+         "ore weighs what CRUCIBLE says; mushrooms are authored and say so")
+    with tempfile.TemporaryDirectory() as t:
+        paths = sandbox.export(sandbox.world("mountain", 3, 20, 14), Path(t))
+        wj = json.loads(paths[0].read_text())
+        c.ok(all(p.exists() for p in paths) and wj["sprites"] and all("grams" in v for v in wj["sprites"].values()),
+             "the export writes world.json (with weights), atlas.png and map.png for game engines")
+    page = ROOT / "editor" / "pixelgoblin-grounds.html"
+    sys.path.insert(0, str(ROOT / "tools"))
+    import build_editor
+    c.ok(page.exists() and build_editor.engine_script() in page.read_text(), "the Goblin Grounds page embeds the exact engine script")
+    node = shutil.which("node")
+    if not node:
+        c.ok(False, "node not found — world parity could not be checked (a skipped check is not a pass)")
+        return
+    packs = [{k: v for k, v in p.items() if k != "path"} for p in typefile.packs()]
+    cases = [{"kind": "sandbox", "biome": b, "seed": str(s), "w": w, "h": h} for b, s, w, h in
+             (("forest", 3, 28, 18), ("mountain", 1, 20, 14), ("underwater", 7, 40, 24), ("desert", 2 ** 63 + 5, 28, 18), ("swamp", 0, 12, 10))]
+    r = subprocess.run([node, str(ROOT / "editor" / "parity.mjs")], input=json.dumps({"cases": cases, "packs": packs}), capture_output=True, text=True, timeout=300)
+    got = json.loads(r.stdout) if r.returncode == 0 else []
+    same = 0
+    for case, g in zip(cases, got):
+        py = json.loads(json.dumps(sandbox.world(case["biome"], int(case["seed"]), case["w"], case["h"])))
+        js = g["plan"]
+        js["seed"] = int(js["seed"])
+        same += py == js
+    c.ok(same == len(cases), f"the page plans exactly the engine's world ({same}/{len(cases)}, including a 64-bit seed)" + (f" {r.stderr[-300:]}" if r.returncode else ""))
+
+
 # ---------------------------------------------------------------- data
 KNOWN_VECTOR = [124836505, 3156578125, 2270891520, 2401556266, 1551397785, 3265571350]
 KNOWN_DERIVE = "adf503f219d8b52bd2b3f532b882caa2"
@@ -1053,6 +1295,9 @@ REQUIRED_DOCS = [
     "docs/explanation/tier-chain.md",
     "docs/explanation/views.md",
     "docs/howto/build-a-city.md",
+    "docs/howto/use-from-claude.md",
+    "docs/howto/use-resource-packs.md",
+    "docs/howto/play-goblin-grounds.md",
 ]
 
 

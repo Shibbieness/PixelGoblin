@@ -1,0 +1,18 @@
+# Underwater: Aquatic sub-space: reefs, kelp forests, open/deep ocean, trenches, lakes, sunken ruins, mana tide.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.underwater.ground"
+tag = "terrain"
+generator = "autotile"
+license = "Proprietary"
+size = [16, 16]
+label = "Underwater ground"
+tile = 16
+
+[provenance]
+source = "book-of-cities: biomes (Underwater)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#7c542b"
+highlight = "#d2d0c2"
+fill = ["#0f0c0a", "#201b16", "#534b3b", "#877c60"]

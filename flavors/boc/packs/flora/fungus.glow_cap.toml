@@ -1,0 +1,60 @@
+# Glow-Cap (glows)
+schema = "pixelgoblin/type@1"
+id = "boc.fungus.glow_cap"
+tag = "flora"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Glow-Cap"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+glows = true
+biome = "forest"
+
+[provenance]
+source = "book-of-cities: fungi (forest)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "cap"
+weight = 3
+colors = ["#63b446", "#8bc580", "#b7ddb4", "#eef7ed"]
+
+[[palette.ramps]]
+name = "cap_alt"
+weight = 1
+colors = ["#155450", "#29a0a6", "#66bfcf", "#b4dbe7"]
+
+[[palette.ramps]]
+name = "stem"
+weight = 0
+colors = ["#cf9554", "#e4d5b2", "#f8f6ec"]
+
+[body]
+anchor = [1, 2]
+template = ["....111", "..12###", ".1#####", "12#####", "1######", ".11####"]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "stem"
+chance = 100
+anchor = [5, 8]
+template = [".##", ".##", "1##", "2##"]
+ramp = "stem"
+
+[[parts]]
+name = "spots"
+chance = 55
+anchor = [5, 3]
+template = ["1.1", ".1."]
+ramp = "stem"

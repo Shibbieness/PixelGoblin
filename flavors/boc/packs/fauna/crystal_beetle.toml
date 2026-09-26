@@ -1,0 +1,60 @@
+# Crystal-Beetle: Crystal Peaks mineral creature.
+schema = "pixelgoblin/type@1"
+id = "boc.fauna.crystal_beetle"
+tag = "creature.small"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Crystal-Beetle"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "mountain"
+
+[provenance]
+source = "book-of-cities: fauna (mountain)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#6da7b1", "#a9c6d1", "#e6ecf0", "#eff3f6"]
+
+[[palette.ramps]]
+name = "coat_alt"
+weight = 1
+colors = ["#281b46", "#5c388f", "#976fbe", "#cdb5de"]
+
+[body]
+anchor = [1, 2]
+template = [
+  "..1....",
+  "...1...",
+  "....###",
+  "1..####",
+  ".#.####",
+  "..#####",
+  "1.#####",
+  ".######",
+  "1.#####",
+  "..#####",
+  "...####",
+  "....###",
+]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "shell"
+chance = 60
+anchor = [5, 5]
+template = ["..#", ".##", "###", "###", ".##"]
+ramp = "coat_alt"

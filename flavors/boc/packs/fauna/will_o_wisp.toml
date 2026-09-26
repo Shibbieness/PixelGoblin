@@ -1,0 +1,53 @@
+# Will-o'-Wisp: Floating light-spirit.
+schema = "pixelgoblin/type@1"
+id = "boc.fauna.will_o_wisp"
+tag = "creature.small"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Will-o'-Wisp"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "swamp"
+
+[provenance]
+source = "book-of-cities: fauna (swamp)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#3883c2", "#7ca4d9", "#c6d2eb", "#eceff8"]
+
+[body]
+anchor = [1, 3]
+template = [
+  "..1..1.",
+  "..#2.##",
+  "..#####",
+  ".2#####",
+  ".######",
+  "12#####",
+  "1######",
+  ".######",
+  ".##.###",
+  ".##..##",
+]
+
+[features]
+eyes = 2
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "spines"
+chance = 50
+anchor = [5, 4]
+template = ["1.1", "#.#"]

@@ -1,0 +1,28 @@
+# Star-bloom: Appears after meteor falls.
+schema = "pixelgoblin/type@1"
+id = "boc.flora.star_bloom"
+tag = "flora"
+generator = "lsystem"
+license = "Proprietary"
+size = [16, 24]
+label = "Star-bloom"
+axiom = "FFX]"
+iterations = 2
+step = [1, 2]
+leaf_radius = 2
+fruit_chance = 60
+trunk_width = 1
+biome = "desert"
+
+[provenance]
+source = "book-of-cities: flora (desert)"
+colors = "inferred from the name (the source states none)"
+
+[rules]
+X = [{ to = "F[+FL]FX", weight = 2 }, { to = "F[-FL]FX", weight = 2 }, { to = "FFX", weight = 1 }]
+
+[palette]
+outline = "#140e14"
+fruit = "#f4f4f0"
+bark = ["#131f0c", "#4c873d", "#95cd90"]
+leaf = ["#ad9d87", "#d7d1c5", "#f4f3f0", "#f4f4f0"]

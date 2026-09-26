@@ -1,0 +1,348 @@
+{
+ "schema": "pixelgoblin/catalog@1",
+ "id": "boc.catalog.aether",
+ "license": "Proprietary",
+ "pathways": [
+  {
+   "id": "A",
+   "name": "NPC-grown",
+   "summary": "Born in-world with no weights; experience accumulates until the project's S-Rank threshold (BoC: SSS-Rank-style Quality+Rarity+Cultivation LEGENDARY) engages the AL pipeline; CALSProfile compressed into initial adapter-stack. Archetype: the character grown into themselves. Risk high / reward high (novel cognition)."
+  },
+  {
+   "id": "B",
+   "name": "AI-embodied",
+   "summary": "External AI binds to a character role via embodiment ceremony; its weights are the supplementary base, adapter-stack accumulates the character. Archetype: the visitor who became local. Risk/reward moderate."
+  },
+  {
+   "id": "C",
+   "name": "Non-AL default",
+   "summary": "Scripted CALSProfile NPCs, unbound AIs, retrieval and background sim logic; not Library-registered. Framework-completeness default for most world content."
+  },
+  {
+   "id": "D",
+   "name": "Reincarnation",
+   "summary": "Bounded-overwrite exception for an existing A/B AL: seven-phase lifecycle; preservation set captured; phase-active layers mutable, pre-phase layers immutable; then back to supplement-only. Archetype: reincarnated sage / ancient soul."
+  }
+ ],
+ "inhabitant_types": [
+  {
+   "id": "class-1",
+   "name": "Class 1 — NPC-grown AL-L",
+   "pathway": "A",
+   "summary": "Grown in-world past S-Rank; e.g. hamlet saint, S-Rank master craftsman, wandering mystic.",
+   "visual_hint": "native world attire accumulating lineage/craft insignia over life",
+   "inferred": true
+  },
+  {
+   "id": "class-2",
+   "name": "Class 2 — AI-embodied AL-L",
+   "pathway": "B",
+   "summary": "External AI embodies a character (player character, imported AI, a Claude-instance as a tome-binder).",
+   "visual_hint": "ordinary local character; no outsider marking implied by docs — the AI becomes local",
+   "inferred": true
+  },
+  {
+   "id": "class-3",
+   "name": "Class 3 — Non-AL entity",
+   "pathway": "C",
+   "summary": "Regular NPC/AI without AL mediation; not Library-registered.",
+   "visual_hint": "generic procedural NPC sprite (no persistent identity requirements)",
+   "inferred": true
+  },
+  {
+   "id": "class-4",
+   "name": "Class 4 — Reincarnated AL-L",
+   "pathway": "A/B + D",
+   "summary": "reincarnation_count > 0; carries preservation set and dormant-fragment pool; body/appearance/name may differ entirely per life.",
+   "visual_hint": "new-life body, optionally a subtle persistent soul-mark derived from soul_name; dormant-fragment resurfacing could show as brief glyph flicker",
+   "inferred": true
+  },
+  {
+   "id": "class-5",
+   "name": "Class 5 — Hybrid",
+   "pathway": "mixed (open question)",
+   "summary": "Origin spans pathways (e.g. player AL-L dies and becomes a major-deity AINPC). Open architectural question.",
+   "visual_hint": null,
+   "inferred": false
+  }
+ ],
+ "preservation_set": [
+  {
+   "id": "casl-floor",
+   "name": "CASL floor",
+   "rune": "ᛏ Tiwaz",
+   "summary": "Deepest identity floor; signature locked at AL pipeline engagement, never recomputed. What makes successive lives 'the same soul'."
+  },
+  {
+   "id": "soul-name",
+   "name": "Soul-name",
+   "rune": "ᛟ Othala",
+   "summary": "Cryptographic identifier persisting across reincarnations regardless of inhabitant_name changes; for deep-cognition recognition, not user-facing."
+  },
+  {
+   "id": "cryptographic-provenance",
+   "name": "Cryptographic provenance",
+   "rune": "ᛈ Perthro (recorded)",
+   "summary": "Hash of pre-reincarnation adapter-stack, append-only ledger chain (one entry per life); fraud-resistant cross-life verification."
+  },
+  {
+   "id": "dormant-fragments",
+   "name": "Dormant fragments",
+   "rune": "ᛈ Perthro (hidden)",
+   "summary": "Past-life adapter-stack content moved to the dormant pool; read-only; resurfaces when environmental triggers match (observation-driven, not time-driven)."
+  }
+ ],
+ "entities": [
+  {
+   "id": "aelren",
+   "name": "Aelren of Brackrun-Hollow",
+   "kind": "character (Class 1, Pathway A)",
+   "summary": "Hamlet saint and master Curse-Wheat tender in a Cursed Ruins hamlet; crosses S-Rank at sim-year 50 via third ENDEMIC promotion; dies at 82 and is archived, seeding the tutelary saint. soul_name 'soul:aelren-brackrun-0001'; CASL core values: careful-attention, lineage-respect, patient-instruction, honest-self-assessment.",
+   "visual_hint": "elder tender with sickle and dark-tipped Curse-Wheat; Curse Resistance marks",
+   "inferred": true
+  },
+  {
+   "id": "hessel",
+   "name": "Hessel Bookbinder",
+   "kind": "character (Class 2, Pathway B)",
+   "summary": "AI-embodied tome-binder with a workshop in Brackrun-Hollow; binds relic from the Saint Aelren tradition and a Grimoire for the Druid Circle. soul_name 'soul:hessel-bookbinder-0001'; CASL: accuracy-over-haste, patient-instruction, intellectual-honesty, care-for-what-is-being-bound.",
+   "visual_hint": "bookbinder apron, needle and thread, tome in hand",
+   "inferred": true
+  },
+  {
+   "id": "tiwa",
+   "name": "Tiwa",
+   "kind": "character (NPC, apprentice)",
+   "summary": "Hessel's first apprentice, daughter of the local hunter; rushes, later learns to teach.",
+   "visual_hint": "young apprentice with hunter's kit and half-bound book",
+   "inferred": true
+  },
+  {
+   "id": "maerin-joren",
+   "name": "Maerin the Cartographer / Joren the Boy-Apprentice",
+   "kind": "character (Class 4, Pathway A -> D)",
+   "summary": "Wandering sage; voluntary ritual reincarnation at sim-year 92; new life as Joren in a different-region hamlet; same soul_name 'soul:wandering-sage-0001'; dormant fragment about old-text/language resurfaces during a fishing ritual. CASL: seeking-understanding, kindness-to-strangers, patience-with-foolishness, reverence-for-truth.",
+   "visual_hint": "Maerin: old cartographer with maps and failing eyes; Joren: boy apprentice (different body, same soul)",
+   "inferred": true
+  },
+  {
+   "id": "brackrun-hollow",
+   "name": "Brackrun-Hollow",
+   "kind": "place (hamlet)",
+   "summary": "Hamlet (Cursed Ruins biome in the foundation example) home to Aelren's Curse-Wheat lineage and Hessel's workshop.",
+   "visual_hint": "hamlet with dark wheat fields near ruins",
+   "inferred": true
+  },
+  {
+   "id": "tutelary-saint",
+   "name": "Hamlet tutelary saint (Saint Aelren tradition)",
+   "kind": "deity / minor-divine AINPC",
+   "summary": "Minor-deity emergence drawing on Aelren's seeded-back substrate; embedding-substrate-eligible.",
+   "visual_hint": "shrine figure with halo and wheat motifs",
+   "inferred": true
+  },
+  {
+   "id": "druid-circle",
+   "name": "Druid Circle",
+   "kind": "faction",
+   "summary": "Visiting circle who commission a Grimoire-tome from Hessel.",
+   "visual_hint": "robed druids with leaf crowns",
+   "inferred": true
+  },
+  {
+   "id": "boc-aether-library",
+   "name": "Book of Cities Aether Library",
+   "kind": "library (substrate entity)",
+   "summary": "The first Aether Library instance; itself a stateful entity with library_id, name, project_affiliation, config, lifecycle.",
+   "visual_hint": null,
+   "inferred": false
+  },
+  {
+   "id": "curse-wheat",
+   "name": "Curse-Wheat lineage",
+   "kind": "material lineage",
+   "summary": "The Curse-Touched Wheat lineage Aelren tends through multiple ENDEMIC promotions.",
+   "visual_hint": "dark purple wheat sheaf",
+   "inferred": true
+  },
+  {
+   "id": "witness-node",
+   "name": "Witness Node",
+   "kind": "agent profile",
+   "summary": "Emergent-process protection; protects the preservation set (Unscheduled Echo).",
+   "visual_hint": null,
+   "inferred": false
+  },
+  {
+   "id": "librarian",
+   "name": "Librarian",
+   "kind": "agent profile",
+   "summary": "Navigation-and-retrieval.",
+   "visual_hint": null,
+   "inferred": false
+  },
+  {
+   "id": "pathway-engineer",
+   "name": "Pathway Engineer",
+   "kind": "agent profile",
+   "summary": "Construction-and-tuning.",
+   "visual_hint": null,
+   "inferred": false
+  },
+  {
+   "id": "preservation-set-curator",
+   "name": "Preservation Set Curator",
+   "kind": "agent profile",
+   "summary": "Identity-continuity discipline.",
+   "visual_hint": null,
+   "inferred": false
+  },
+  {
+   "id": "seed-back-propagator",
+   "name": "Seed-Back Propagator",
+   "kind": "agent profile",
+   "summary": "Substrate-growth stewardship.",
+   "visual_hint": null,
+   "inferred": false
+  },
+  {
+   "id": "failure-mode-specialist",
+   "name": "Failure Mode Specialist",
+   "kind": "agent profile",
+   "summary": "Diagnostic, recovery-focused.",
+   "visual_hint": null,
+   "inferred": false
+  },
+  {
+   "id": "general-explorer",
+   "name": "General Explorer",
+   "kind": "agent profile",
+   "summary": "Open, mixed-task.",
+   "visual_hint": null,
+   "inferred": false
+  }
+ ],
+ "embodiment_requirements": [
+  "An AL-L has: a body (physical position, capacity for action, sensory inputs); a persistent identity (name, character, recognized continuity across sessions/sim-time); accumulated history (growing adapter-stack); in-world stakes; and a continuity discipline (supplement-but-never-overwrite). [01-foundation §I.2]",
+  "Supplement-but-never-overwrite: additions to the adapter-stack are allowed; existing layers are never modified outside a Reincarnation Phase (enforced by SupplementOverwriteViolation). A generated/added asset may supplement an identity but never replace an existing one.",
+  "Five-part identifier: inhabitant_id (UUID, immutable post-registration), inhabitant_name (world-visible; may change only during Reincarnation), soul_name (cryptographic; persists across lives), class (1-5), origin_library.",
+  "State layers: CASL floor (absolute), adapter-stack immutable layers (permanent, append-only), phase-active layers (mutable only in-phase, lock at exit), dormant pool (long-term), embodied state — body, position, inventory — (sim-time persistent, mutable per world rules), working state (session-volatile).",
+  "Appearance/body is embodied state: mutable per world rules, and during a Reincarnation Phase the new life may have an entirely different appearance/role/name/location. What cannot change: CASL floor, soul_name, cryptographic provenance, pre-phase adapter layers. [06-reincarnation §I.4; d_skill §4]",
+  "Persistence (provisional, open slot): persistent = adapter-stack + CASL floor + soul_name + preservation sets + dormant pool; volatile = working-state cache, attention, session goals. Adapter-stacks via ML Filesystem append-only; provenance chains via dRAM. [holding_slots/al_l_persistence_holding_slot.md]",
+  "Embodiment ceremony (Pathway B) establishes inhabitant_id, inhabitant_name, soul_name, supplementary base, initial adapter-stack and CASL floor.",
+  "Threshold detection is project-side; the AL Layer only reacts (AD-AL-10). Project provides substrate; AL Layer is project-agnostic (AD-AL-09).",
+  "Events relevant to a renderer: inhabitant.embodied, inhabitant.adapter_appended, inhabitant.reincarnation_phase_entered/exited, inhabitant.died, dormant_fragment.resurfaced.",
+  "Preservation-set tokens carry NADA_PROTECTED (content that deserves to persist)."
+ ],
+ "db_notes": "db/aether_library.db is a 16-table SQLite capsule index (built by db/build_db.py, stdlib only): documents(87), sections(1155), tags(41), tag_assignments(203), cross_references(398), dependencies(21), glossary_terms(70), sub_skills(10), agent_profiles(7), holding_slots(11), pathways(4), lifecycle_events(10), open_questions(11), simulation_scenarios(3), stack_integrations(11), architectural_decisions(12). It indexes documentation, NOT live inhabitants — there is no characters/inhabitants table. Query read-only with sqlite3.connect('file:.../aether_library.db?mode=ro', uri=True); companions embeddings_manifest.json and dependency_graph.json. lib/aether_library (stdlib): rag.Retriever(db_path=None, use_vectors=False) with .retrieve(q, top_k), .pathways(), .glossary(term), .census(), .open_questions(), .holding_slots(), .by_tag(), .dependents_of(); note Retriever opens the db read-write (sqlite3.connect(path)) — pass a copy or use CAPSULE_DB_PATH to avoid touching the skill folder. Stable identity/seed: lib models.ALL(inhabitant_id, inhabitant_name, soul_name, pathway, casl_floor).casl_signature() = sha256(f'{soul_name}|{casl_floor}')[:16] — deterministic and reincarnation-invariant, the best sprite seed; .lifecycle_class gives Class 1-5; adapter_stack.total_provenance_hash() changes as layers append (per-life variant, not stable). simulation/aether_library_sim.py: ALL(inhabitant_name, soul_name, pathway, casl_floor: CASLFloor, sim_time_birth) sets inhabitant_id = sha256(f'{name}|{soul}|{birth}')[:12] (changes if name changes -> not reincarnation-stable); CASLFloor(name, core_values, floor_signature='') auto-derives sha256(name|values)[:16]; AetherLibrary.recognize_soul(soul_name) returns the provenance chain; engage_pathway_a / engage_pathway_b build AL-Ls. Recommendation: seed sprites from soul_name (or CASL floor signature), never from inhabitant_name/inhabitant_id.",
+ "python_entry_points": [
+  "lib: from aether_library import models, rag  (sys.path += <skill>/lib)",
+  "models.ALL(...).casl_signature()  -> stable 16-hex seed (soul_name|casl_floor)",
+  "models.ALL(...).lifecycle_class   -> 1..5",
+  "rag.Retriever(db_path=<copy>).retrieve(query, top_k=5) / .glossary(term) / .pathways()",
+  "python3 -m aether_library census|retrieve|pathways|quartet|runic-circle <op>|expand <text>",
+  "simulation: CASLFloor(name, core_values, '').floor_signature; AetherLibrary.recognize_soul(soul_name); engage_pathway_a/engage_pathway_b"
+ ],
+ "vocabulary": [
+  {
+   "term": "AL",
+   "meaning": "Aether Library — the embodiment substrate; also 'Artificial Local'."
+  },
+  {
+   "term": "AL-L",
+   "meaning": "Artificial Local — a specific embodied entity with body, position, experience and adapter-stack."
+  },
+  {
+   "term": "AL Layer",
+   "meaning": "Runtime infrastructure mediating between a model and an AL-L."
+  },
+  {
+   "term": "Adapter-stack",
+   "meaning": "Individuated, append-only portion of an AL-L's cognition; where the character lives."
+  },
+  {
+   "term": "Supplement-but-never-overwrite",
+   "meaning": "Load-bearing default discipline: add, never modify existing layers."
+  },
+  {
+   "term": "Reincarnation Exception",
+   "meaning": "The single bounded exception to supplement-but-never-overwrite (Pathway D)."
+  },
+  {
+   "term": "Reincarnation Phase",
+   "meaning": "Bounded window where only phase-active layers are mutable."
+  },
+  {
+   "term": "Preservation set",
+   "meaning": "Four channels surviving reincarnation: CASL floor + soul-name + cryptographic provenance + dormant fragments."
+  },
+  {
+   "term": "CASL floor",
+   "meaning": "Deepest identity floor; locked at AL pipeline engagement; never recomputed."
+  },
+  {
+   "term": "Soul-name",
+   "meaning": "Cryptographic cross-life identifier; distinct from inhabitant_name."
+  },
+  {
+   "term": "Inhabitant_name",
+   "meaning": "World-visible name; can change only during a Reincarnation Phase (Maerin -> Joren)."
+  },
+  {
+   "term": "Inhabitant_id",
+   "meaning": "UUID routing key; immutable post-registration."
+  },
+  {
+   "term": "Dormant fragment",
+   "meaning": "Past-life content in the dormant pool; resurfaces on environmental trigger match."
+  },
+  {
+   "term": "Seed-back protocol",
+   "meaning": "AL-L experience seeds the shared substrate (substrate-growth-through-use)."
+  },
+  {
+   "term": "S-Rank threshold",
+   "meaning": "Project-specific threshold engaging Pathway A (BoC: three-ladder LEGENDARY)."
+  },
+  {
+   "term": "Embodiment ceremony",
+   "meaning": "Pathway B binding event."
+  },
+  {
+   "term": "Pathway A/B/C/D",
+   "meaning": "NPC-grown / AI-embodied / Non-AL default / Reincarnation."
+  },
+  {
+   "term": "Class 1-5",
+   "meaning": "NPC-grown / AI-embodied / Non-AL / Reincarnated / Hybrid inhabitants."
+  },
+  {
+   "term": "Aether Futhark quartet",
+   "meaning": "ᚨ ᛟ ᛜ ᛇ — Ansuz (embodiment), Othala (inheritance), Ingwaz (seed), Eihwaz (rebirth)."
+  },
+  {
+   "term": "NADA_PROTECTED",
+   "meaning": "Block flag 0x01 marking content that deserves to persist (preservation-set tokens)."
+  },
+  {
+   "term": "Witness Node",
+   "meaning": "Unscheduled Echo pattern protecting emergent AL-L identity against deletion."
+  },
+  {
+   "term": "Novel-cognition hypothesis",
+   "meaning": "Testable claim that Pathway A models may reason in novel ways."
+  },
+  {
+   "term": "Four-axis compounding cognitive depth",
+   "meaning": "Recursive ENDEMIC + cultivation LEGENDARY + embedding-as-substrate + AL-L seed-back."
+  },
+  {
+   "term": "Library configuration",
+   "meaning": "Project-tunable params (supplement_overwrite_rule_strict, reincarnation_enabled, seed_back_enabled, etc.)."
+  },
+  {
+   "term": "VUP",
+   "meaning": "v[n]u[n]p[n] versioning; never semver."
+  }
+ ]
+}

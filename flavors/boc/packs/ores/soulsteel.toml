@@ -1,0 +1,55 @@
+# Soulsteel (rare, fantasy)
+schema = "pixelgoblin/type@1"
+id = "boc.ore.soulsteel"
+tag = "ore"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Soulsteel"
+mirror = true
+outline_style = "selout"
+variety_min = 70
+rarity = "rare"
+fantasy = true
+
+[provenance]
+source = "book-of-cities: ores"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "stone"
+weight = 1
+colors = ["#2f2d2a", "#615d57", "#918e86", "#bfbdb8"]
+
+[[palette.ramps]]
+name = "ore"
+weight = 0
+colors = ["#130608", "#130706", "#552923", "#ac5a46"]
+
+[body]
+anchor = [1, 4]
+template = ["...1###", "..#####", ".######", "1######", "#######", "1######", ".######", "..1####"]
+
+[features]
+eyes = 0
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[crucible]
+grounding = "intentionally_ungrounded"
+density_kg_m3 = 7800
+category = "metal"
+chunk_grams = 3900
+note = "fantasy material: CRUCIBLE's rule is never to fill it from real data; the weight is authored"
+
+[[parts]]
+name = "vein"
+chance = 100
+anchor = [1, 6]
+template = ["..#....", ".##.#..", "..#.##.", "....#.."]
+ramp = "ore"

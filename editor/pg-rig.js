@@ -145,6 +145,8 @@ const PGRig = ((PG) => {
     g.eye = _rngRange(b, get(sp, "eye", [100, 120]));
     g.leg_pct = legPct;
     g.hunch = age === "elder" ? 1 : 0;
+    const stature = get(sp, "stature", null);
+    if (stature !== null) g.height = Math.min(1000, Math.floor(g.height * _rngRange(b, stature) / 100));
     const f = S.rng("g/face");
     g.expression = _pick(f, get(role, "expression", ["neutral"]), "neutral");
     g.iris = _pick(f, get(sp, "iris", ["amber"]), "amber");
@@ -676,7 +678,17 @@ const PGRig = ((PG) => {
   // ---------------------------------------------------------------- teams and overlays by id
   let teamTable = {}, ownTable = {};
   function setTables(teams, owns) { teamTable = teams || {}; ownTable = owns || {}; }
-  function composeId(roleId, subId) { return compose(resolve(roleId), ownTable[subId], subId); }
+  const OVERLAY_PREFIXES = ["boc.goblin.sub.", "boc.race.sub.", "boc.trait.sub."];
+  function overlayId(name) {
+    if (name.indexOf(".") >= 0) return name;
+    for (const pre of OVERLAY_PREFIXES) { const id = pre + name.replace(/-/g, "_"); if (ownTable[id]) return id; }
+    throw new Error("no overlay called " + name);
+  }
+  function composeId(roleId, subIds) {  // several overlays stack left to right, like typefile.compose
+    let d = resolve(roleId);
+    for (const one of String(subIds).split(",").map((x) => x.trim()).filter(Boolean)) { const id = overlayId(one); d = compose(d, ownTable[id], id); }
+    return d;
+  }
   function withTeam(data, team) {
     const spec = typeof team === "string" ? teamTable[team] : team;
     if (!spec) throw new Error("unknown team " + team);
@@ -814,8 +826,9 @@ const PGRig = ((PG) => {
   }
   const weighted = (rng, table) => { const keys = Object.keys(table).sort(cmpStr); return keys[rng.weighted(keys.map((k) => table[k]))]; };
   function cityHash(city) { return PG.hex(PG.sha256(new TextEncoder().encode(PG.canonical(city)))); }
+  const subId = (sub) => (sub.indexOf(".") >= 0 ? sub : "boc.goblin.sub." + sub);
   function citizenType(p) {
-    let data = p.sub ? composeId(p.role, "boc.goblin.sub." + p.sub) : resolve(p.role);
+    let data = p.sub ? composeId(p.role, subId(p.sub)) : resolve(p.role);
     if (p.team) data = withTeam(data, p.team);
     return data;
   }
@@ -872,11 +885,32 @@ const PGRig = ((PG) => {
     for (const p of people) {
       if ((cap[p.band] || 0) > 0) {
         cap[p.band] -= 1;
-        shown.push({ role: p.role, seed: p.seed, band: p.band, overrides: p.overrides || null, sub: p.sub ? "boc.goblin.sub." + p.sub : null, team: p.team, name: p.name });
+        shown.push({ role: p.role, seed: p.seed, band: p.band, overrides: p.overrides || null, sub: p.sub ? subId(p.sub) : null, team: p.team, name: p.name });
         p.outdoors = true;
       } else p.outdoors = false;
     }
     return sceneFrames(sc, seed, null, onCrowd, shown)[0];
+  }
+
+  // ---------------------------------------------------------------- Goblin Grounds (sandbox.py; plan_world is transpiled)
+  let packTable = [];
+  function setPacks(p) { packTable = p || []; }
+  function sandboxConfig(biome, w = 28, h = 18) {
+    const bp = packTable.find((p) => p.id === "boc.pack.biomes");
+    if (!bp) throw new Error("the biomes pack is not installed");
+    const res = (bp.residents || {})[biome];
+    if (!res) throw new Error("no biome called " + biome);
+    const pick = (pre) => res.filter((t) => t.startsWith(pre));
+    return { biome, w, h, water: ["coast", "swamp", "underwater"].includes(biome) ? 22 : 10, rock: ["mountain", "badlands"].includes(biome) ? 24 : 12,
+      flora: pick("boc.flora."), fungi: pick("boc.fungus."), ores: pick("boc.ore."), fauna: pick("boc.fauna.").concat(pick("boc.fish.")),
+      counts: { flora: F(w * h, 18), fungi: F(w * h, 60), ores: F(w * h, 50), fauna: F(w * h, 120) } };
+  }
+  function sandboxWorld(biome, seed, w = 28, h = 18) {
+    const cfg = sandboxConfig(biome, w, h), hh = PG.typeHash(cfg), S = new PG.Streams(PG.masterSeed(hh, seed));
+    const plan = plan_world(cfg, S.rng("world"));
+    plan.quests = quests(plan, S.rng("quests"), 3);
+    plan.biome = biome; plan.seed = seed; plan.config_hash = hh;
+    return plan;
   }
 
   PG.register("rig", (data, seed, overrides) => rigFrames(data, seed, overrides), () => STREAMS.slice());
@@ -884,7 +918,7 @@ const PGRig = ((PG) => {
     (data) => ["clouds", "ridge/0", "ridge/1", "falls", "trees", "platforms", "stalls"].concat(data.crowd.map((b) => "crowd/" + b.name)));
   return { TIERS, LOD, ERAS, DEFAULT_CHAIN, EXPRESSIONS, POSES, genome, render, chain, rigFrames, streamsFor, legsCheck, legCount,
     ladder, compose, merge, setResolver, sceneFrames, sceneIdentity, seedFromName, lineage, family, F, MOD,
-    VIEWS, VIEW_POSES, model, renderView, signature, zoomFrames, zoom_plan, setTables, withTeam, composeId,
-    beastGenome, beastRender, mounted, EXT, parseNames, census, citizenSprite, cityVillage, cityHash, isin, camera, canvas_size };
+    VIEWS, VIEW_POSES, model, renderView, overlayId, signature, zoomFrames, zoom_plan, setTables, withTeam, composeId,
+    beastGenome, beastRender, mounted, EXT, parseNames, census, subId, setPacks, sandboxConfig, sandboxWorld, reachable, speed, CARRY_GRAMS, citizenSprite, cityVillage, cityHash, isin, camera, canvas_size };
 })(PG);
 if (typeof module !== "undefined") module.exports = PGRig;

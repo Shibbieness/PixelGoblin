@@ -1,0 +1,56 @@
+# Arctic-Fox: White pelt stated.
+schema = "pixelgoblin/type@1"
+id = "boc.fauna.arctic_fox"
+tag = "creature.small"
+generator = "mask"
+license = "Proprietary"
+size = [16, 16]
+label = "Arctic-Fox"
+mirror = true
+outline_style = "selout"
+variety_min = 80
+biome = "tundra"
+
+[provenance]
+source = "book-of-cities: fauna (tundra)"
+colors = "as stated in the source"
+
+[palette]
+outline = "#140e14"
+
+[[palette.ramps]]
+name = "coat"
+weight = 3
+colors = ["#b4a692", "#dad4c8", "#f4f3f0", "#f4f4f0"]
+
+[body]
+anchor = [1, 1]
+template = [
+  "..1....",
+  "..#1...",
+  "...####",
+  "..2####",
+  "..#####",
+  "...####",
+  "....###",
+  "..2####",
+  ".2#####",
+  ".######",
+  ".##.###",
+  ".##..#.",
+  ".1#....",
+]
+
+[features]
+eyes = 2
+eye_color = "#f4ecd0"
+
+[animation]
+frames = 1
+frame_ms = 200
+
+[[parts]]
+name = "horns"
+chance = 35
+anchor = [5, 1]
+template = ["1..", "#1.", ".#."]

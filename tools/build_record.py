@@ -71,6 +71,17 @@ LOG = [
     ("transpiler", "Extended (while, break, augmented assignment, dict, list, bytearray, is None) to carry views, beasts and zoom to JavaScript: parity on the first run after one fix."),
     ("props", "Huts and stalls gain doors, planks, window frames, shingles, scallops and crates by size."),
     ("gates", "B18 views, B19 city, B20 signatures/items/clans/mounts/zoom/props; 9 more mutations; goldens re-blessed with a recorded witness."),
+    ("session 5", "Mark asks for a widget, a plugin for all of it, access in future chats, and everything packaged as a PseudoSkill .skill, double-checked."),
+    ("pocket", "PixelGoblin Pocket built from the workbench's engine script: name, job, clan, mount, size, era, drag to turn, chain, save, share codes. Published privately."),
+    ("plugin", "Plugin with three skills and a standard-library MCP server (six tools). Tested from the packaged file in a clean folder: 15 of 15 replies, pictures identical to the CLI."),
+    ("capsule", "PseudoSkill forged in Compound mode by a script: indexes, tags, graph, changelog and pretune hashes generated from one table; the Forge checklist runs as code."),
+    ("gates", "B21 packaging gate (G30); 3 more mutations (stdout pollution, missing picture, forgetful validator); ADR-021; a how-to for using PixelGoblin from Claude."),
+    ("mark", "Mid-session: resource packs for the Book of Cities, the Compendium and the Aether Library; a sandbox and minigame with CRUCIBLE and VI Builder; tune everything; what breaks, fixes, goes between."),
+    ("sources", "Four catalogs extracted from the read-only skills: 37 races, 9 biomes, 165 living things, 60 ores; Compendium traits and ranks; Aether souls; 99 CRUCIBLE materials."),
+    ("packs", "tools/build_packs.py: 316 types in 8 packs. Folk as overlays that stack; stature for the rig; ores grounded in CRUCIBLE; fantasy kept ungrounded; souls as supplement avatars."),
+    ("grounds", "Goblin Grounds: a transpiled world planner, a playable page (walk, gather, forge, quests, build) and a world.json export; played through by a test in 140 steps."),
+    ("fixes", "Variety floor for icons, centred parts, an id index (gates back under five minutes), sheets split over palettes, scrub words, flower forms, display names."),
+    ("gates", "B22 packs (G31) and B23 Goblin Grounds (G32); 5 more mutations; ADR-022 and ADR-023; two how-tos; VI Builder registration profile."),
 ]
 
 
@@ -151,6 +162,7 @@ def main() -> int:
         "SLME": str(len(json.loads((ROOT / "slme" / "pieces.json").read_text()))),
         "QREN_BYTES": qren_bytes, "CONV_COLS": str(conv["colors"]),
         "LOG": "\n".join(f"    <li><time>{t}</time>{txt}</li>" for t, txt in LOG),
+        "ORES_GROUNDED": str(sum(1 for p in typefile.type_files(ROOT / "flavors" / "boc" / "packs" / "ores") if typefile.load(p).data.get("crucible", {}).get("grounding") == "grounded")),
     }
     for gdir in galleries:
         for p in sorted(gdir.glob("*.png")):

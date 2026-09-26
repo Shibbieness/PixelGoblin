@@ -4,7 +4,7 @@
 
 ## Where things stand (v0u1p0)
 
-The **prototype** is built and gated: Python reference engine, CLI, browser editor with a parity-checked JavaScript core, Vanilla Core flavor, a character rig drawn at six resolution tiers (8 to 256 px) and from any direction, mounts, a village scene composer, a city built from a list of names, Warren dungeons, and 21 build gates. Plan gates G01 to G29 below are the prototype's exit criteria. `BUILD_STATUS.md` shows which pass.
+The **prototype** is built and gated: Python reference engine, CLI, browser editor with a parity-checked JavaScript core, Vanilla Core flavor, a character rig drawn at six resolution tiers (8 to 256 px) and from any direction, mounts, a village scene composer, a city built from a list of names, Warren dungeons, a pocket widget, a plugin with MCP tools, a PseudoSkill capsule, resource packs from the Book of Cities, the Compendium and the Aether Library, the Goblin Grounds sandbox, and 24 build gates. Plan gates G01 to G32 below are the prototype's exit criteria. `BUILD_STATUS.md` shows which pass.
 
 ## Plan gates for the prototype
 
@@ -39,6 +39,9 @@ The **prototype** is built and gated: Python reference engine, CLI, browser edit
 | G27 | Every view is a projection of one lifted model: front and side share heights, front and top widths, side and top depths; the model's front reproduces the drawing; faces are hidden from behind |
 | G28 | A city from a list of names is deterministic; adding or removing a citizen changes nobody else; children inherit from their household's parents; a household shares subspecies and clan |
 | G29 | No two roles share an 8 px icon; 8-bit eyes survive; items written as data draw; clans change only clothes; riders sit on mounts; zooms grow from crowd to portrait; props gain detail with size |
+| G30 | PixelGoblin can be reached from Claude three ways (the Pocket widget, the plugin with its MCP tools, the PseudoSkill capsule); each draws the same pixels as the engine and passes its own structural checks |
+| G31 | Resource packs are generated from their source catalogs and stay current; every pack type validates, draws deterministically and matches in JavaScript; folk and traits stack on any job with two legs at every tier; every grounded ore carries CRUCIBLE's own density and every fantasy ore stays ungrounded; avatars are supplements, never overwrites |
+| G32 | Goblin Grounds plans the same world in Python and JavaScript; everything gatherable is reachable; quests never ask for more than the world holds; speed falls with the load; the export carries weights for game engines |
 
 ## Standalone phases
 

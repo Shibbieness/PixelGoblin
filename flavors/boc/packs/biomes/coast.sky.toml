@@ -1,0 +1,41 @@
+# Coast: Land-sea interface: beaches, cliffs, mangroves, frozen coasts.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.coast.sky"
+tag = "env"
+generator = "parallax"
+license = "Proprietary"
+size = [160, 90]
+label = "Coast sky"
+stars = 0
+
+[provenance]
+source = "book-of-cities: biomes (Coast)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+sky = ["#1c3f5e", "#2d5d9a", "#5379c0", "#8ba0d5", "#c3cce9"]
+star = "#fff4e0"
+
+[[layers]]
+name = "far"
+colors = ["#183625", "#3d7761", "#68b29f"]
+base = 60
+periods = [40, 12]
+amps = [12, 4]
+scroll = 20
+
+[[layers]]
+name = "mid"
+colors = ["#120e08", "#584e2b", "#ada356"]
+base = 74
+periods = [26, 9]
+amps = [8, 3]
+scroll = 50
+
+[[layers]]
+name = "ground"
+colors = ["#9e6b37", "#cdb787", "#f2efe1"]
+base = 88
+periods = [16, 5]
+amps = [3, 2]
+scroll = 100

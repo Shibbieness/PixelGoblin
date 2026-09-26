@@ -1,0 +1,22 @@
+# SSS-Rank composite: Quality + Rarity + Cultivation LEGENDARY simultaneously. Requires generational specialized play (cannot be looted/found/crafted-from-base). Provisionally display + narrative signif
+schema = "pixelgoblin/type@1"
+id = "boc.rank.sss_rank"
+tag = "ui"
+generator = "uikit"
+license = "Proprietary"
+size = [12, 12]
+label = "SSS-Rank composite"
+tile = 12
+border = 2
+corner = "round"
+icons = 6
+texture = 14
+rank_order = 3
+
+[provenance]
+source = "book-of-cities-compendium: ranks"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+outline = "#14121a"
+material = ["#0b0d0f", "#22272d", "#4b525f", "#747d92", "#a7acba"]

@@ -1,0 +1,41 @@
+# Tundra: Cold permafrost, glacier edge and frozen taiga.
+schema = "pixelgoblin/type@1"
+id = "boc.biome.tundra.sky"
+tag = "env"
+generator = "parallax"
+license = "Proprietary"
+size = [160, 90]
+label = "Tundra sky"
+stars = 30
+
+[provenance]
+source = "book-of-cities: biomes (Tundra)"
+colors = "inferred from the name (the source states none)"
+
+[palette]
+sky = ["#5c5d61", "#828288", "#a9a9ad", "#d0d0d2", "#f2f2f3"]
+star = "#fff4e0"
+
+[[layers]]
+name = "far"
+colors = ["#384732", "#63815e", "#95b194"]
+base = 60
+periods = [40, 12]
+amps = [12, 4]
+scroll = 20
+
+[[layers]]
+name = "mid"
+colors = ["#34100a", "#954c29", "#d69868"]
+base = 74
+periods = [26, 9]
+amps = [8, 3]
+scroll = 50
+
+[[layers]]
+name = "ground"
+colors = ["#b6b9b0", "#eeefed", "#f2f3f2"]
+base = 88
+periods = [16, 5]
+amps = [3, 2]
+scroll = 100
