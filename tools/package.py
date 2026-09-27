@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
-"""Package PixelGoblin for Claude: the plugin (.plugin) and the PseudoSkill capsule (.skill).
+"""Package PixelGoblin for Claude: the plugin (.plugin), the workshop capsule and the original capsule (.skill).
 
-usage: package.py [plugin|capsule|all]   (default all)
+usage: package.py [plugin|workshop|capsule|all]   (default all = plugin + workshop)
+
+The workshop (pixelgoblin-workshop.skill) is the uploadable capsule to work from.
+The original capsule (pixelgoblin-pseudoskill.skill) is frozen: the copy Mark was
+given lives in dist/archive/ and rides inside the workshop. `capsule` still
+forges it (gate B21 checks the code works) but it is never part of `all`.
 
 Hand-written parts live in packaging/plugin/ and packaging/capsule/. This script
 copies the engine, pages and docs in beside them, generates the roster, and
@@ -119,7 +124,12 @@ def main() -> int:
         d = build_plugin()
         z = zip_dir(d, DIST / "pixelgoblin.plugin")
         print(f"{z.relative_to(ROOT)}  {z.stat().st_size // 1024} KB  ({sum(1 for _ in d.rglob('*') if _.is_file())} files)")
-    if what in ("capsule", "all"):
+    if what in ("workshop", "all"):
+        from packaging_workshop import NAME as WNAME, build_workshop  # noqa: E402  (tools/packaging_workshop.py)
+        d = build_workshop(ROOT, DIST)
+        z = zip_dir(d, DIST / f"{WNAME}.skill", WNAME)
+        print(f"{z.relative_to(ROOT)}  {z.stat().st_size // 1024} KB  ({sum(1 for _ in d.rglob('*') if _.is_file())} files)")
+    if what == "capsule":
         from packaging_capsule import NAME, build_capsule  # noqa: E402  (tools/packaging_capsule.py)
         d = build_capsule(ROOT, DIST)
         z = zip_dir(d, DIST / f"{NAME}.skill", NAME)
