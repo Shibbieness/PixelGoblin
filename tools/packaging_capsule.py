@@ -25,6 +25,15 @@ from pathlib import Path
 NAME = "pixelgoblin-pseudoskill"
 CAPSULE_VERSION = "v1u0p0"      # VUP; equals codex 1.0.0 in the spec's semver
 FORGED = "2026-09-26"
+PATCH_VERSION = "v1u0p1"  # upload compatibility (see the changelog CORRECTION entry)
+# A skill upload accepts exactly one SKILL.md. The repository's own skill files are
+# renamed <name>_SKILL.md inside build/source/ only; `restore` puts them back.
+RENAMED_SKILLS = [
+    ("packaging/capsule/SKILL.md", "packaging/capsule/capsule_SKILL.md"),
+    ("packaging/plugin/skills/pixelgoblin/SKILL.md", "packaging/plugin/skills/pixelgoblin/pixelgoblin_SKILL.md"),
+    ("packaging/plugin/skills/pixelgoblin-types/SKILL.md", "packaging/plugin/skills/pixelgoblin-types/pixelgoblin-types_SKILL.md"),
+    ("packaging/plugin/skills/pixelgoblin-engine/SKILL.md", "packaging/plugin/skills/pixelgoblin-engine/pixelgoblin-engine_SKILL.md"),
+]
 SESSION = "5"
 
 # ---------------------------------------------------------------- tags
@@ -149,8 +158,8 @@ ITEMS = [
          nav="Published privately for Mark at https://claude.ai/artifact/HRTVjLVPeRsQrRsMHbupqc.", not_="Not the full workbench."),
     dict(id="plugin", label="PixelGoblin plugin", path="build/source/packaging/plugin/.claude-plugin/plugin.json", st="#module", ss="#complete", nt=["#session:5", "#access"],
          deps=["cli", "workbench", "pocket-widget", "grounds-page"], what="A Claude plugin with three skills (pixelgoblin, pixelgoblin-types, pixelgoblin-engine), a standard-library MCP server with nine tools that return pictures inline (characters, sheets, cities, packs, avatars, sandbox worlds, list, any command, self-test), the bundled engine with every resource pack, and all three pages.",
-         keys=[("plugin.json", "manifest", ".claude-plugin/"), (".mcp.json", "the server", "packaging/plugin/"), ("server/pixelgoblin_mcp.py", "nine tools", "packaging/plugin/server/"), ("skills/", "three skills", "packaging/plugin/skills/")],
-         nav="Built by tools/package.py into dist/pixelgoblin.plugin; gate B21 checks it.", not_="Not this capsule; the capsule is the project's memory, the plugin is the tool."),
+         keys=[("plugin.json", "manifest", ".claude-plugin/"), (".mcp.json", "the server", "packaging/plugin/"), ("server/pixelgoblin_mcp.py", "nine tools", "packaging/plugin/server/"), ("skills/", "three skills; in this capsule each SKILL.md is renamed <name>_SKILL.md", "packaging/plugin/skills/")],
+         nav="Built by tools/package.py into dist/pixelgoblin.plugin; gate B21 checks it. Inside this capsule the three skill files are pixelgoblin_SKILL.md, pixelgoblin-types_SKILL.md and pixelgoblin-engine_SKILL.md (build/source/packaging/RENAMED_SKILLS.md); run `tools/packaging_capsule.py restore` on a copied-out build/source before building the plugin.", not_="Not this capsule; the capsule is the project's memory, the plugin is the tool."),
     dict(id="gates", label="Gates, mutations, goldens, floor", path="build/source/tests/gate.py", st="#test", ss="#complete", nt=["#spire-discipline", "#validated"],
          deps=["cli", "transpiler-js", "plugin"], what="24 build gates (B00 to B23) cover plan gates G01 to G32. falsify.py breaks each behaviour a gate depends on and proves the gate notices. 224 goldens, a count ratchet (FLOOR.json), a from-empty run, and BUILD_STATUS.md written only after a full run.",
          keys=[("gate.py", "B00-B23", "tests/"), ("falsify.py", "mutations", "tests/"), ("FLOOR.json", "the ratchet", "tests/"), ("golden/goldens.json", "224 pixel hashes", "tests/golden/")],
@@ -250,6 +259,7 @@ def build_layer(root: Path, cap: Path) -> None:
         q = src / rel
         q.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(p, q)
+    rename_nested_skills(src)
     ui = cap / "build" / "ui"
     for page in ("pixelgoblin.html", "pixelgoblin-pocket.html", "pixelgoblin-grounds.html", "src.html", "widget.src.html", "grounds.src.html"):
         _copy(root / "editor" / page, ui / page)
@@ -272,6 +282,35 @@ def build_layer(root: Path, cap: Path) -> None:
                      ("assets", "the build record and the gallery")):
         _write(cap / "build" / sub / "README.md", f"# build/{sub}/\n\nConvenience copies of {why}, for reading without digging into `build/source/`.\n"
                f"`build/source/` is canonical. The Forge validator checks these copies are byte-identical to it (the gallery is regenerated from seeds).\n" + _sign())
+
+
+def rename_nested_skills(src: Path) -> None:
+    """Rename the repository's inner SKILL.md files so the capsule holds exactly one."""
+    for orig, new in RENAMED_SKILLS:
+        a = src / orig
+        if a.exists():
+            a.rename(src / new)
+    rows = "\n".join(f"| `{o}` | `{n}` |" for o, n in RENAMED_SKILLS)
+    _write(src / "packaging" / "RENAMED_SKILLS.md",
+           "# Renamed skill files\n\nA skill upload accepts exactly one `SKILL.md`: the capsule's router at the top. "
+           "So inside `build/source/` the repository's own skill files carry their skill's name in front:\n\n"
+           "| In the repository | In this capsule |\n|---|---|\n" + rows + "\n\n"
+           "Nothing else changed: the contents are byte-identical. The Forge validator checks all four are here.\n\n"
+           "## Before building from a copy\n\nCopy `build/source/` out, then in the copy run:\n\n"
+           "```\npython3 tools/packaging_capsule.py restore .\n```\n\n"
+           "That renames them back to `SKILL.md`. Then `python3 tools/package.py all` works as usual. "
+           "The plugin build needs the `SKILL.md` names; without the restore it has no skills.\n" + _sign())
+
+
+def restore_nested_skills(repo: Path) -> list[str]:
+    """Undo rename_nested_skills in a copied-out build/source."""
+    done = []
+    for orig, new in RENAMED_SKILLS:
+        a, b = repo / new, repo / orig
+        if a.exists() and not b.exists():
+            a.rename(b)
+            done.append(orig)
+    return done
 
 
 def _copy(a: Path, b: Path) -> None:
@@ -333,7 +372,7 @@ def master_index() -> str:
                ("side, back, isometric, top, free rotate", "rig3d, specs (views.md)"), ("clans / team colours", "typefile (with_team), type-files (clans.teams.toml)"),
                ("mounts and riders", "beast"), ("a city from names", "city, specs (build-a-city.md)"), ("zoom crowd to portrait", "rig (zoom_plan), outputs (zoom)"),
                ("expressions", "rig, outputs"), ("role signatures at 8 px", "rig (signature), gates (B20)"), ("items written as data", "typefile, rig, type-files (miner.toml)"),
-               ("JavaScript parity", "transpiler-js, gates (B13)"), ("the widget", "pocket-widget"), ("the plugin and MCP tools", "plugin"),
+               ("JavaScript parity", "transpiler-js, gates (B13)"), ("the widget", "pocket-widget"), ("the plugin and MCP tools", "plugin"), ("renamed <name>_SKILL.md files", "plugin, packaging (build/source/packaging/RENAMED_SKILLS.md)"),
                ("licences", "specs (stack.md, decisions ADR-010), PseudoSKILL.md §9"), ("what is next", "specs (gameplan.md), OPEN_QUESTIONS.md"),
                ("why a decision was made", "specs (decisions.md), NARRATIVE.md"), ("how things are checked", "gates, specs (gates.md)")]
     L += [f"| {a} | {b} |" for a, b in concept]
@@ -386,7 +425,13 @@ def changelog() -> str:
           "- Mode: Compound. The repository is canonical for current state; the conversations are canonical for reasoning.",
           f"- Naming: the capsule is `{NAME}`, following Mark's current capsule names (helix-pseudoskill, lexis-pseudoskill) rather than the spec's `-codex` suffix. See OPEN_QUESTIONS Q9.",
           "- Validation: every check in the Forge validation checklist passed before packaging (tools/packaging_capsule.py validate()). Gate B21 runs the same checks.",
-          "- Mark's reference images are not in this capsule and never will be."]
+          "- Mark's reference images are not in this capsule and never will be.", "",
+          f"## {PATCH_VERSION} — 2026-09-27 — CORRECTION", "", "**Summary:** Upload compatibility. A skill upload accepts one SKILL.md and only the header fields name, description, license, allowed-tools, metadata and compatibility.",
+          "", "**Tags:** #access #session:5", "", "### Changed", "",
+          "- The four inner skill files in `build/source/` are renamed `<name>_SKILL.md` (list and restore steps: `build/source/packaging/RENAMED_SKILLS.md`). Contents unchanged.",
+          "- SKILL.md header: version, author, forged and the other extra fields moved under `metadata:`. Values unchanged. META.json holds them too.",
+          "- The validator checks there is exactly one SKILL.md and that the renamed files are present. `tools/packaging_capsule.py restore <dir>` undoes the rename in a copy.",
+          "", "### Notes", "", "- The repository keeps its SKILL.md names, so the plugin builds exactly as before. Nothing else in the capsule changed."]
     return "\n".join(L) + "\n" + _sign()
 
 
@@ -544,7 +589,7 @@ def build_capsule(root: Path, dist: Path) -> Path:
     _write(cap / "dependencies" / "DEPENDENCY_MAP.md", dependency_map(g))
     _write(cap / "dependencies" / "internal_deps.md", internal_deps(root))
     pretune(root, cap)
-    meta = {"project_name": "PixelGoblin", "codex_name": NAME, "codex_version": "1.0.0", "version": CAPSULE_VERSION, "version_format": "VUP",
+    meta = {"project_name": "PixelGoblin", "codex_name": NAME, "codex_version": "1.0.0", "version": PATCH_VERSION, "version_format": "VUP",
             "engine_version": "v0u1p0", "forged_date": FORGED, "author": "Shibbieness", "co_author": "Claude", "organization": "M MAOU LLC",
             "compiler_mode": "conversation+file", "build_mode": "compound", "cals_namespace": True, "build_layer_present": True, "pretune_layer_present": True,
             "immutable_core": True, "update_structure_version": "1.0", "tags": ["#determinism", "#tier-chain", "#views", "#city", "#parity", "#access", "#packs", "#grounds", "#milestone"],
@@ -610,9 +655,19 @@ def validate(cap: Path) -> list[str]:
         P.append("SKILL.md has no frontmatter")
     else:
         fm = m.group(1)
-        for k in ("name:", "description:", "version:", "author:", "forged:", "immutable_core:", "update_structure_version:"):
+        top = set(re.findall(r"^([A-Za-z_-]+):", fm, re.M))
+        extra = top - {"name", "description", "license", "allowed-tools", "metadata", "compatibility"}
+        if extra:
+            P.append(f"SKILL.md frontmatter has keys a skill upload rejects (move them under metadata:): {sorted(extra)}")
+        for k in ("name:", "description:", "metadata:"):
             if not re.search(rf"^{k}", fm, re.M):
                 P.append(f"SKILL.md frontmatter lacks {k}")
+        for k in ("version:", "author:", "forged:", "immutable_core:", "update_structure_version:"):
+            if not re.search(rf"^  {k}", fm, re.M):
+                P.append(f"SKILL.md frontmatter metadata lacks {k}")
+        desc_txt = re.search(r'^description: "(.*)"$', fm, re.M)
+        if desc_txt and (len(desc_txt.group(1)) > 1024 or "<" in desc_txt.group(1) or ">" in desc_txt.group(1)):
+            P.append("SKILL.md description must be at most 1024 characters with no angle brackets")
         if not re.search(rf"^name: {NAME}$", fm, re.M):
             P.append(f"SKILL.md name must be {NAME}")
         desc = re.search(r'^description: "(.*)"$', fm, re.M)
@@ -632,6 +687,15 @@ def validate(cap: Path) -> list[str]:
                 P.append(f"SKILL.md Navigation Map does not reference {f}")
         if len(body.split()) > 5000:
             P.append("SKILL.md is too long for a router (over 5000 words)")
+    # exactly one SKILL.md (a skill upload rejects more); the renamed ones are present
+    skills = [q.relative_to(cap).as_posix() for q in cap.rglob("SKILL.md")]
+    if skills != ["SKILL.md"]:
+        P.append(f"the capsule must hold exactly one SKILL.md, at the top; found {sorted(skills)}")
+    for _, new in RENAMED_SKILLS:
+        if not (cap / "build" / "source" / new).exists():
+            P.append(f"renamed skill file build/source/{new} is missing")
+    if not (cap / "build" / "source" / "packaging" / "RENAMED_SKILLS.md").exists():
+        P.append("build/source/packaging/RENAMED_SKILLS.md is missing")
     # index completeness
     mi = (cap / "codex" / "MASTER_INDEX.md").read_text() if (cap / "codex" / "MASTER_INDEX.md").exists() else ""
     for it in ITEMS:
@@ -721,4 +785,8 @@ if __name__ == "__main__":
         probs = validate(Path(sys.argv[2]))
         print("\n".join(probs) or "capsule valid")
         sys.exit(1 if probs else 0)
+    if len(sys.argv) > 2 and sys.argv[1] == "restore":
+        back = restore_nested_skills(Path(sys.argv[2]))
+        print("\n".join(f"restored {b}" for b in back) or "nothing to restore")
+        sys.exit(0)
     print(build_capsule(here, here / "dist"))

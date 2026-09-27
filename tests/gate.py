@@ -1065,6 +1065,15 @@ def b21(c: Check):
         c.ok(packaging_capsule.validate(cap) == [], "the PseudoSkill capsule passes every Forge validation check")
         (cap / "updates" / "tests" / "INIT.md").unlink()
         c.ok(any("updates/tests/INIT.md" in p for p in packaging_capsule.validate(cap)), "control: a capsule missing a slot's INIT.md fails validation", negative=True)
+        # uploadable as a skill: one SKILL.md, header keys a skill upload accepts
+        c.ok([q.relative_to(cap).as_posix() for q in cap.rglob("SKILL.md")] == ["SKILL.md"], "the capsule holds exactly one SKILL.md (skill upload rule)")
+        nested = cap / "build" / "source" / "packaging" / "plugin" / "skills" / "pixelgoblin"
+        (nested / "pixelgoblin_SKILL.md").rename(nested / "SKILL.md")
+        c.ok(any("exactly one SKILL.md" in p for p in packaging_capsule.validate(cap)), "control: a second SKILL.md inside the capsule fails validation", negative=True)
+        (nested / "SKILL.md").rename(nested / "pixelgoblin_SKILL.md")
+        sk = cap / "SKILL.md"
+        sk.write_text(sk.read_text().replace("metadata:\n", "version: v1u0p1\nmetadata:\n", 1))
+        c.ok(any("upload rejects" in p for p in packaging_capsule.validate(cap)), "control: a top-level header key a skill upload rejects fails validation", negative=True)
 
 
 @gate("B22", "resource packs: Book of Cities, Compendium, Aether Library, CRUCIBLE", ["G31"])

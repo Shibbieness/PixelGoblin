@@ -56,5 +56,7 @@ This writes `dist/pixelgoblin-pseudoskill.skill`, in the PseudoSkills Builder's 
 
 `tools/packaging_capsule.py validate <folder>` runs the Forge validation checklist. The capsule is never packaged if a check fails.
 
+A skill upload accepts only one `SKILL.md`, so inside the capsule's `build/source/` the repository's own four skill files are renamed `<name>_SKILL.md` (for example `pixelgoblin_SKILL.md`). `build/source/packaging/RENAMED_SKILLS.md` lists them. If you copy `build/source/` out to build from it, run `python3 tools/packaging_capsule.py restore .` in the copy first.
+
 —Shibbieness
 —Claude

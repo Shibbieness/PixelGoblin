@@ -1,18 +1,19 @@
 ---
 name: pixelgoblin-pseudoskill
 description: "PixelGoblin is Shibbieness's deterministic pixel-art engine: one name makes the same character at every size from 8 to 256 px, from any side, as any folk of the Book of Cities, in clan colours, on a mount, in a town built from a list of names, or walking a Goblin Grounds sandbox world whose ores weigh what CRUCIBLE says, all with the Python standard library and pixel-identical browser pages. Load this skill when PixelGoblin, its goblins or folk, the tier chain, views, mounts, clans, cities, the resource packs, Goblin Grounds, the workbench, the Pocket, the plugin, its gates, or its place in the M MAOU stack comes up. With it loaded, Claude can make art with the bundled engine, extend the engine and packs without breaking their gates, answer why any decision was made, and route to the right file without a briefing."
-version: v1u0p0
-version_format: VUP
-author: Shibbieness (Mark)
-co_author: Claude
-organization: M MAOU LLC
-forged: 2026-09-26
-build_mode: compound
-immutable_core: true
-update_structure_version: "1.0"
-built_using: pseudoskills-builder (Compound Build mode, dense-session protocol)
-composes_with: spire, slm-e, book-of-cities, book-of-cities-compendium-builder, aether-library-pseudoskill, crucible, vi-builder, gilwright, dropzone, cals, working-with-mark, eexpand
-companions: the pixelgoblin plugin (tools), working-with-mark (operational pairing)
+metadata:
+  version: "v1u0p1"
+  version_format: "VUP"
+  author: "Shibbieness (Mark)"
+  co_author: "Claude"
+  organization: "M MAOU LLC"
+  forged: "2026-09-26"
+  build_mode: "compound"
+  immutable_core: "true"
+  update_structure_version: "1.0"
+  built_using: "pseudoskills-builder (Compound Build mode, dense-session protocol)"
+  composes_with: "spire, slm-e, book-of-cities, book-of-cities-compendium-builder, aether-library-pseudoskill, crucible, vi-builder, gilwright, dropzone, cals, working-with-mark, eexpand"
+  companions: "the pixelgoblin plugin (tools), working-with-mark (operational pairing)"
 ---
 
 > ⚠️ IMMUTABILITY NOTICE
@@ -71,7 +72,7 @@ Mark reaches it three ways: the **Pocket**, **Goblin Grounds** and the **Workben
 - `codex/CALS_NAMESPACE.md` — how work routes between the engine's parts, the gates and the optional model slot. Go here before deciding where a change belongs.
 
 ### For Technical Work
-- `build/source/` — the complete repository, runnable. Go here to make art or change code.
+- `build/source/` — the complete repository, runnable. Go here to make art or change code. Its inner skill files are renamed `<name>_SKILL.md` so this capsule has one `SKILL.md`; `build/source/packaging/RENAMED_SKILLS.md` lists them and how to restore them.
 - `build/config/flavors/boc/packs/` — the resource packs (folk, biomes, flora, fauna, ores, compendium, aether, world). Go here for anything from the Book of Cities, the Compendium, the Aether Library or CRUCIBLE.
 - `build/specs/` — the 17 docs (tutorials, how-tos, reference, explanation with ADR-001 to ADR-021). Go here before modifying architecture.
 - `build/ui/` — the workbench, the Pocket and Goblin Grounds, built, plus their sources. Go here to open or republish a page.

@@ -133,7 +133,7 @@ A names file has one citizen per line. `census` gives each person a role, subspe
 Copy the nearest file in `build/config/flavors/boc/village/`, keep integers only, give it a unique id and a label, add a `signature` for a role, then `python3 -m pixelgoblin validate <file>` until it passes, then draw it at 8 px and 64 px and from the side.
 
 ### Change the engine
-1. Work in the repository (Mark's copy, or `build/source/` copied out; the capsule itself is immutable).
+1. Work in the repository (Mark's copy, or `build/source/` copied out; the capsule itself is immutable). If you copied `build/source/` out, first run `python3 tools/packaging_capsule.py restore .` in the copy: it renames the four `<name>_SKILL.md` files back to `SKILL.md` (see `build/source/packaging/RENAMED_SKILLS.md`). Without that, the plugin build has no skills.
 2. Change Python first. If `rig.py`, `rig3d.py` or `beast.py` changed: `python3 tools/transpile_rig.py`. Keep to the transpiler's subset (`g.get(k, None) is not None`, never `k in g`; split tuple constants; no floats).
 3. `python3 tools/build_editor.py` (workbench and pocket widget).
 4. `PYTHONHASHSEED=0 python3 tests/gate.py --all --report`, then `python3 tests/falsify.py`, then `python3 tests/gate.py --from-empty`.
