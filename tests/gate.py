@@ -1074,6 +1074,42 @@ def b21(c: Check):
         sk = cap / "SKILL.md"
         sk.write_text(sk.read_text().replace("metadata:\n", "version: v1u0p1\nmetadata:\n", 1))
         c.ok(any("upload rejects" in p for p in packaging_capsule.validate(cap)), "control: a top-level header key a skill upload rejects fails validation", negative=True)
+        # the workshop: the uploadable capsule, carrying an original it must never change (a stand-in here)
+        import zipfile
+        import hashlib
+        import packaging_workshop as pw
+        stand_in = tmp / "stand-in-original.skill"
+        with zipfile.ZipFile(stand_in, "w") as z:
+            z.writestr("pixelgoblin-pseudoskill/SKILL.md", "---\nname: pixelgoblin-pseudoskill\n---\n")
+            z.writestr("pixelgoblin-pseudoskill/codex/NARRATIVE.md", "# NARRATIVE\nthe war boar\n")
+        sha = hashlib.sha256(stand_in.read_bytes()).hexdigest()
+        try:
+            wk = pw.build_workshop(ROOT, tmp / "w", archive=stand_in, archive_sha=sha)
+        except SystemExit as e:
+            c.ok(False, f"the workshop could not be forged: {e}")
+            return
+        files = [p for p in wk.rglob("*") if p.is_file()]
+        c.ok(pw.validate(wk) == [], "the workshop passes the Forge checklist and its own checks")
+        c.ok(len(files) <= pw.FORGE_BUDGET and [p.relative_to(wk).as_posix() for p in wk.rglob("SKILL.md")] == ["SKILL.md"],
+             f"the workshop is uploadable: one SKILL.md and {len(files)} files (budget {pw.FORGE_BUDGET}, limit {pw.UPLOAD_MAX_FILES})")
+        helper = [sys.executable, str(wk / "build" / "source" / "workshop.py")]
+        un = subprocess.run(helper + ["unpack", str(tmp / "unpacked")], capture_output=True, text=True)
+        ran = subprocess.run([sys.executable, "-m", "pixelgoblin", "list"], cwd=tmp / "unpacked", capture_output=True, text=True, env={**os.environ, "PYTHONHASHSEED": "0"})
+        c.ok(un.returncode == 0 and ran.returncode == 0 and "boc.goblin.blacksmith" in ran.stdout, "the unpacked source bundle runs the engine")
+        orig = subprocess.run(helper + ["original", "codex/NARRATIVE.md"], capture_output=True, text=True)
+        c.ok(orig.returncode == 0 and "war boar" in orig.stdout and subprocess.run(helper + ["check"], capture_output=True).returncode == 0,
+             "the helper reads the archived original and confirms both fingerprints")
+        try:
+            pw.build_workshop(ROOT, tmp / "w2", archive=stand_in, archive_sha="0" * 64)
+            c.ok(False, "control: a changed original stops the forge", negative=True)
+        except SystemExit:
+            c.ok(True, "control: a changed original stops the forge", negative=True)
+        arch = next((wk / "archive").glob("*.skill"))
+        arch.write_bytes(arch.read_bytes() + b"x")
+        c.ok(any("fingerprint" in p for p in pw.validate(wk)), "control: an archived original altered after forging fails validation", negative=True)
+        for i in range(pw.FORGE_BUDGET):
+            (wk / "updates" / "misc" / f"filler-{i}.md").write_text("x\n")
+        c.ok(any("files" in p and ("budget" in p or "at most" in p) for p in pw.validate(wk)), "control: a workshop over its file budget fails validation", negative=True)
 
 
 @gate("B22", "resource packs: Book of Cities, Compendium, Aether Library, CRUCIBLE", ["G31"])

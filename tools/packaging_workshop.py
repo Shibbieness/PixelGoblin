@@ -46,7 +46,10 @@ ORIGINAL_VERSION = "v1u0p1"
 ARCHIVE_NAME = f"{ORIGINAL_NAME}-{ORIGINAL_VERSION}.skill"
 ORIGINAL_SHA256 = "38b1561d08b9d7c8f57470f92d663d0e16d2ef3b2f910d288d2098925ed4f66c"  # the file Mark was given, 2026-09-27
 ARCHIVE_DEFAULT = ROOT / "dist" / "archive" / ARCHIVE_NAME
-SESSION_URL = "https://claude.ai/code/session_0178WrbuYJt6r3eKaJEpkoPU"
+# Where the project was built. Kept out of the repository (Mark's rule, enforced by the leak guard):
+# it lives in a private file beside the frozen original, and goes only into the capsule's
+# LINEAGE.md and META.json. workshop.py unpack writes it back beside the original.
+LINEAGE_LOCAL = "lineage.json"
 UPLOAD_MAX_FILES = 200
 FORGE_BUDGET = 150
 UPLOAD_MAX_BYTES = 30 * 1024 * 1024
@@ -168,7 +171,7 @@ def _addenda(hand: Path) -> dict[str, str]:
 
 
 def pseudoskill(root: Path, hand: Path) -> str:
-    body = (root / "packaging" / "capsule" / "PseudoSKILL.md").read_text().split("\n---\n", 1)[1]
+    body = _map((root / "packaging" / "capsule" / "PseudoSKILL.md").read_text().split("\n---\n", 1)[1])  # map first; the workshop text below is already right
     body = re.sub(r"^1\. Work in the repository.*$",
                   "1. Work in an unpacked copy: `python3 build/source/workshop.py unpack /tmp/pg` (or Mark's repository). The capsule folder itself is read-only.",
                   body, count=1, flags=re.M)
@@ -176,7 +179,7 @@ def pseudoskill(root: Path, hand: Path) -> str:
                         "`python3 build/source/workshop.py unpack /tmp/pg`, then `cd /tmp/pg && python3 -m pixelgoblin <command> ...`")
     body = body.replace("7. `python3 tools/package.py all` rebuilds the plugin and this capsule; B21 checks both.",
                         "7. `python3 tools/package.py workshop` re-forges this workshop (`all` rebuilds the plugin too); gate B21 checks both. The original capsule in `archive/` is never rebuilt or replaced.")
-    return (hand / "PSEUDOSKILL_PREFACE.md").read_text().rstrip() + "\n\n---\n" + _map(body)
+    return (hand / "PSEUDOSKILL_PREFACE.md").read_text().rstrip() + "\n\n---\n" + body
 
 
 def changelog(its: list[dict], src_files: int, sha: str) -> str:
@@ -200,12 +203,20 @@ def changelog(its: list[dict], src_files: int, sha: str) -> str:
     return "\n".join(L) + "\n" + pc._sign()
 
 
+def session_link(archive: Path) -> str:
+    f = archive.parent / LINEAGE_LOCAL
+    try:
+        return json.loads(f.read_text()).get("session") or "not recorded in this copy"
+    except (OSError, json.JSONDecodeError):
+        return "not recorded in this copy (it lives in dist/archive/lineage.json beside the original)"
+
+
 def lineage(hand: Path, arch: Path, sha: str, src_files: int, src_sha: str, commit: str) -> str:
     with zipfile.ZipFile(arch) as z:
         n = sum(1 for i in z.infolist() if not i.is_dir())
     return (hand / "codex" / "LINEAGE.md").read_text().format(
         original_version=ORIGINAL_VERSION, archive_name=ARCHIVE_NAME, archive_kb=arch.stat().st_size // 1024, archive_files=n,
-        original_sha256=sha, session_url=SESSION_URL, commit=commit, src_files=src_files, src_sha256=src_sha)
+        original_sha256=sha, session_url=session_link(arch), commit=commit, src_files=src_files, src_sha256=src_sha)
 
 
 def _commit(root: Path) -> str:
@@ -234,7 +245,7 @@ def build_workshop(root: Path, dist: Path, archive: Path = ARCHIVE_DEFAULT, arch
     its = items()
     cap.mkdir(parents=True)
     # router, room, lineage-aware codex prose
-    _copy(hand / "SKILL.md", cap / "SKILL.md")
+    _copy(hand / "workshop_SKILL.md", cap / "SKILL.md")  # named <name>_SKILL.md in the repo, so no capsule ever holds two
     _write(cap / "PseudoSKILL.md", pseudoskill(root, hand))
     add = _addenda(hand)
     for f in ("NARRATIVE.md", "CALS_NAMESPACE.md", "OPEN_QUESTIONS.md"):
@@ -325,7 +336,7 @@ Read it without unpacking: `python3 build/source/workshop.py original PATH`. Map
                               "gilwright", "dropzone", "cals", "working-with-mark", "pseudoskills-builder", "eexpand"],
             "companion_plugin": "build/assets/pixelgoblin.plugin", "companion_builder_sessions": 0, "last_update": None,
             "lineage": {"original": ORIGINAL_NAME, "original_version": ORIGINAL_VERSION, "original_file": f"archive/{ARCHIVE_NAME}", "original_sha256": sha,
-                        "session": SESSION_URL},
+                        "session": session_link(archive)},
             "source_bundle": {"file": SRC_ZIP, "files": src_files, "sha256": src_sha, "commit": _commit(root)},
             "upload": {"max_files": UPLOAD_MAX_FILES, "forge_budget": FORGE_BUDGET, "max_bytes": UPLOAD_MAX_BYTES}}
     _write(cap / "META.json", json.dumps(meta, indent=1, ensure_ascii=False))
@@ -396,7 +407,7 @@ def validate(cap: Path) -> list[str]:
             P.append(f"{SRC_ZIP} does not match its fingerprint in META.json")
         with zipfile.ZipFile(src) as z:
             names = set(z.namelist())
-            for need in ("pixelgoblin/__init__.py", "tools/workshop.py", "tools/packaging_workshop.py", "tests/gate.py", "packaging/workshop/SKILL.md"):
+            for need in ("pixelgoblin/__init__.py", "tools/workshop.py", "tools/packaging_workshop.py", "tests/gate.py", "packaging/workshop/workshop_SKILL.md"):
                 if need not in names:
                     P.append(f"the source bundle lacks {need}")
             P += [f"the source bundle must not hold {n}" for n in names if n.startswith("refs/") or "/refs/" in n or "__pycache__" in n]

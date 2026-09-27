@@ -7,7 +7,7 @@ There are four ways to reach PixelGoblin from a chat with Claude. They share one
 | **PixelGoblin Pocket** (a web page) | Making a goblin quickly by hand | Type a name, pick a job, folk, trait, clan, mount, size and era, drag to turn it, save a picture or 8 directions, copy a share code |
 | **Goblin Grounds** (a web page) | Playing with the packs | Walk a goblin through a biome, gather weighed ore and fungi for the forge's quests, or build |
 | **The pixelgoblin plugin** | Asking Claude for goblins in words | Three skills and nine tools that return pictures in the chat |
-| **The PixelGoblin PseudoSkill** (`pixelgoblin-pseudoskill.skill`) | Working on PixelGoblin itself | The whole project, indexed: why every decision was made, what depends on what, what is still open |
+| **The PixelGoblin Workshop** (`pixelgoblin-workshop.skill`) | Working on PixelGoblin itself | The whole project, indexed and uploadable as a skill, with the original capsule kept inside it unchanged |
 
 ## The Pocket widget
 
@@ -44,7 +44,30 @@ This writes `dist/pixelgoblin.plugin`. Install it in Claude. It contains:
 
 Pictures are saved in `~/PixelGoblin`, or in the folder named by `PIXELGOBLIN_OUT`. The server runs the engine in the same process and never prints anything but protocol messages, so its pictures are byte-identical to the command line's. Gate B21 checks that.
 
-## The PseudoSkill capsule
+## The Workshop capsule (upload this one)
+
+Build it with:
+
+```
+python3 tools/package.py workshop
+```
+
+This writes `dist/pixelgoblin-workshop.skill`: about 130 files, well under the 200-file limit for a skill upload. The whole repository is one file inside it, `build/source/pixelgoblin-src.zip`; the docs write a path inside that file as `src:path`. The pages, docs and codex stay loose so they can be read directly.
+
+The helper `build/source/workshop.py` does the rest:
+
+| Command | Does |
+|---|---|
+| `workshop.py unpack DIR` | makes a working copy you can run and change |
+| `workshop.py original [PATH]` | lists or prints files of the original capsule |
+| `workshop.py find WORDS` | searches the source and the original together |
+| `workshop.py check` | confirms both match their fingerprints |
+
+To improve PixelGoblin from a chat: unpack, change, run the gates, then `python3 tools/package.py workshop` in the copy makes the next version to upload. `codex/LINEAGE.md` inside the workshop says where everything from the original went.
+
+The original capsule is frozen. The copy Mark was given is kept at `dist/archive/pixelgoblin-pseudoskill-v1u0p1.skill` and inside every workshop; the forge refuses to run if it has changed.
+
+## The original PseudoSkill capsule (frozen)
 
 Build it with:
 

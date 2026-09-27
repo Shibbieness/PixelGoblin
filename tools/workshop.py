@@ -64,6 +64,12 @@ def unpack(dest: Path) -> int:
     if arch:  # so tools/package.py workshop can re-forge from the unpacked copy
         (dest / "dist" / "archive").mkdir(parents=True, exist_ok=True)
         shutil.copy2(arch, dest / "dist" / "archive" / arch.name)
+        try:  # the session link stays beside the original, never in the source
+            sess = json.loads((cap / "META.json").read_text())["lineage"].get("session")
+            if sess:
+                (dest / "dist" / "archive" / "lineage.json").write_text(json.dumps({"session": sess}, indent=1) + "\n")
+        except (OSError, KeyError, json.JSONDecodeError):
+            pass
     print(f"unpacked to {dest}")
     print(f"  run:     cd {dest} && python3 -m pixelgoblin --help")
     print(f"  check:   cd {dest} && PYTHONHASHSEED=0 python3 tests/gate.py --all")
