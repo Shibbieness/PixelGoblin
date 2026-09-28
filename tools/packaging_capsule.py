@@ -251,7 +251,7 @@ def _sign() -> str:
 # ---------------------------------------------------------------- build layer
 def build_layer(root: Path, cap: Path) -> None:
     src = cap / "build" / "source"
-    skip = {".git", "__pycache__", "dist", ".falsify_backup", "out", "refs"}
+    skip = {".git", "__pycache__", "dist", ".falsify_backup", "out", "refs", "capsules"}
     for p in sorted(root.rglob("*")):
         rel = p.relative_to(root)
         if set(rel.parts) & skip or not p.is_file() or p.suffix == ".pyc":

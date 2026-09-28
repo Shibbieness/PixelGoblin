@@ -8,7 +8,7 @@ PixelGoblin ports the self-checking discipline from SPIRE (Shibbieness / M MAOU 
 |---|---|
 | Plan gates (G) and build gates (B) are separate namespaces | `tests/gate.py`; each B declares the Gs it covers |
 | A gate must be able to fail | `tests/falsify.py`: 51 mutations, each naming the gate that must catch it |
-| Restore on start (SIGKILL cannot be caught) | `falsify.py` restores `.falsify_backup/` before doing anything |
+| Restore on start (SIGKILL cannot be caught) | `falsify.py` **and `gate.py`** restore `.falsify_backup/` before doing anything, so no gate ever tests a leftover mutation. Mutant runs carry `PIXELGOBLIN_MUTANT=1` so their deliberate break is left in place. B10 checks both. |
 | No assertion over an empty population | `Check.population()`; every absence check builds a control first |
 | Counts are derived, never typed | `tests/FLOOR.json` ratchet; lowering needs a witness and a reason |
 | Status only from a full run | `BUILD_STATUS.md` is refused after a partial run |

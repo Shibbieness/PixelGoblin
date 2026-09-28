@@ -45,7 +45,8 @@ ORIGINAL_NAME = "pixelgoblin-pseudoskill"
 ORIGINAL_VERSION = "v1u0p1"
 ARCHIVE_NAME = f"{ORIGINAL_NAME}-{ORIGINAL_VERSION}.skill"
 ORIGINAL_SHA256 = "38b1561d08b9d7c8f57470f92d663d0e16d2ef3b2f910d288d2098925ed4f66c"  # the file Mark was given, 2026-09-27
-ARCHIVE_DEFAULT = ROOT / "dist" / "archive" / ARCHIVE_NAME
+ARCHIVE_CANDIDATES = [ROOT / "dist" / "archive" / ARCHIVE_NAME, ROOT / "capsules" / ARCHIVE_NAME]  # a fresh clone has it in capsules/
+ARCHIVE_DEFAULT = next((c for c in ARCHIVE_CANDIDATES if c.exists()), ARCHIVE_CANDIDATES[0])
 # Where the project was built. Kept out of the repository (Mark's rule, enforced by the leak guard):
 # it lives in a private file beside the frozen original, and goes only into the capsule's
 # LINEAGE.md and META.json. workshop.py unpack writes it back beside the original.
@@ -54,7 +55,7 @@ UPLOAD_MAX_FILES = 200
 FORGE_BUDGET = 150
 UPLOAD_MAX_BYTES = 30 * 1024 * 1024
 SRC_ZIP = "build/source/pixelgoblin-src.zip"
-SKIP = {".git", "__pycache__", "dist", ".falsify_backup", "out", "refs"}
+SKIP = {".git", "__pycache__", "dist", ".falsify_backup", "out", "refs", "capsules"}  # built files never nest
 STAMP = (2026, 9, 27, 0, 0, 0)
 
 # original capsule layout -> workshop layout (applied to generated and copied text)

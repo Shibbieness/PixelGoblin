@@ -461,6 +461,22 @@ def b10(c: Check):
         return
     c.population(res["total"], "mutations")
     c.ok(res["survivors"] == [], f"all {res['total']} mutants killed (survivors: {res['survivors']})")
+    # an interrupted falsify run is repaired before any gate runs, but a deliberate mutant run is not
+    backup = ROOT / ".falsify_backup"
+    probe = ROOT / "tests" / "_restore_probe.txt"
+    try:
+        for mutant, want, what in (("", "original\n", "gate start-up repairs a file left mutated by an interrupted falsify run"),
+                                   ("1", "mutated\n", "control: a deliberate mutant run is not repaired")):
+            (backup / "tests").mkdir(parents=True, exist_ok=True)
+            (backup / "tests" / probe.name).write_text("original\n")
+            probe.write_text("mutated\n")
+            env = {k: v for k, v in os.environ.items() if k != "PIXELGOBLIN_MUTANT"}
+            env.update(PYTHONHASHSEED="0", **({"PIXELGOBLIN_MUTANT": mutant} if mutant else {}))
+            subprocess.run([sys.executable, str(ROOT / "tests" / "gate.py"), "B08"], cwd=ROOT, capture_output=True, text=True, env=env)
+            c.ok(probe.read_text() == want, what, negative=bool(mutant))
+    finally:
+        probe.unlink(missing_ok=True)
+        shutil.rmtree(backup, ignore_errors=True)
 
 
 @gate("B11", "Vanilla Core flavor contract", ["G18"])
@@ -1487,6 +1503,14 @@ def main(argv=None) -> int:
     ap.add_argument("--reason", default="")
     ap.add_argument("--regen-docs", action="store_true")
     a = ap.parse_args(argv)
+    if not os.environ.get("PIXELGOBLIN_MUTANT"):
+        # An interrupted falsify run can leave a deliberate break in a source file. Repair it
+        # before any gate runs, or the first gates test broken code (this happened: a cut-off
+        # run left parallax.py mutated and the sky goldens failed on the next run).
+        from falsify import restore_leftovers  # tests/falsify.py
+        n = restore_leftovers()
+        if n:
+            print(f"repaired {n} file(s) left mutated by an interrupted falsify run")
     if os.environ.get("PYTHONHASHSEED") != "0":
         print("note: run with PYTHONHASHSEED=0 (determinism claims must not depend on the hash seed)")
     if a.from_empty:

@@ -181,8 +181,9 @@ def main() -> int:
         shutil.copy2(path, bk)
         try:
             path.write_text(src.replace(m.old, m.new))
+            # PIXELGOBLIN_MUTANT tells gate.py this break is deliberate: do not repair it on start
             r = subprocess.run([sys.executable, "tests/gate.py", m.gate], cwd=ROOT, capture_output=True, text=True,
-                               env=dict(os.environ, PYTHONHASHSEED="0"), timeout=900)
+                               env=dict(os.environ, PYTHONHASHSEED="0", PIXELGOBLIN_MUTANT="1"), timeout=900)
             killed = r.returncode != 0
         finally:
             shutil.copy2(bk, path)
