@@ -1101,7 +1101,7 @@ def b21(c: Check):
         c.ok(not any("refs" in p.relative_to(plug).parts for p in plug.rglob("*")), "no private reference image path is in the plugin")
         c.ok((plug / "skills" / "pixelgoblin" / "engine" / "pixelgoblin" / "cli.py").exists(), "the engine is bundled inside the pixelgoblin skill")
         out = tmp / "out"
-        env = {"PATH": os.environ.get("PATH", ""), "PYTHONHASHSEED": "0", "HOME": str(tmp), "PIXELGOBLIN_OUT": str(out), "LANG": "C.UTF-8"}
+        env = minimal_env(PYTHONHASHSEED="0", HOME=str(tmp), PIXELGOBLIN_OUT=str(out), LANG="C.UTF-8")
         msgs = [{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "gate", "version": "0"}}},
                 {"jsonrpc": "2.0", "method": "notifications/initialized"}, {"jsonrpc": "2.0", "id": 2, "method": "tools/list"},
                 {"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": "pixelgoblin_character", "arguments": {"role": "shaman", "name": "Mizzle", "view": "side_right", "clan": "duskveil", "scale": 2}}}]
@@ -1535,6 +1535,21 @@ def raise_floor(lower: list[str], witness: str, reason: str) -> None:
     print(json.dumps(data["floor"], indent=1))
 
 
+# What a process needs from its OS just to start, kept in every "minimal"
+# environment. None of these exist on Linux or macOS. On Windows, Node aborts
+# at startup without SYSTEMROOT (ncrypto::CSPRNG cannot reach the system's
+# random source), and that took B13, B22 and B23 down on the second CI run.
+# They are plumbing, not configuration: nothing the gates measure reads them.
+OS_PLUMBING = ("SYSTEMROOT", "WINDIR", "TEMP", "TMP", "COMSPEC", "PATHEXT")
+
+
+def minimal_env(**extra: str) -> dict:
+    env = {k: os.environ[k] for k in OS_PLUMBING if k in os.environ}
+    env["PATH"] = os.environ.get("PATH", "")
+    env.update(extra)
+    return env
+
+
 def from_empty() -> int:
     with tempfile.TemporaryDirectory() as t:
         dst = Path(t, "pixelgoblin")
@@ -1542,7 +1557,7 @@ def from_empty() -> int:
             q = dst / p.relative_to(ROOT)
             q.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(p, q)
-        env = {"PATH": os.environ.get("PATH", ""), "PYTHONHASHSEED": "0", "HOME": t, "LANG": "C.UTF-8"}
+        env = minimal_env(PYTHONHASHSEED="0", HOME=t, LANG="C.UTF-8")
         r = subprocess.run([sys.executable, "tests/gate.py", "--all"], cwd=dst, env=env)
         return r.returncode
 

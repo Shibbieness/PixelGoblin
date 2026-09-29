@@ -16,6 +16,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -275,7 +276,7 @@ def build_layer(root: Path, cap: Path) -> None:
     _copy(root / "docs" / "record" / "pixelgoblin-build-record.html", assets / "pixelgoblin-build-record.html")
     gal = assets / "gallery"
     gal.mkdir(parents=True, exist_ok=True)
-    env = {"PYTHONHASHSEED": "0", "PATH": "/usr/bin:/bin"}
+    env = _clean_env(PYTHONHASHSEED="0")
     subprocess.run([sys.executable, str(root / "tools" / "record_gallery.py"), str(gal)], check=True, capture_output=True, env=env)
     subprocess.run([sys.executable, str(root / "tools" / "record_gallery.py"), str(gal), "--session4"], check=True, capture_output=True, env=env)
     for sub, why in (("ui", "the built pages and their sources"), ("specs", "the docs"), ("config", "type files, flavors, floor and plugin manifests"),
@@ -546,9 +547,21 @@ def update_structure(cap: Path) -> None:
     _write(up / "UPDATE_INDEX.md", "\n".join(idx) + "\n" + _sign())
 
 
+# What a process needs from its OS just to start (Windows only; none exist
+# elsewhere). The gate keeps the same set: see OS_PLUMBING in tests/gate.py.
+_OS_PLUMBING = ("SYSTEMROOT", "WINDIR", "TEMP", "TMP", "COMSPEC", "PATHEXT")
+
+
+def _clean_env(**extra: str) -> dict:
+    env = {k: os.environ[k] for k in _OS_PLUMBING if k in os.environ}
+    env["PATH"] = "/usr/bin:/bin" if os.name != "nt" else os.environ.get("PATH", "")
+    env.update(extra)
+    return env
+
+
 def pretune(root: Path, cap: Path) -> None:
     pt = cap / "pretune"
-    env = {"PYTHONHASHSEED": "0", "PATH": "/usr/bin:/bin", "HOME": str(cap)}
+    env = _clean_env(PYTHONHASHSEED="0", HOME=str(cap))
     results = []
     for sid, desc, argv in SCENARIOS:
         out = pt / "expected_outputs" / (sid if argv[0] in ("city", "sandbox") else f"{sid}.png")
