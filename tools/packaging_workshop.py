@@ -45,7 +45,7 @@ ORIGINAL_NAME = "pixelgoblin-pseudoskill"
 ORIGINAL_VERSION = "v1u0p1"
 ARCHIVE_NAME = f"{ORIGINAL_NAME}-{ORIGINAL_VERSION}.skill"
 ORIGINAL_SHA256 = "38b1561d08b9d7c8f57470f92d663d0e16d2ef3b2f910d288d2098925ed4f66c"  # the file Mark was given, 2026-09-27
-ARCHIVE_CANDIDATES = [ROOT / "dist" / "archive" / ARCHIVE_NAME, ROOT / "capsules" / ARCHIVE_NAME]  # a fresh clone has it in capsules/
+ARCHIVE_CANDIDATES = [ROOT / "dist" / "archive" / ARCHIVE_NAME, ROOT / "capsules" / ARCHIVE_NAME]  # capsules/ by hand: the built files are not in the public repository
 ARCHIVE_DEFAULT = next((c for c in ARCHIVE_CANDIDATES if c.exists()), ARCHIVE_CANDIDATES[0])
 # Where the project was built. Kept out of the repository (Mark's rule, enforced by the leak guard):
 # it lives in a private file beside the frozen original, and goes only into the capsule's

@@ -2,6 +2,8 @@
 
 The built files, ready to install in Claude. Each is made from this repository by `tools/package.py`.
 
+**The files themselves are not in this repository.** It is public, and the workshop carries the link to the private session it was built in (its `codex/LINEAGE.md` and `META.json`), which is exactly what the leak guard exists to keep out. The guard reads text and cannot see inside a zip, so it did not catch them. Mark holds the built files; put them here by hand to rebuild the workshop, and check them against the fingerprints below. `.gitignore` keeps them from being committed again.
+
 | File | What it is | Install it as |
 |---|---|---|
 | `pixelgoblin-workshop-v1u0p0.skill` | **The one to upload.** The whole project as a skill: 129 files (the upload limit is 200). The repository rides inside as one bundle, and the original capsule rides inside unchanged. | a skill |
