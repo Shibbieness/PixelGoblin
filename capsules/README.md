@@ -15,9 +15,9 @@ The built files, ready to install in Claude. Each is made from this repository b
 | File | SHA-256 |
 |---|---|
 | `pixelgoblin-pseudoskill-v1u0p1.skill` | `38b1561d08b9d7c8f57470f92d663d0e16d2ef3b2f910d288d2098925ed4f66c` |
-| `pixelgoblin-workshop-v1u0p1.skill` | `f5b650460fae48700ce03ec755e809a3f88f22238241302a67a824694d0e3902` (forged from 256d615) |
+| `pixelgoblin-workshop-v1u0p1.skill` | `95d14aae9dc11a83fce5ac1590f0a70f8bd6d56ce736efbe3650b3f7753aaf3b` (forged from 7831cb9, green on Linux, macOS and Windows) |
 | `pixelgoblin-workshop-v1u0p0.skill` | `80565e2007ab2743dabfc1cf32e7fe970a2388fc7b4ab6b0711fffd8d6a2ea17` (superseded) |
-| `pixelgoblin.plugin` | `68876bffc565024954954018d673bbdde55525c0be49b9f631c929678a822a5e` (forged from 256d615; was `60b3c3c7…`) |
+| `pixelgoblin.plugin` | `8191f0a7aa13ad9dbc94f005cc2bfe4b9c982bd81f4e043d69549a8367af94ec` (forged from 7831cb9; was `60b3c3c7…`) |
 
 The original's fingerprint is also pinned in `tools/packaging_workshop.py`; the workshop forge refuses to run if it changes.
 
