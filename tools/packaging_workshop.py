@@ -41,6 +41,8 @@ ROOT = Path(__file__).resolve().parent.parent
 NAME = "pixelgoblin-workshop"
 VERSION = "v1u0p0"
 FORGED = "2026-09-27"
+PATCH_VERSION = "v1u0p1"  # runs on Windows; the leak guard opens archives (see the changelog PATCH entry)
+PATCHED = "2026-09-29"
 ORIGINAL_NAME = "pixelgoblin-pseudoskill"
 ORIGINAL_VERSION = "v1u0p1"
 ARCHIVE_NAME = f"{ORIGINAL_NAME}-{ORIGINAL_VERSION}.skill"
@@ -200,7 +202,15 @@ def changelog(its: list[dict], src_files: int, sha: str) -> str:
           "### Notes", "",
           "- The original capsule is carried byte-for-byte and never changed. `codex/LINEAGE.md` maps its layout to this one.",
           "- Validation: packaging_capsule.py's Forge checklist, plus the workshop's own checks (file budget, size, fingerprints, every `src:` pointer resolves). Gate B21 runs them.",
-          "- Mark's reference images are not in this capsule and never will be."]
+          "- Mark's reference images are not in this capsule and never will be.", "",
+          f"## {PATCH_VERSION} — {PATCHED} — PATCH", "",
+          "**Summary:** The engine runs on Windows, and the leak guard opens archives. The source bundle is rebuilt from the repository; the original capsule inside is unchanged.",
+          "", "**Tags:** #access #parity", "", "### Fixed", "",
+          "- Text is read, written and piped as UTF-8 on every OS. Windows defaults to cp1252, and the first Windows CI run failed six gates on it (three goblin goldens whose labels hold an em dash among them). Gate B00 now fails on any text I/O that does not name its encoding.",
+          "- `.gitattributes` pins LF, so a Windows checkout keeps the LICENSE byte-exact.",
+          "- The leak guard scans inside zip, tar and compressed files, nested ones included, and reports an archive it cannot open. A built capsule had carried a private link past it. Gate B12 plants both cases.",
+          "- The leak guard takes its file list from a file (`--files-from`); ~500 paths overflowed a Windows command line.",
+          "", "### Notes", "", "- 54 mutations, all killed. No drawing, golden or type file changed."]
     return "\n".join(L) + "\n" + pc._sign()
 
 
@@ -328,14 +338,14 @@ Read it without unpacking: `python3 build/source/workshop.py original PATH`. Map
         _write(s, json.dumps(d, indent=1, ensure_ascii=False))
     for r in (cap / "pretune" / "results").glob("*.md"):
         _write(r, r.read_text(encoding="utf-8").replace("`build/source/`", "the unpacked source bundle"))
-    meta = {"project_name": "PixelGoblin", "codex_name": NAME, "codex_version": "1.0.0", "version": VERSION, "version_format": "VUP",
+    meta = {"project_name": "PixelGoblin", "codex_name": NAME, "codex_version": "1.0.0", "version": PATCH_VERSION, "version_format": "VUP",
             "engine_version": "v0u1p0", "forged_date": FORGED, "author": "Shibbieness", "co_author": "Claude", "organization": "M MAOU LLC",
             "compiler_mode": "conversation+file", "build_mode": "compound", "cals_namespace": True, "build_layer_present": True, "pretune_layer_present": True,
             "immutable_core": True, "update_structure_version": "1.0",
             "tags": ["#determinism", "#tier-chain", "#views", "#city", "#parity", "#access", "#packs", "#grounds", "#lineage", "#milestone"],
             "composes_with": ["spire", "slm-e", "book-of-cities", "book-of-cities-compendium-builder", "aether-library-pseudoskill", "crucible", "vi-builder",
                               "gilwright", "dropzone", "cals", "working-with-mark", "pseudoskills-builder", "eexpand"],
-            "companion_plugin": "build/assets/pixelgoblin.plugin", "companion_builder_sessions": 0, "last_update": None,
+            "companion_plugin": "build/assets/pixelgoblin.plugin", "companion_builder_sessions": 0, "last_update": PATCHED,
             "lineage": {"original": ORIGINAL_NAME, "original_version": ORIGINAL_VERSION, "original_file": f"archive/{ARCHIVE_NAME}", "original_sha256": sha,
                         "session": session_link(archive)},
             "source_bundle": {"file": SRC_ZIP, "files": src_files, "sha256": src_sha, "commit": _commit(root)},

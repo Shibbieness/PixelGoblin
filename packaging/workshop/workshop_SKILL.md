@@ -2,12 +2,13 @@
 name: pixelgoblin-workshop
 description: "PixelGoblin Workshop is the working, uploadable capsule for Shibbieness's deterministic pixel-art engine: one name makes the same goblin at every size from 8 to 256 px, from any side, as any folk of the Book of Cities, in clan colours, on a mount, in a town built from names, or walking a Goblin Grounds world whose ores weigh what CRUCIBLE says. Load this skill when PixelGoblin, its goblins or folk, tiers, views, mounts, clans, cities, resource packs, Goblin Grounds, the Workbench, the Pocket, the plugin, its gates, or changing and re-forging PixelGoblin comes up. With it loaded, Claude can unpack and run the whole engine, change it under its gates, re-forge the next version, and look anything up in the original pixelgoblin-pseudoskill capsule, which is kept inside unchanged."
 metadata:
-  version: "v1u0p0"
+  version: "v1u0p1"
   version_format: "VUP"
   author: "Shibbieness (Mark)"
   co_author: "Claude"
   organization: "M MAOU LLC"
   forged: "2026-09-27"
+  patched: "2026-09-29"
   build_mode: "compound"
   immutable_core: "true"
   update_structure_version: "1.0"
@@ -56,7 +57,7 @@ In these docs, **`src:path`** means that path inside the source bundle (for exam
 | Author | Shibbieness (Mark) |
 | Organization | M MAOU LLC |
 | Current Status | Active |
-| Version | engine v0u1p0 · workshop v1u0p0 |
+| Version | engine v0u1p0 · workshop v1u0p1 (patch of v1u0p0) |
 | Forged | 2026-09-27 |
 | Lineage | pixelgoblin-pseudoskill v1u0p1, kept unchanged in `archive/` |
 | CALS Namespace | Yes |
