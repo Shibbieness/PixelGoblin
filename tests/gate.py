@@ -418,6 +418,17 @@ def b06(c: Check):
     c.ok("texture_margin_left" in uikit.godot_stylebox(k["kit"], "atlas.png"), "Godot StyleBox export")
 
 
+def _tick() -> None:
+    """Wait until the wall clock has visibly moved. Two calls in a row can
+    share one tick (about 15 ms on Windows), and then a clock in the output
+    cannot show: the mutant that stamps provenance with the time survived
+    B07 on Windows alone."""
+    import time
+    t0 = time.time_ns()
+    while time.time_ns() == t0:
+        time.sleep(0.001)
+
+
 @gate("B07", "I/O, export, provenance, share codes", ["G14", "G23"])
 def b07(c: Check):
     tf = typefile.load("vanilla.creature.blob")
@@ -430,9 +441,12 @@ def b07(c: Check):
     txt = export.ascii_export(s, "t", export.provenance(tf, 5))
     c.ok(export.ascii_import(txt).rgba() == s.rgba(), "ASCII longevity export reads back exactly")
     c.ok(all(32 <= ord(ch) < 127 or ch == "\n" for ch in txt.replace("—", "-").replace("©", "c")), "ASCII export is printable (credit symbols aside)")
-    c.ok(export.provenance(tf, 5) == export.provenance(tf, 5), "provenance is deterministic (no clock)")
+    first = export.provenance(tf, 5)
+    _tick()
+    c.ok(first == export.provenance(tf, 5), "provenance is deterministic (no clock)")
     frames = gen.frames(tf, 5)
     img1, meta1 = export.sheet(frames, tf.id, 200, "x.png", export.provenance(tf, 5))
+    _tick()
     img2, meta2 = export.sheet(frames, tf.id, 200, "x.png", export.provenance(tf, 5))
     c.ok(json.dumps(meta1) == json.dumps(meta2) and img1.pixel_hash() == img2.pixel_hash(), "re-export is byte-identical")
     c.ok(meta1["meta"]["frameTags"][0]["to"] == len(frames) - 1 and len(meta1["frames"]) == len(frames), "sheet JSON frames and tags agree")
