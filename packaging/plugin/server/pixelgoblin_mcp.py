@@ -40,7 +40,7 @@ def out_dir() -> Path:
     try:
         d.mkdir(parents=True, exist_ok=True)
         probe = d / ".write-test"
-        probe.write_text("ok")
+        probe.write_text("ok", encoding="utf-8")
         probe.unlink()
     except OSError:
         d = Path(tempfile.gettempdir()) / "PixelGoblin"
@@ -236,7 +236,7 @@ def t_city(args: dict) -> dict:
     names = args.get("names")
     if names:
         nf = d / "names.txt"
-        nf.write_text(names if isinstance(names, str) else "\n".join(names))
+        nf.write_text(names if isinstance(names, str) else "\n".join(names), encoding="utf-8")
     else:
         nf = ENGINE / "flavors" / "boc" / "village" / "goblintown.names.txt"
     argv = ["city", city, str(nf), "--out", str(d), "--seed", str(int(args.get("seed", 1))), "--tier", str(int(args.get("tier", 64)))]
@@ -244,7 +244,7 @@ def t_city(args: dict) -> dict:
     summary = ""
     cj = d / "census.json"
     if cj.exists():
-        people = json.loads(cj.read_text())["citizens"]
+        people = json.loads(cj.read_text(encoding="utf-8"))["citizens"]
         rows = [f"{p['name']}: {p['role'].split('.')[-1].replace('_', ' ')}, household {p['household']}" + (f", clan {p['team']}" if p.get("team") else "") for p in people]
         summary = "\n\nCensus:\n" + "\n".join(rows)
     return result(rc, text + summary, [d / "village.png", d / "citizens.png"])
@@ -294,7 +294,7 @@ def t_avatar(args: dict) -> dict:
     rc, text = run_cli(argv)
     side = out.with_suffix(".json")
     if side.exists():
-        text += "\n\n" + side.read_text()
+        text += "\n\n" + side.read_text(encoding="utf-8")
     return result(rc, text, [out])
 
 
@@ -427,4 +427,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdin, sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     sys.exit(main())

@@ -40,13 +40,13 @@ def load_city(path_or_id: str) -> dict:
     if not p.exists():
         for root in search_path():
             for q in sorted(Path(root).rglob("*.city.toml")):
-                d = tomllib.loads(q.read_text())
+                d = tomllib.loads(q.read_text(encoding="utf-8"))
                 if d.get("id") == path_or_id:
                     p = q
                     break
     if not p.exists():
         raise FileNotFoundError(f"no city file or id {path_or_id!r}")
-    d = tomllib.loads(p.read_text())
+    d = tomllib.loads(p.read_text(encoding="utf-8"))
     if d.get("schema") != SCHEMA:
         raise ValueError(f"{p}: `schema` must be {SCHEMA!r}")
     d["_hash"] = sha256(json.dumps(d, sort_keys=True, separators=(",", ":")).encode()).hex()

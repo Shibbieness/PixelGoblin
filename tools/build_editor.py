@@ -23,8 +23,8 @@ from pixelgoblin import CREDIT, VERSION, typefile  # noqa: E402
 
 def engine_script() -> str:
     ed = ROOT / "editor"
-    rig = (ed / "pg-rig.js").read_text().replace("/*__RIG_GEN__*/", (ed / "pg-rig.gen.js").read_text())
-    return (ed / "pg-core.js").read_text() + "\n" + rig
+    rig = (ed / "pg-rig.js").read_text(encoding="utf-8").replace("/*__RIG_GEN__*/", (ed / "pg-rig.gen.js").read_text(encoding="utf-8"))
+    return (ed / "pg-core.js").read_text(encoding="utf-8") + "\n" + rig
 
 
 def main() -> int:
@@ -45,7 +45,7 @@ def main() -> int:
             d = city.load_city(str(cp))
             d.pop("_hash", None)
             names = cp.with_name(cp.name.replace(".city.toml", ".names.txt"))
-            cities.append({"data": d, "names": names.read_text() if names.exists() else ""})
+            cities.append({"data": d, "names": names.read_text(encoding="utf-8") if names.exists() else ""})
     packs = [{k: v for k, v in pk.items() if k != "path"} for pk in typefile.packs()]
     souls = []
     for root in typefile.search_path():
@@ -56,12 +56,14 @@ def main() -> int:
     pocket = dict(presets, types=[t for t in types if t["data"].get("generator") in ("rig", "beast")])
     for src_name, out_name, pre in (("src.html", "pixelgoblin.html", presets), ("widget.src.html", "pixelgoblin-pocket.html", pocket),
                                     ("grounds.src.html", "pixelgoblin-grounds.html", presets)):
-        src = (ROOT / "editor" / src_name).read_text()
+        src = (ROOT / "editor" / src_name).read_text(encoding="utf-8")
         html = src.replace("/*__PG_CORE__*/", eng).replace("/*__PRESETS__*/", json.dumps(pre, ensure_ascii=False))
-        (ROOT / "editor" / out_name).write_text(html)
+        (ROOT / "editor" / out_name).write_text(html, encoding="utf-8")
         print(f"editor/{out_name}  {len(html) // 1024} KB  {len(pre['types'])} types  {len(tags)} tag profiles")
     return 0
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     sys.exit(main())

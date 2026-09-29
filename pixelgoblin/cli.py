@@ -80,7 +80,7 @@ def _load(a):
 
 
 def _write_json(path: Path, obj) -> None:
-    path.write_text(json.dumps(obj, indent=2, sort_keys=True) + "\n")
+    path.write_text(json.dumps(obj, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def _say_findings(findings) -> None:
@@ -138,7 +138,7 @@ def cmd_convert(a):
 def cmd_likeness(a):
     s, rep = convert_file(a.image, a.tag, {})
     text = likeness(s, a.id, a.tag)
-    Path(a.out).write_text(text)
+    Path(a.out).write_text(text, encoding="utf-8")
     typefile.load(a.out)  # prove it validates
     print(f"{a.out}  learned a type file; try: pixelgoblin sheet {a.out} --seeds 0-31 --out like.png --scale 3")
 
@@ -171,9 +171,9 @@ def cmd_uikit(a):
     k = uikit.build_kit(tf, a.seed)
     k["atlas"].save(out / "atlas.png")
     k["panels"]["normal"].save(out / "panel.png")
-    (out / "kit.json").write_text(uikit.kit_json(k["kit"]))
-    (out / "panel_normal.tres").write_text(uikit.godot_stylebox(k["kit"], "atlas.png"))
-    (out / "panel.css").write_text(uikit.css_border_image(k["kit"], "panel.png"))
+    (out / "kit.json").write_text(uikit.kit_json(k["kit"]), encoding="utf-8")
+    (out / "panel_normal.tres").write_text(uikit.godot_stylebox(k["kit"], "atlas.png"), encoding="utf-8")
+    (out / "panel.css").write_text(uikit.css_border_image(k["kit"], "panel.png"), encoding="utf-8")
     uikit.nine_slice(k["panels"]["normal"], uikit.insets(tf.data), 64, 32).save(out / "preview.png", 4)
     print(f"{out}/  atlas.png kit.json panel_normal.tres panel.css preview.png")
 
@@ -238,7 +238,7 @@ def cmd_verdict(a):
 def cmd_ascii(a):
     tf = typefile.load(a.type)
     s = gen.sprite(tf, a.seed)
-    Path(a.out).write_text(export.ascii_export(s, f"{tf.id} seed {a.seed}", export.provenance(tf, a.seed)))
+    Path(a.out).write_text(export.ascii_export(s, f"{tf.id} seed {a.seed}", export.provenance(tf, a.seed)), encoding="utf-8")
     print(a.out)
 
 
@@ -475,6 +475,8 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     sys.exit(main())
 
 
@@ -572,17 +574,17 @@ def cmd_watch(a):
     out = root / "out"
     out.mkdir(parents=True, exist_ok=True)
     index_path = out / "index.json"
-    index = json.loads(index_path.read_text()) if index_path.exists() else {}
+    index = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else {}
     while True:
         done = 0
         for img in sorted(root.glob("*.png")):
             tag_file = img.with_suffix(".tag")
             if not tag_file.exists():
                 continue
-            key = f"{img.name}:{img.stat().st_size}:{tag_file.read_text().strip()}"
+            key = f"{img.name}:{img.stat().st_size}:{tag_file.read_text(encoding='utf-8').strip()}"
             if index.get(img.name) == key:
                 continue
-            tag = tag_file.read_text().strip()
+            tag = tag_file.read_text(encoding="utf-8").strip()
             try:
                 s, rep = convert_file(img, tag)
                 s.save(out / img.name, a.scale)
@@ -592,7 +594,7 @@ def cmd_watch(a):
                 print(f"converted {img.name} as {tag}")
             except (ValueError, typefile.TypeFileError) as e:
                 print(f"skipped {img.name}: {e}")
-        index_path.write_text(json.dumps(index, indent=1, sort_keys=True))
+        index_path.write_text(json.dumps(index, indent=1, sort_keys=True), encoding="utf-8")
         if a.once:
             print(f"{done} new")
             return 0
@@ -676,7 +678,7 @@ def cmd_city(a):
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     cty = city.load_city(a.city)
-    people = city.census(cty, city.parse_names(Path(a.names).read_text()))
+    people = city.census(cty, city.parse_names(Path(a.names).read_text(encoding="utf-8")))
     city.village(cty, people, a.seed).save(out / "village.png")
     houses = {}
     for p in people:

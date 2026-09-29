@@ -4,7 +4,7 @@
   "plan_gates_covered": 32,
   "goldens": 224,
   "validator_negative_cases": 20,
-  "mutations": 51,
+  "mutations": 54,
   "vanilla_types": 10,
   "flavor_types": 364,
   "cli_commands": 32,
@@ -209,6 +209,12 @@
    "key": "doc_pages",
    "from": 16,
    "to": 19,
+   "kind": "raise"
+  },
+  {
+   "key": "mutations",
+   "from": 51,
+   "to": 54,
    "kind": "raise"
   }
  ]

@@ -54,4 +54,6 @@ def main(paths: list[str]) -> dict:
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     print(json.dumps(main(sys.argv[1:]), indent=1))

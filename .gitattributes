@@ -1,0 +1,9 @@
+# LF everywhere, on every OS. LICENSE is checked byte for byte (B00), and a
+# CRLF checkout on Windows failed that check. Anything else compared or hashed
+# as bytes would fail the same way.
+* text=auto eol=lf
+*.png binary
+*.gif binary
+*.zip binary
+*.skill binary
+*.plugin binary

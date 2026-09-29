@@ -128,13 +128,13 @@ def find_by_id(type_id: str, extra: list[Path] | None = None) -> Path:
         p = _id_index(root).get(type_id)
         if p is not None:
             try:
-                if tomllib.loads(p.read_text()).get("id") == type_id:
+                if tomllib.loads(p.read_text(encoding="utf-8")).get("id") == type_id:
                     return p
             except tomllib.TOMLDecodeError:
                 pass
         for q in type_files(root):  # slow path: an id not on its own line near the top
             try:
-                if q != p and tomllib.loads(q.read_text()).get("id") == type_id:
+                if q != p and tomllib.loads(q.read_text(encoding="utf-8")).get("id") == type_id:
                     return q
             except tomllib.TOMLDecodeError:
                 continue
@@ -144,11 +144,11 @@ def find_by_id(type_id: str, extra: list[Path] | None = None) -> Path:
 def _read_toml(path: Path) -> dict:
     if path.suffix == ".json":  # type files saved from the editor
         try:
-            return json.loads(path.read_text())
+            return json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as e:
             raise TypeFileError([f"this is not valid JSON — {e}"], str(path)) from None
     try:
-        return tomllib.loads(path.read_text())
+        return tomllib.loads(path.read_text(encoding="utf-8"))
     except tomllib.TOMLDecodeError as e:
         raise TypeFileError([f"this is not valid TOML — {e}"], str(path)) from None
 
@@ -497,7 +497,7 @@ def _validate_parallax(v: _V):
 
 def taxonomy() -> dict:
     p = REPO / "types" / "tags.toml"
-    return tomllib.loads(p.read_text()) if p.exists() else {"roots": {}, "tag": {}}
+    return tomllib.loads(p.read_text(encoding="utf-8")) if p.exists() else {"roots": {}, "tag": {}}
 
 
 def _check_tag(tag: str, problems: list[str]) -> None:

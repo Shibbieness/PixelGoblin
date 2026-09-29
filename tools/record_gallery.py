@@ -144,7 +144,7 @@ def session4(out: Path) -> None:
     zf = cards.zoom(typefile.load("boc.goblin.shaman"), 5, 16, 256, 24)
     labelled([(f"{k + 1}", zf[k]) for k in (0, 3, 6, 9, 12, 15, 18, 23)], 256, 8).save(out / "zoom.png", 1)
     cty = city.load_city("boc.city.goblintown")
-    people = city.census(cty, city.parse_names((ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text()))
+    people = city.census(cty, city.parse_names((ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text(encoding="utf-8")))
     city.village(cty, people, 1).save(out / "town.png", 3)
     houses = {}
     for p in people:
@@ -194,6 +194,8 @@ def session5(out: Path) -> None:
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     if "--session5" in sys.argv:
         session5(Path(sys.argv[1]))
         sys.exit(0)

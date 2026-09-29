@@ -6,7 +6,7 @@ Written only when every build gate ran. Counts below are derived by the run, not
 
 - Build gates passed: 24 of 24
 - Plan gates covered by passing build gates: 32 of 32
-- Assertions: 5463
+- Assertions: 5530
 
 | Gate | What | Covers | Result |
 |---|---|---|---|
@@ -43,7 +43,7 @@ Written only when every build gate ran. Counts below are derived by the run, not
 | plan_gates_covered | 32 | 32 |
 | goldens | 224 | 224 |
 | validator_negative_cases | 20 | 20 |
-| mutations | 51 | 51 |
+| mutations | 54 | 54 |
 | vanilla_types | 10 | 10 |
 | flavor_types | 364 | 364 |
 | cli_commands | 32 | 32 |

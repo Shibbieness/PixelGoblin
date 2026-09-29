@@ -261,7 +261,7 @@ def export(plan: dict, out_dir: Path) -> list[Path]:
     world_json = dict(plan, tile=TILE, carry_grams=CARRY_GRAMS, station_tiers=STATION_TIERS, atlas="atlas.png", sprites=frames,
                       tiles_legend={"0": "ground", "1": "water", "2": "rock"})
     paths = [out_dir / "world.json", out_dir / "atlas.png", out_dir / "map.png"]
-    paths[0].write_text(json.dumps(world_json, indent=1))
+    paths[0].write_text(json.dumps(world_json, indent=1), encoding="utf-8")
     atlas.save(paths[1])
     render(plan).save(paths[2])
     return paths

@@ -98,7 +98,7 @@ def main() -> int:
     qren_bytes = sys.argv[sys.argv.index("--qren-bytes") + 1] if "--qren-bytes" in sys.argv else "about 1.9 KB"
     with redirect_stdout(io.StringIO()):
         results = gate.run(sorted(b for b in gate.GATES if b != "B10"))
-    fal = subprocess.run([sys.executable, str(ROOT / "tests" / "falsify.py"), "--json"], capture_output=True, text=True, cwd=ROOT)
+    fal = subprocess.run([sys.executable, str(ROOT / "tests" / "falsify.py"), "--json"], capture_output=True, text=True, cwd=ROOT, encoding="utf-8")
     fres = json.loads(fal.stdout.strip().splitlines()[-1])
     results["B10"] = {"title": gate.GATES["B10"]["title"], "covers": gate.GATES["B10"]["covers"],
                       "passed": fres["total"] > 0 and not fres["survivors"], "asserts": 2, "failed": 0 if not fres["survivors"] else 1, "lines": []}
@@ -133,9 +133,9 @@ def main() -> int:
             for j in range(i + 1, len(ims)):
                 icon_min = min(icon_min, sum(1 for p, q in zip(ims[i], ims[j]) if p != q))
     cty = _city.load_city("boc.city.goblintown")
-    people = _city.census(cty, _city.parse_names((ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text()))
+    people = _city.census(cty, _city.parse_names((ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text(encoding="utf-8")))
     _city.village(cty, people, 1)
-    hist = json.loads(gate.GOLDENS.read_text())["history"]
+    hist = json.loads(gate.GOLDENS.read_text(encoding="utf-8"))["history"]
     coh_rows = "\n".join(
         f"    <tr><td>{t} px</td><td class=\"num\">{sum(c['iou'] for c in v) // len(v)}</td><td class=\"num\">{min(c['iou'] for c in v)}</td>"
         f"<td class=\"num\">{sum(c['material'] for c in v) // len(v)}</td><td class=\"num\">{min(c['material'] for c in v)}</td></tr>"
@@ -143,7 +143,7 @@ def main() -> int:
     counts = gate.derived_counts()
     covered = {g for r in results.values() if r["passed"] for g in r["covers"]}
     allg = {g for r in results.values() for g in r["covers"]}
-    conv = json.loads((gallery / "conv.json").read_text()) if (gallery / "conv.json").exists() else {"colors": "8"}
+    conv = json.loads((gallery / "conv.json").read_text(encoding="utf-8")) if (gallery / "conv.json").exists() else {"colors": "8"}
     subs = {
         "DATE": "2026-09-26", "VERSION": VERSION,
         "ROLES": str(len(typefile.type_files(ROOT / "flavors" / "boc" / "village" / "roles"))),
@@ -158,8 +158,8 @@ def main() -> int:
         "MUT_KILLED": str(fres["killed"]), "MUT_TOTAL": str(fres["total"]),
         "PARITY": str(results["B13"]["asserts"] - results["B13"]["failed"]),
         "GOLDENS": str(counts["goldens"]), "ASSERTS": str(sum(r["asserts"] for r in results.values())),
-        "LASTB": sorted(results)[-1][1:], "FLOOR_KEYS": str(len(json.loads(gate.FLOOR.read_text())["floor"])),
-        "SLME": str(len(json.loads((ROOT / "slme" / "pieces.json").read_text()))),
+        "LASTB": sorted(results)[-1][1:], "FLOOR_KEYS": str(len(json.loads(gate.FLOOR.read_text(encoding="utf-8"))["floor"])),
+        "SLME": str(len(json.loads((ROOT / "slme" / "pieces.json").read_text(encoding="utf-8")))),
         "QREN_BYTES": qren_bytes, "CONV_COLS": str(conv["colors"]),
         "LOG": "\n".join(f"    <li><time>{t}</time>{txt}</li>" for t, txt in LOG),
         "ORES_GROUNDED": str(sum(1 for p in typefile.type_files(ROOT / "flavors" / "boc" / "packs" / "ores") if typefile.load(p).data.get("crucible", {}).get("grounding") == "grounded")),
@@ -167,7 +167,7 @@ def main() -> int:
     for gdir in galleries:
         for p in sorted(gdir.glob("*.png")):
             subs["IMG_" + p.stem] = img(p)
-    html = (ROOT / "docs" / "record" / "record.src.html").read_text()
+    html = (ROOT / "docs" / "record" / "record.src.html").read_text(encoding="utf-8")
     for k, v in subs.items():
         html = html.replace("{{" + k + "}}", v)
     left = [s for s in __import__("re").findall(r"\{\{[A-Za-z_]+\}\}", html)]
@@ -176,10 +176,12 @@ def main() -> int:
     if subs["GATES_PASSED"] != subs["GATES_TOTAL"] or fres["survivors"]:
         print("WARNING: the build is not fully green; the record shows the real numbers")
     out = ROOT / "docs" / "record" / "pixelgoblin-build-record.html"
-    out.write_text(html)
+    out.write_text(html, encoding="utf-8")
     print(f"{out.relative_to(ROOT)}  {len(html) // 1024} KB  gates {subs['GATES_PASSED']}/{subs['GATES_TOTAL']}  mutants {subs['MUT_KILLED']}/{subs['MUT_TOTAL']}  parity {subs['PARITY']}")
     return 0
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     sys.exit(main())

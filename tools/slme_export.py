@@ -90,6 +90,8 @@ PIECES = [
 ]
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     out = ROOT / "slme" / "pieces.json"
-    out.write_text(json.dumps(PIECES, indent=1) + "\n")
+    out.write_text(json.dumps(PIECES, indent=1) + "\n", encoding="utf-8")
     print(f"{out.relative_to(ROOT)}  {len(PIECES)} pieces")

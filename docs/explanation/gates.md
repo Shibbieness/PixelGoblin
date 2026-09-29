@@ -7,7 +7,7 @@ PixelGoblin ports the self-checking discipline from SPIRE (Shibbieness / M MAOU 
 | SPIRE rule | Here |
 |---|---|
 | Plan gates (G) and build gates (B) are separate namespaces | `tests/gate.py`; each B declares the Gs it covers |
-| A gate must be able to fail | `tests/falsify.py`: 51 mutations, each naming the gate that must catch it |
+| A gate must be able to fail | `tests/falsify.py`: 54 mutations, each naming the gate that must catch it |
 | Restore on start (SIGKILL cannot be caught) | `falsify.py` **and `gate.py`** restore `.falsify_backup/` before doing anything, so no gate ever tests a leftover mutation. Mutant runs carry `PIXELGOBLIN_MUTANT=1` so their deliberate break is left in place. B10 checks both. |
 | No assertion over an empty population | `Check.population()`; every absence check builds a control first |
 | Counts are derived, never typed | `tests/FLOOR.json` ratchet; lowering needs a witness and a reason |
@@ -18,6 +18,8 @@ PixelGoblin ports the self-checking discipline from SPIRE (Shibbieness / M MAOU 
 | Mechanism, not prohibition | hazard findings say: don't, what happens, why, what instead |
 | Capability floor holds with no model | the whole engine is model-free; ML is a later optional slot |
 | Scrub runs against executable code, not prose | B12 skips docstrings and comments; a citation is not a dependency |
+| Text is UTF-8 and LF on every OS | B00 parses every `.py` file and fails on text read, written or piped without a named encoding (the platform default is cp1252 on Windows); entry points write UTF-8 to pipes; `.gitattributes` pins LF. CI runs Windows, where the first run failed on exactly these |
+| The leak guard opens archives | B12 plants a session link two zips deep and a truncated zip; both must be reported. A built capsule once carried a private link past a guard that only read text |
 | Frozen registries | the generator registry is a read-only mapping |
 | Longevity export | `pixelgoblin ascii`: a sprite as plain English text |
 

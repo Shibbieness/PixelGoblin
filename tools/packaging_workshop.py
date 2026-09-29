@@ -166,13 +166,13 @@ def _splice(text: str, extra: str) -> str:
 
 
 def _addenda(hand: Path) -> dict[str, str]:
-    raw = (hand / "codex" / "ADDENDA.md").read_text()
+    raw = (hand / "codex" / "ADDENDA.md").read_text(encoding="utf-8")
     parts = re.split(r"^@@ (\S+)\s*$", raw, flags=re.M)
     return {parts[i]: parts[i + 1].strip() for i in range(1, len(parts), 2)}
 
 
 def pseudoskill(root: Path, hand: Path) -> str:
-    body = _map((root / "packaging" / "capsule" / "PseudoSKILL.md").read_text().split("\n---\n", 1)[1])  # map first; the workshop text below is already right
+    body = _map((root / "packaging" / "capsule" / "PseudoSKILL.md").read_text(encoding="utf-8").split("\n---\n", 1)[1])  # map first; the workshop text below is already right
     body = re.sub(r"^1\. Work in the repository.*$",
                   "1. Work in an unpacked copy: `python3 build/source/workshop.py unpack /tmp/pg` (or Mark's repository). The capsule folder itself is read-only.",
                   body, count=1, flags=re.M)
@@ -180,7 +180,7 @@ def pseudoskill(root: Path, hand: Path) -> str:
                         "`python3 build/source/workshop.py unpack /tmp/pg`, then `cd /tmp/pg && python3 -m pixelgoblin <command> ...`")
     body = body.replace("7. `python3 tools/package.py all` rebuilds the plugin and this capsule; B21 checks both.",
                         "7. `python3 tools/package.py workshop` re-forges this workshop (`all` rebuilds the plugin too); gate B21 checks both. The original capsule in `archive/` is never rebuilt or replaced.")
-    return (hand / "PSEUDOSKILL_PREFACE.md").read_text().rstrip() + "\n\n---\n" + body
+    return (hand / "PSEUDOSKILL_PREFACE.md").read_text(encoding="utf-8").rstrip() + "\n\n---\n" + body
 
 
 def changelog(its: list[dict], src_files: int, sha: str) -> str:
@@ -207,7 +207,7 @@ def changelog(its: list[dict], src_files: int, sha: str) -> str:
 def session_link(archive: Path) -> str:
     f = archive.parent / LINEAGE_LOCAL
     try:
-        return json.loads(f.read_text()).get("session") or "not recorded in this copy"
+        return json.loads(f.read_text(encoding="utf-8")).get("session") or "not recorded in this copy"
     except (OSError, json.JSONDecodeError):
         return "not recorded in this copy (it lives in dist/archive/lineage.json beside the original)"
 
@@ -215,7 +215,7 @@ def session_link(archive: Path) -> str:
 def lineage(hand: Path, arch: Path, sha: str, src_files: int, src_sha: str, commit: str) -> str:
     with zipfile.ZipFile(arch) as z:
         n = sum(1 for i in z.infolist() if not i.is_dir())
-    return (hand / "codex" / "LINEAGE.md").read_text().format(
+    return (hand / "codex" / "LINEAGE.md").read_text(encoding="utf-8").format(
         original_version=ORIGINAL_VERSION, archive_name=ARCHIVE_NAME, archive_kb=arch.stat().st_size // 1024, archive_files=n,
         original_sha256=sha, session_url=session_link(arch), commit=commit, src_files=src_files, src_sha256=src_sha)
 
@@ -223,8 +223,8 @@ def lineage(hand: Path, arch: Path, sha: str, src_files: int, src_sha: str, comm
 def _commit(root: Path) -> str:
     if not (root / ".git").exists():
         return "unknown (forged from an unpacked copy)"
-    r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=root, capture_output=True, text=True)
-    d = subprocess.run(["git", "status", "--porcelain"], cwd=root, capture_output=True, text=True)
+    r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=root, capture_output=True, text=True, encoding="utf-8")
+    d = subprocess.run(["git", "status", "--porcelain"], cwd=root, capture_output=True, text=True, encoding="utf-8")
     return (r.stdout.strip() or "unknown") + (" + uncommitted changes" if d.stdout.strip() else "")
 
 
@@ -250,9 +250,9 @@ def build_workshop(root: Path, dist: Path, archive: Path = ARCHIVE_DEFAULT, arch
     _write(cap / "PseudoSKILL.md", pseudoskill(root, hand))
     add = _addenda(hand)
     for f in ("NARRATIVE.md", "CALS_NAMESPACE.md", "OPEN_QUESTIONS.md"):
-        t = _map((root / "packaging" / "capsule" / "codex" / f).read_text())
+        t = _map((root / "packaging" / "capsule" / "codex" / f).read_text(encoding="utf-8"))
         _write(cap / "codex" / f, _splice(t, add[f]) if f in add else t)
-    _write(cap / "dependencies" / "external_deps.md", _map((root / "packaging" / "capsule" / "dependencies" / "external_deps.md").read_text()))
+    _write(cap / "dependencies" / "external_deps.md", _map((root / "packaging" / "capsule" / "dependencies" / "external_deps.md").read_text(encoding="utf-8")))
     _copy(hand / "pretune" / "README.md", cap / "pretune" / "README.md")
     # build/source: the bundle and the helper
     src_zip = cap / SRC_ZIP
@@ -323,11 +323,11 @@ Read it without unpacking: `python3 build/source/workshop.py original PATH`. Map
         _write(cap / "dependencies" / "internal_deps.md", _map(pc.internal_deps(root)))
         pc.pretune(root, cap)
     for s in (cap / "pretune" / "scenarios").glob("*.json"):
-        d = json.loads(s.read_text())
+        d = json.loads(s.read_text(encoding="utf-8"))
         d["run_from"] = "the unpacked source (python3 build/source/workshop.py unpack DIR)"
         _write(s, json.dumps(d, indent=1, ensure_ascii=False))
     for r in (cap / "pretune" / "results").glob("*.md"):
-        _write(r, r.read_text().replace("`build/source/`", "the unpacked source bundle"))
+        _write(r, r.read_text(encoding="utf-8").replace("`build/source/`", "the unpacked source bundle"))
     meta = {"project_name": "PixelGoblin", "codex_name": NAME, "codex_version": "1.0.0", "version": VERSION, "version_format": "VUP",
             "engine_version": "v0u1p0", "forged_date": FORGED, "author": "Shibbieness", "co_author": "Claude", "organization": "M MAOU LLC",
             "compiler_mode": "conversation+file", "build_mode": "compound", "cals_namespace": True, "build_layer_present": True, "pretune_layer_present": True,
@@ -395,7 +395,7 @@ def validate(cap: Path) -> list[str]:
         P.append(f"{size // 1024} KB is over the {UPLOAD_MAX_BYTES // 1048576} MB upload limit")
     P += [f"hidden file {p.relative_to(cap)}: keep the upload plain" for p in files if any(x.startswith(".") for x in p.relative_to(cap).parts)]
     try:
-        meta = json.loads((cap / "META.json").read_text())
+        meta = json.loads((cap / "META.json").read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return P + ["META.json does not parse"]
     # the source bundle
@@ -434,7 +434,7 @@ def validate(cap: Path) -> list[str]:
     texts = [cap / "SKILL.md", cap / "PseudoSKILL.md"] + sorted((cap / "codex").rglob("*.md")) + sorted((cap / "dependencies").glob("*.md")) + sorted((cap / "build").rglob("README.md"))
     for f in texts:
         if f.exists():
-            for tok in set(SRC_TOKEN.findall(f.read_text())):
+            for tok in set(SRC_TOKEN.findall(f.read_text(encoding="utf-8"))):
                 if tok not in NOTATION and not resolves(tok):
                     P.append(f"{f.relative_to(cap)} mentions src:{tok}, which is not in the source bundle")
     # the original, unchanged
@@ -457,6 +457,8 @@ def validate(cap: Path) -> list[str]:
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     if len(sys.argv) > 2 and sys.argv[1] == "validate":
         probs = validate(Path(sys.argv[2]))
         print("\n".join(probs) or "workshop valid")

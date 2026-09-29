@@ -5,15 +5,17 @@ on: [push, pull_request]
 jobs:
   gates:
     strategy:
+      # every OS reports its own result: one failure must not cancel the others unread
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-14]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: "22"
       - name: Build gates (from empty)

@@ -33,6 +33,7 @@ import socket
 import subprocess
 import sys
 import tempfile
+import zipfile
 import zlib
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
@@ -154,6 +155,36 @@ def parse_blocks(text: str) -> list[str]:
 
 
 # ---------------------------------------------------------------- gates
+def default_encoding_calls(src: str) -> list[int]:
+    """Lines where text is read, written or piped with the platform's default
+    encoding. That default is UTF-8 on Linux and macOS and cp1252 on Windows,
+    so these calls pass here and fail there: the first Windows CI run failed
+    six gates this way. Binary modes and calls passing **kwargs are skipped."""
+    import ast
+    lines = []
+    for n in ast.walk(ast.parse(src)):
+        if not isinstance(n, ast.Call):
+            continue
+        kws = {k.arg for k in n.keywords}
+        if "encoding" in kws or None in kws:
+            continue
+        f = n.func
+        name = f.attr if isinstance(f, ast.Attribute) else getattr(f, "id", None)
+        if name in ("read_text", "write_text"):
+            lines.append(n.lineno)
+        elif name == "open" and not (isinstance(f, ast.Attribute) and getattr(f.value, "id", "") in ("zipfile", "tarfile", "z", "zf", "t")):
+            mode = next((k.value for k in n.keywords if k.arg == "mode"),
+                        n.args[1] if isinstance(f, ast.Name) and len(n.args) > 1 else n.args[0] if isinstance(f, ast.Attribute) and n.args else None)
+            if mode is None and isinstance(f, ast.Attribute) and n.args:
+                continue
+            if mode is None or (isinstance(mode, ast.Constant) and isinstance(mode.value, str) and "b" not in mode.value):
+                lines.append(n.lineno)
+        elif isinstance(f, ast.Attribute) and getattr(f.value, "id", "") == "subprocess" and any(
+                k.arg in ("text", "universal_newlines") and isinstance(k.value, ast.Constant) and k.value.value is True for k in n.keywords):
+            lines.append(n.lineno)
+    return lines
+
+
 @gate("B00", "skeleton, licence and attribution", ["G22"])
 def b00(c: Check):
     import hashlib
@@ -169,6 +200,14 @@ def b00(c: Check):
         except SystemExit:
             pass
     c.ok(CREDIT in out.getvalue(), "--version shows the credit line (AGPL §7(b) term)")
+    # portable on every OS the CI runs: text is always UTF-8, never the platform default
+    py = [q for q in sorted(ROOT.rglob("*.py")) if not ({".git", "__pycache__", "dist", ".falsify_backup", "out"} & set(q.relative_to(ROOT).parts))]
+    c.population(len(py), "Python files checked for default-encoding text I/O")
+    for q in py:
+        bad = default_encoding_calls(q.read_text(encoding="utf-8"))
+        c.ok(not bad, f"{q.relative_to(ROOT).as_posix()} names an encoding for all text I/O {bad or ''}".rstrip())
+    probe = 'from pathlib import Path\nimport subprocess\nPath("a").read_text()\nopen("b", "w")\nopen("c", "rb")\nsubprocess.run(["x"], text=True)\nPath("d").write_text("e", encoding="utf-8")\n'
+    c.ok(default_encoding_calls(probe) == [3, 4, 6], "control: default-encoding reads, writes and pipes are found, binary and explicit ones are not", negative=True)
 
 
 @gate("B01", "randomness and seed derivation", ["G01", "G02"])
@@ -187,7 +226,7 @@ def b01(c: Check):
     outs = set()
     for hs in ("0", "1", "12345"):
         env = dict(os.environ, PYTHONHASHSEED=hs)
-        outs.add(subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=env).stdout.strip())
+        outs.add(subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=env, encoding="utf-8").stdout.strip())
     c.ok(len(outs) == 1 and len(next(iter(outs))) == 64, "same sprite across processes and hash seeds")
     # sub-seed stability: inserting a new part BEFORE an existing one leaves that part (and the body) unchanged
     from pixelgoblin.gen import mask as mk
@@ -216,12 +255,12 @@ def b01(c: Check):
 
 @gate("B02", "type files: hashing, validation, integer-only", ["G03", "G04", "G05"])
 def b02(c: Check):
-    src = (ROOT / "types" / "vanilla" / "creature.blob.toml").read_text()
+    src = (ROOT / "types" / "vanilla" / "creature.blob.toml").read_text(encoding="utf-8")
     with tempfile.TemporaryDirectory() as t:
         p1, p2, p3 = Path(t, "a.toml"), Path(t, "b.toml"), Path(t, "c.toml")
-        p1.write_text(src)
-        p2.write_text("# a new comment\n" + src.replace("mirror = true", "mirror   =   true   # spaced"))
-        p3.write_text(src.replace('"#1a1428"', '"#1a1429"'))
+        p1.write_text(src, encoding="utf-8")
+        p2.write_text("# a new comment\n" + src.replace("mirror = true", "mirror   =   true   # spaced"), encoding="utf-8")
+        p3.write_text(src.replace('"#1a1428"', '"#1a1429"'), encoding="utf-8")
         h1, h2, h3 = (typefile.load(p).type_hash for p in (p1, p2, p3))
     c.ok(h1 == h2, "whitespace and comment edits do not change the hash")
     c.ok(h1 != h3, "a one-digit colour edit changes the hash", negative=True)
@@ -247,7 +286,7 @@ def b02(c: Check):
 
 @gate("B03", "generators: goldens, constraints, variety", ["G06", "G07", "G08"])
 def b03(c: Check):
-    gold = json.loads(GOLDENS.read_text())["cases"]
+    gold = json.loads(GOLDENS.read_text(encoding="utf-8"))["cases"]
     c.population(len(gold), "goldens")
     for g in gold:
         got = compute_case(g["kind"], g["type"], g["seed"])
@@ -343,7 +382,7 @@ def b05(c: Check):
     text = likeness(ref, "test.like", "object.icon")
     with tempfile.TemporaryDirectory() as t:
         p = Path(t, "like.toml")
-        p.write_text(text)
+        p.write_text(text, encoding="utf-8")
         tf = typefile.load(p)
     kids = [gen.sprite(tf, s) for s in range(10)]
     c.ok(tf.data.get("mirror") is True, "likeness detects the example's symmetry")
@@ -453,7 +492,7 @@ def b09(c: Check):
 @gate("B10", "falsification (mutation testing)", [])
 def b10(c: Check):
     r = subprocess.run([sys.executable, str(ROOT / "tests" / "falsify.py"), "--json"], capture_output=True, text=True,
-                       env=dict(os.environ, PYTHONHASHSEED="0"), cwd=ROOT)
+                       env=dict(os.environ, PYTHONHASHSEED="0"), cwd=ROOT, encoding="utf-8")
     try:
         res = json.loads(r.stdout.strip().splitlines()[-1])
     except (json.JSONDecodeError, IndexError):
@@ -468,12 +507,12 @@ def b10(c: Check):
         for mutant, want, what in (("", "original\n", "gate start-up repairs a file left mutated by an interrupted falsify run"),
                                    ("1", "mutated\n", "control: a deliberate mutant run is not repaired")):
             (backup / "tests").mkdir(parents=True, exist_ok=True)
-            (backup / "tests" / probe.name).write_text("original\n")
-            probe.write_text("mutated\n")
+            (backup / "tests" / probe.name).write_text("original\n", encoding="utf-8")
+            probe.write_text("mutated\n", encoding="utf-8")
             env = {k: v for k, v in os.environ.items() if k != "PIXELGOBLIN_MUTANT"}
             env.update(PYTHONHASHSEED="0", **({"PIXELGOBLIN_MUTANT": mutant} if mutant else {}))
-            subprocess.run([sys.executable, str(ROOT / "tests" / "gate.py"), "B08"], cwd=ROOT, capture_output=True, text=True, env=env)
-            c.ok(probe.read_text() == want, what, negative=bool(mutant))
+            subprocess.run([sys.executable, str(ROOT / "tests" / "gate.py"), "B08"], cwd=ROOT, capture_output=True, text=True, env=env, encoding="utf-8")
+            c.ok(probe.read_text(encoding="utf-8") == want, what, negative=bool(mutant))
     finally:
         probe.unlink(missing_ok=True)
         shutil.rmtree(backup, ignore_errors=True)
@@ -483,7 +522,7 @@ def b10(c: Check):
 def b11(c: Check):
     import tomllib
     import vanilla_flavor as vf
-    man = tomllib.loads((ROOT / "flavor.toml").read_text())["flavor"]
+    man = tomllib.loads((ROOT / "flavor.toml").read_text(encoding="utf-8"))["flavor"]
     c.ok(tuple(man["capabilities"]) == vf.CAPABILITIES, "manifest capabilities match the adapter")
     c.ok(man["license"] == "AGPL-3.0-or-later", "flavor licence declared")
     for cap in vf.CAPABILITIES:
@@ -545,28 +584,47 @@ def b12(c: Check):
     files = sorted((ROOT / "pixelgoblin").rglob("*.py")) + vanilla_types()
     c.population(len(files), "vanilla files to scrub")
     for f in files:
-        text = _code_only(f) if f.suffix == ".py" else "\n".join(l for l in f.read_text().splitlines() if not l.lstrip().startswith("#"))
+        text = _code_only(f) if f.suffix == ".py" else "\n".join(l for l in f.read_text(encoding="utf-8").splitlines() if not l.lstrip().startswith("#"))
         hits = scrub_hits(text)
         c.ok(not hits, f"{f.relative_to(ROOT)} free of stack terms {hits}")
     c.ok(scrub_hits("the Book of Cities goblin") == ["Book of Cities"], "control: the scrubber finds a planted term", negative=True)
     c.ok(scrub_hits("Arsenicals and a dramatic eidolon") == [], "control: no false positives on Arsenicals/dramatic/eidolon", negative=True)
     with tempfile.TemporaryDirectory() as t:
         probe = Path(t, "probe.py")
-        probe.write_text('"""cites SPIRE in prose"""\nX = "SPIRE"  # comment SPIRE\n')
+        probe.write_text('"""cites SPIRE in prose"""\nX = "SPIRE"  # comment SPIRE\n', encoding="utf-8")
         c.ok(scrub_hits(_code_only(probe)) == ["SPIRE"], "control: a term in executable code is found while docstrings/comments are not", negative=True)
     for tf in all_types():
         if tf.id.startswith("vanilla."):
             c.ok(tf.license != "Proprietary", f"{tf.id}: vanilla content is not proprietary")
     # exact-path exemptions only: these two files must NAME the markers to test that they are caught
     allow = ["--allow", "tests/gate.py", "--allow", "tests/falsify.py"]
-    lg = subprocess.run([sys.executable, str(ROOT / "tools" / "leakguard.py")] + allow + [str(p) for p in _repo_files()],
-                        capture_output=True, text=True, cwd=ROOT)
+    with tempfile.TemporaryDirectory() as t:
+        # the list goes in a file: ~500 paths overflow a Windows command line
+        listing = Path(t, "files.txt")
+        listing.write_text("\n".join(str(p) for p in _repo_files()) + "\n", encoding="utf-8")
+        lg = subprocess.run([sys.executable, str(ROOT / "tools" / "leakguard.py")] + allow + ["--files-from", str(listing)],
+                            capture_output=True, text=True, cwd=ROOT, encoding="utf-8")
     c.ok(lg.returncode == 0, f"leakguard clean: {lg.stdout.strip().splitlines()[-1] if lg.stdout.strip() else lg.stderr[-200:]}")
     with tempfile.TemporaryDirectory() as t:
         planted = Path(t, "x.md")
-        planted.write_text("Co-Authored-By: Claude\n")
-        lg2 = subprocess.run([sys.executable, str(ROOT / "tools" / "leakguard.py"), str(planted)], capture_output=True, text=True, cwd=t)
+        planted.write_text("Co-Authored-By: Claude\n", encoding="utf-8")
+        lg2 = subprocess.run([sys.executable, str(ROOT / "tools" / "leakguard.py"), str(planted)], capture_output=True, text=True, cwd=t, encoding="utf-8")
         c.ok(lg2.returncode == 1, "control: leakguard catches a planted vendor trailer", negative=True)
+        # a built capsule is a zip, and it once carried a private session link past a text-only guard
+        inner = io.BytesIO()
+        with zipfile.ZipFile(inner, "w", zipfile.ZIP_DEFLATED) as z:
+            z.writestr("capsule/META.json", '{"session": "https://claude.ai/code/session_0"}\n')
+        outer = Path(t, "x.skill")
+        with zipfile.ZipFile(outer, "w", zipfile.ZIP_DEFLATED) as z:
+            z.writestr("capsule/SKILL.md", "clean\n")
+            z.writestr("capsule/build/source.zip", inner.getvalue())
+        lg3 = subprocess.run([sys.executable, str(ROOT / "tools" / "leakguard.py"), str(outer)], capture_output=True, text=True, cwd=t, encoding="utf-8")
+        c.ok(lg3.returncode == 1 and "x.skill!capsule/build/source.zip!capsule/META.json:1" in lg3.stdout,
+             "control: leakguard looks inside archives, and inside archives inside them", negative=True)
+        broken = Path(t, "y.zip")
+        broken.write_bytes(outer.read_bytes()[:-40])
+        lg4 = subprocess.run([sys.executable, str(ROOT / "tools" / "leakguard.py"), str(broken)], capture_output=True, text=True, cwd=t, encoding="utf-8")
+        c.ok(lg4.returncode == 1, "control: an archive the guard cannot open is reported, not passed", negative=True)
 
 
 def _repo_files() -> list[Path]:
@@ -588,9 +646,9 @@ def b13(c: Check):
         c.ok(False, "node not found — parity could not be checked (a skipped check is not a pass)")
         return
     gen_js = (ROOT / "editor" / "pg-rig.gen.js")
-    c.ok(gen_js.exists() and gen_js.read_text() == transpile_rig.main(),
+    c.ok(gen_js.exists() and gen_js.read_text(encoding="utf-8") == transpile_rig.main(),
          "editor/pg-rig.gen.js is current with pixelgoblin/gen/rig.py (regenerate: tools/transpile_rig.py)")
-    c.ok(build_editor.engine_script() in html.read_text(), "the page embeds the exact engine script (derived file is current)")
+    c.ok(build_editor.engine_script() in html.read_text(encoding="utf-8"), "the page embeds the exact engine script (derived file is current)")
     types = {tf.id: tf.data for tf in all_types()}
     cases, want = [], []
     for tf in all_types():
@@ -653,7 +711,7 @@ def b13(c: Check):
     cases.append({"kind": "zoom", "type": ztf.data, "seed": 5, "from": 16, "to": 128, "steps": 9})
     want.append({"hashes": [f.pixel_hash() for f in cards.zoom(ztf, 5, 16, 128, 9)]})
     cty = city.load_city("boc.city.goblintown")
-    names = (ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text()
+    names = (ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text(encoding="utf-8")
     people = city.census(cty, city.parse_names(names))
     img = city.village(cty, people, 1)
     cases.append({"kind": "city", "city": {k: v for k, v in cty.items() if k != "_hash"}, "names": names, "seed": 1, "sprites": 10})
@@ -669,7 +727,7 @@ def b13(c: Check):
     c.population(len(cases), "parity cases")
     owns = {tf.id: typefile._read_toml(Path(tf.source)) for tf in all_types() if ".sub." in tf.id}
     r = subprocess.run([node, str(ROOT / "editor" / "parity.mjs")], input=json.dumps({"types": types, "owns": owns, "teams": typefile.teams(), "cases": cases}),
-                       capture_output=True, text=True)
+                       capture_output=True, text=True, encoding="utf-8")
     if r.returncode != 0:
         c.ok(False, f"node parity run failed: {r.stderr[-500:]}")
         return
@@ -691,7 +749,7 @@ def b14(c: Check):
     for name, p in subs.items():
         c.ok(bool(p.description) and name in EXAMPLES and EXAMPLES[name].startswith("pixelgoblin"), f"`{name}` has help and an example")
     ref = ROOT / "docs" / "reference" / "cli.md"
-    c.ok(ref.exists() and ref.read_text() == render_cli_doc(), "docs/reference/cli.md matches the parser (regenerate with --regen-docs)")
+    c.ok(ref.exists() and ref.read_text(encoding="utf-8") == render_cli_doc(), "docs/reference/cli.md matches the parser (regenerate with --regen-docs)")
     for page in REQUIRED_DOCS:
         c.ok((ROOT / page).exists(), f"{page} exists")
     # a count in a document is computed, or it is a comment: numbers in prose must match the derivation
@@ -701,7 +759,7 @@ def b14(c: Check):
               ("docs/explanation/gates.md", r"(\d+) plain-English validator cases", counts["validator_negative_cases"]),
               ("docs/explanation/gameplan.md", r"and (\d+) build gates", counts["build_gates"])]
     for page, rx, want in claims:
-        m = re.search(rx, (ROOT / page).read_text())
+        m = re.search(rx, (ROOT / page).read_text(encoding="utf-8"))
         c.ok(bool(m) and int(m.group(1)) == want, f"{page}: '{rx}' says {m.group(1) if m else 'nothing'}, derivation says {want}")
     c.ok(re.search(r"(\d+) mutations", "we ran 7 mutations") is not None, "control: the prose-count matcher matches", negative=True)
 
@@ -717,7 +775,7 @@ def b15(c: Check):
         sources |= set(brood.lineage(tf, 11, 29, child)["inherited"].values())
     c.ok({"A", "B"} <= sources, f"children inherit from both parents across a brood ({sorted(sources)})")
     counts = derived_counts()
-    floor = json.loads(FLOOR.read_text())["floor"]
+    floor = json.loads(FLOOR.read_text(encoding="utf-8"))["floor"]
     for k, v in counts.items():
         if k not in floor:
             c.ok(False, f"count '{k}' is unfloored (a capability nobody counts is one nobody misses)")
@@ -906,7 +964,7 @@ def b18(c: Check):
 def b19(c: Check):
     from pixelgoblin import city
     cty = city.load_city("boc.city.goblintown")
-    text = (ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text()
+    text = (ROOT / "flavors" / "boc" / "village" / "goblintown.names.txt").read_text(encoding="utf-8")
     names = city.parse_names(text)
     c.population(len(names), "citizens")
     a, b = city.census(cty, names), city.census(cty, names)
@@ -1019,19 +1077,19 @@ def b21(c: Check):
     from pixelgoblin.gen import rig3d
     # the pocket widget is built from the same engine as the workbench
     pocket = ROOT / "editor" / "pixelgoblin-pocket.html"
-    c.ok(pocket.exists() and build_editor.engine_script() in pocket.read_text() and "/*__PRESETS__*/" not in pocket.read_text(),
+    c.ok(pocket.exists() and build_editor.engine_script() in pocket.read_text(encoding="utf-8") and "/*__PRESETS__*/" not in pocket.read_text(encoding="utf-8"),
          "the pocket widget embeds the exact engine script and the type files (rebuild: tools/build_editor.py)")
     # plugin structure, as the plugin validator would check it
     pl = ROOT / "packaging" / "plugin"
-    man = json.loads((pl / ".claude-plugin" / "plugin.json").read_text())
+    man = json.loads((pl / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
     c.ok(re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", man.get("name", "")) is not None and re.fullmatch(r"\d+\.\d+\.\d+", man.get("version", "")) is not None
          and bool(man.get("description")), "plugin.json has a kebab-case name, a semver version and a description")
-    mcp = json.loads((pl / ".mcp.json").read_text())["mcpServers"]
+    mcp = json.loads((pl / ".mcp.json").read_text(encoding="utf-8"))["mcpServers"]
     c.ok(all("${CLAUDE_PLUGIN_ROOT}" in " ".join(v["args"]) for v in mcp.values()), "MCP paths use ${CLAUDE_PLUGIN_ROOT}, never an absolute path")
     skills = sorted((pl / "skills").glob("*/SKILL.md"))
     c.population(len(skills), "plugin skills")
     for sk in skills:
-        t = sk.read_text()
+        t = sk.read_text(encoding="utf-8")
         fm = re.match(r"---\n(.*?)\n---\n", t, re.S)
         c.ok(fm is not None and f"name: {sk.parent.name}\n" in fm.group(1) + "\n" and "This skill should be used when" in fm.group(1),
              f"skill {sk.parent.name}: frontmatter name matches its folder and the description says when to use it")
@@ -1048,7 +1106,7 @@ def b21(c: Check):
                 {"jsonrpc": "2.0", "method": "notifications/initialized"}, {"jsonrpc": "2.0", "id": 2, "method": "tools/list"},
                 {"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": "pixelgoblin_character", "arguments": {"role": "shaman", "name": "Mizzle", "view": "side_right", "clan": "duskveil", "scale": 2}}}]
         server = [sys.executable, str(plug / "server" / "pixelgoblin_mcp.py")]
-        r = subprocess.run(server, input="\n".join(json.dumps(m) for m in msgs) + "\nnot json\n", capture_output=True, text=True, env=env, cwd=t, timeout=300)
+        r = subprocess.run(server, input="\n".join(json.dumps(m) for m in msgs) + "\nnot json\n", capture_output=True, text=True, env=env, cwd=t, timeout=300, encoding="utf-8")
         lines = [ln for ln in r.stdout.splitlines() if ln.strip()]
         replies = []
         for ln in lines:
@@ -1088,7 +1146,7 @@ def b21(c: Check):
         c.ok(any("exactly one SKILL.md" in p for p in packaging_capsule.validate(cap)), "control: a second SKILL.md inside the capsule fails validation", negative=True)
         (nested / "SKILL.md").rename(nested / "pixelgoblin_SKILL.md")
         sk = cap / "SKILL.md"
-        sk.write_text(sk.read_text().replace("metadata:\n", "version: v1u0p1\nmetadata:\n", 1))
+        sk.write_text(sk.read_text(encoding="utf-8").replace("metadata:\n", "version: v1u0p1\nmetadata:\n", 1), encoding="utf-8")
         c.ok(any("upload rejects" in p for p in packaging_capsule.validate(cap)), "control: a top-level header key a skill upload rejects fails validation", negative=True)
         # the workshop: the uploadable capsule, carrying an original it must never change (a stand-in here)
         import zipfile
@@ -1109,10 +1167,10 @@ def b21(c: Check):
         c.ok(len(files) <= pw.FORGE_BUDGET and [p.relative_to(wk).as_posix() for p in wk.rglob("SKILL.md")] == ["SKILL.md"],
              f"the workshop is uploadable: one SKILL.md and {len(files)} files (budget {pw.FORGE_BUDGET}, limit {pw.UPLOAD_MAX_FILES})")
         helper = [sys.executable, str(wk / "build" / "source" / "workshop.py")]
-        un = subprocess.run(helper + ["unpack", str(tmp / "unpacked")], capture_output=True, text=True)
-        ran = subprocess.run([sys.executable, "-m", "pixelgoblin", "list"], cwd=tmp / "unpacked", capture_output=True, text=True, env={**os.environ, "PYTHONHASHSEED": "0"})
+        un = subprocess.run(helper + ["unpack", str(tmp / "unpacked")], capture_output=True, text=True, encoding="utf-8")
+        ran = subprocess.run([sys.executable, "-m", "pixelgoblin", "list"], cwd=tmp / "unpacked", capture_output=True, text=True, env={**os.environ, "PYTHONHASHSEED": "0"}, encoding="utf-8")
         c.ok(un.returncode == 0 and ran.returncode == 0 and "boc.goblin.blacksmith" in ran.stdout, "the unpacked source bundle runs the engine")
-        orig = subprocess.run(helper + ["original", "codex/NARRATIVE.md"], capture_output=True, text=True)
+        orig = subprocess.run(helper + ["original", "codex/NARRATIVE.md"], capture_output=True, text=True, encoding="utf-8")
         c.ok(orig.returncode == 0 and "war boar" in orig.stdout and subprocess.run(helper + ["check"], capture_output=True).returncode == 0,
              "the helper reads the archived original and confirms both fingerprints")
         try:
@@ -1124,7 +1182,7 @@ def b21(c: Check):
         arch.write_bytes(arch.read_bytes() + b"x")
         c.ok(any("fingerprint" in p for p in pw.validate(wk)), "control: an archived original altered after forging fails validation", negative=True)
         for i in range(pw.FORGE_BUDGET):
-            (wk / "updates" / "misc" / f"filler-{i}.md").write_text("x\n")
+            (wk / "updates" / "misc" / f"filler-{i}.md").write_text("x\n", encoding="utf-8")
         c.ok(any("files" in p and ("budget" in p or "at most" in p) for p in pw.validate(wk)), "control: a workshop over its file budget fails validation", negative=True)
 
 
@@ -1135,7 +1193,7 @@ def b22(c: Check):
     from pixelgoblin import cli as _cli  # noqa: F401  (the avatar command's module must import)
     from pixelgoblin.gen import rig
     from pixelgoblin.rng import seed_from_name
-    r = subprocess.run([sys.executable, str(ROOT / "tools" / "build_packs.py"), "--check"], capture_output=True, text=True)
+    r = subprocess.run([sys.executable, str(ROOT / "tools" / "build_packs.py"), "--check"], capture_output=True, text=True, encoding="utf-8")
     c.ok(r.returncode == 0, "the packs are current with their source catalogs (regenerate: tools/build_packs.py)" + (f": {r.stdout.strip()[:300]}" if r.returncode else ""))
     packs = typefile.packs()
     c.population(len(packs), "resource packs")
@@ -1187,7 +1245,7 @@ def b22(c: Check):
     except typefile.TypeFileError as e:
         c.ok("did you mean 'elf'" in str(e), "control: a misspelled overlay is refused with a suggestion", negative=True)
     # ores are grounded in CRUCIBLE, and fantasy stays fantasy
-    src = json.loads((ROOT / "flavors" / "boc" / "packs" / "sources" / "crucible_materials.json").read_text())
+    src = json.loads((ROOT / "flavors" / "boc" / "packs" / "sources" / "crucible_materials.json").read_text(encoding="utf-8"))
     dens = {m["id"]: m.get("density_kg_m3") for m in src["materials"]}
     ores = [typefile.load(t) for t in listed if t.startswith("boc.ore.")]
     c.population(len(ores), "ores")
@@ -1200,14 +1258,14 @@ def b22(c: Check):
     with tempfile.TemporaryDirectory() as t:
         outp = Path(t) / "a.png"
         r1 = subprocess.run([sys.executable, "-m", "pixelgoblin", "avatar", "Aelren", "--out", str(outp)], cwd=ROOT, capture_output=True, text=True,
-                            env=dict(os.environ, PYTHONHASHSEED="0"))
-        side = json.loads(outp.with_suffix(".json").read_text()) if outp.with_suffix(".json").exists() else {}
+                            env=dict(os.environ, PYTHONHASHSEED="0"), encoding="utf-8")
+        side = json.loads(outp.with_suffix(".json").read_text(encoding="utf-8")) if outp.with_suffix(".json").exists() else {}
         c.ok(r1.returncode == 0 and side.get("supplement") is True and side.get("overwrites") is None and side.get("known_soul") is True,
              "an Aether soul's avatar is marked a supplement that overwrites nothing")
         c.ok(side.get("seed") == str(seed_from_name("soul:" + side.get("soul_name", ""))), "the avatar is seeded from the soul name, which survives reincarnation")
     from pixelgoblin import city as _city
     bh = _city.load_city("boc.city.brackrun_hollow")
-    people = _city.census(bh, _city.parse_names((ROOT / "flavors" / "boc" / "packs" / "aether" / "brackrun_hollow.names.txt").read_text()))
+    people = _city.census(bh, _city.parse_names((ROOT / "flavors" / "boc" / "packs" / "aether" / "brackrun_hollow.names.txt").read_text(encoding="utf-8")))
     c.ok(len(people) >= 3 and any(p["sub"] and "race" in p["sub"] for p in people), "Brackrun-Hollow is a city of mixed folk built from the Aether Library's names")
     # JavaScript draws the same folk and traits
     node = shutil.which("node")
@@ -1228,7 +1286,7 @@ def b22(c: Check):
         cases.append({"kind": "frames", "type": tf.data, "seed": "1"})
         want.append([f.pixel_hash() for f in gen.frames(tf, 1)])
     r = subprocess.run([node, str(ROOT / "editor" / "parity.mjs")], input=json.dumps({"cases": cases, "types": types, "owns": owns, "teams": typefile.teams()}),
-                       capture_output=True, text=True, timeout=600)
+                       capture_output=True, text=True, timeout=600, encoding="utf-8")
     got = json.loads(r.stdout) if r.returncode == 0 else []
     got = [x.get("hashes") for x in got] if isinstance(got, list) else []
     c.ok(got == want, f"JavaScript draws the same folk, traits and pack sprites as Python ({sum(a == b for a, b in zip(got, want))}/{len(want)})"
@@ -1271,13 +1329,13 @@ def b23(c: Check):
          "ore weighs what CRUCIBLE says; mushrooms are authored and say so")
     with tempfile.TemporaryDirectory() as t:
         paths = sandbox.export(sandbox.world("mountain", 3, 20, 14), Path(t))
-        wj = json.loads(paths[0].read_text())
+        wj = json.loads(paths[0].read_text(encoding="utf-8"))
         c.ok(all(p.exists() for p in paths) and wj["sprites"] and all("grams" in v for v in wj["sprites"].values()),
              "the export writes world.json (with weights), atlas.png and map.png for game engines")
     page = ROOT / "editor" / "pixelgoblin-grounds.html"
     sys.path.insert(0, str(ROOT / "tools"))
     import build_editor
-    c.ok(page.exists() and build_editor.engine_script() in page.read_text(), "the Goblin Grounds page embeds the exact engine script")
+    c.ok(page.exists() and build_editor.engine_script() in page.read_text(encoding="utf-8"), "the Goblin Grounds page embeds the exact engine script")
     node = shutil.which("node")
     if not node:
         c.ok(False, "node not found — world parity could not be checked (a skipped check is not a pass)")
@@ -1285,7 +1343,7 @@ def b23(c: Check):
     packs = [{k: v for k, v in p.items() if k != "path"} for p in typefile.packs()]
     cases = [{"kind": "sandbox", "biome": b, "seed": str(s), "w": w, "h": h} for b, s, w, h in
              (("forest", 3, 28, 18), ("mountain", 1, 20, 14), ("underwater", 7, 40, 24), ("desert", 2 ** 63 + 5, 28, 18), ("swamp", 0, 12, 10))]
-    r = subprocess.run([node, str(ROOT / "editor" / "parity.mjs")], input=json.dumps({"cases": cases, "packs": packs}), capture_output=True, text=True, timeout=300)
+    r = subprocess.run([node, str(ROOT / "editor" / "parity.mjs")], input=json.dumps({"cases": cases, "packs": packs}), capture_output=True, text=True, timeout=300, encoding="utf-8")
     got = json.loads(r.stdout) if r.returncode == 0 else []
     same = 0
     for case, g in zip(cases, got):
@@ -1384,18 +1442,18 @@ def derived_counts() -> dict:
     import vanilla_flavor as vf
     ap = build_parser()
     subs = next(a for a in ap._actions if a.__class__.__name__ == "_SubParsersAction").choices
-    falsify_src = (ROOT / "tests" / "falsify.py").read_text()
+    falsify_src = (ROOT / "tests" / "falsify.py").read_text(encoding="utf-8")
     return {
         "build_gates": len(GATES),
         "plan_gates_covered": len({g for v in GATES.values() for g in v["covers"]}),
-        "goldens": len(json.loads(GOLDENS.read_text())["cases"]),
+        "goldens": len(json.loads(GOLDENS.read_text(encoding="utf-8"))["cases"]),
         "validator_negative_cases": len(NEGATIVE_CASES),
         "mutations": falsify_src.count("Mutation("),
         "vanilla_types": len(vanilla_types()),
         "flavor_types": len(flavor_types()),
         "cli_commands": len(subs),
         "flavor_capabilities": len(vf.CAPABILITIES),
-        "tag_roots": len(tomllib.loads((ROOT / "types" / "tags.toml").read_text())["roots"]),
+        "tag_roots": len(tomllib.loads((ROOT / "types" / "tags.toml").read_text(encoding="utf-8"))["roots"]),
         "doc_pages": len(REQUIRED_DOCS),
     }
 
@@ -1435,15 +1493,15 @@ def write_status(results: dict) -> None:
     for bid, r in results.items():
         lines.append(f"| {bid} | {r['title']} | {', '.join(r['covers']) or '—'} | {'PASS' if r['passed'] else 'FAIL'} |")
     counts = derived_counts()
-    floor = json.loads(FLOOR.read_text())["floor"]
+    floor = json.loads(FLOOR.read_text(encoding="utf-8"))["floor"]
     lines += ["", "## Ratchet", "", "| Count | Now | Floor |", "|---|---|---|"]
     lines += [f"| {k} | {v} | {floor.get(k, 'UNFLOORED')} |" for k, v in counts.items()]
     lines += ["", "—Shibbieness", "—Claude", ""]
-    (ROOT / "BUILD_STATUS.md").write_text("\n".join(lines))
+    (ROOT / "BUILD_STATUS.md").write_text("\n".join(lines), encoding="utf-8")
 
 
 def bless_goldens(witness: str, reason: str) -> None:
-    old = json.loads(GOLDENS.read_text()) if GOLDENS.exists() else {"cases": [], "history": []}
+    old = json.loads(GOLDENS.read_text(encoding="utf-8")) if GOLDENS.exists() else {"cases": [], "history": []}
     cases = [{"kind": k, "type": t, "seed": s, "hashes": compute_case(k, t, s)} for k, t, s in golden_cases()]
     old_map = {(g["kind"], g["type"], g["seed"]): g["hashes"] for g in old["cases"]}
     changed = [f"{k[0]} {k[1]} {k[2]}" for k, h in old_map.items()
@@ -1456,12 +1514,12 @@ def bless_goldens(witness: str, reason: str) -> None:
     hist.append({"engine_major": ENGINE_MAJOR, "cases": len(cases), "changed": changed, "removed": removed,
                  "witness": witness or "initial", "reason": reason or "first blessing"})
     GOLDENS.parent.mkdir(parents=True, exist_ok=True)
-    GOLDENS.write_text(json.dumps({"engine_major": ENGINE_MAJOR, "cases": cases, "history": hist}, indent=1) + "\n")
+    GOLDENS.write_text(json.dumps({"engine_major": ENGINE_MAJOR, "cases": cases, "history": hist}, indent=1) + "\n", encoding="utf-8")
     print(f"blessed {len(cases)} goldens ({len(changed)} changed, {len(removed)} removed)")
 
 
 def raise_floor(lower: list[str], witness: str, reason: str) -> None:
-    data = json.loads(FLOOR.read_text()) if FLOOR.exists() else {"floor": {}, "history": []}
+    data = json.loads(FLOOR.read_text(encoding="utf-8")) if FLOOR.exists() else {"floor": {}, "history": []}
     counts = derived_counts()
     for k, v in counts.items():
         if v > data["floor"].get(k, 0):
@@ -1473,7 +1531,7 @@ def raise_floor(lower: list[str], witness: str, reason: str) -> None:
             raise SystemExit("lowering a floor requires --witness and --reason")
         data["history"].append({"key": k, "from": data["floor"].get(k), "to": int(v), "kind": "lower", "witness": witness, "reason": reason})
         data["floor"][k] = int(v)
-    FLOOR.write_text(json.dumps(data, indent=1) + "\n")
+    FLOOR.write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(data["floor"], indent=1))
 
 
@@ -1522,7 +1580,7 @@ def main(argv=None) -> int:
         raise_floor(a.lower, a.witness, a.reason)
         return 0
     if a.regen_docs:
-        (ROOT / "docs" / "reference" / "cli.md").write_text(render_cli_doc())
+        (ROOT / "docs" / "reference" / "cli.md").write_text(render_cli_doc(), encoding="utf-8")
         print("docs/reference/cli.md regenerated")
         return 0
     ids = sorted(GATES) if a.all or not a.gates else [g.upper() for g in a.gates]
@@ -1543,4 +1601,6 @@ def main(argv=None) -> int:
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     sys.exit(main())

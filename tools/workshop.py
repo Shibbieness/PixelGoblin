@@ -65,9 +65,9 @@ def unpack(dest: Path) -> int:
         (dest / "dist" / "archive").mkdir(parents=True, exist_ok=True)
         shutil.copy2(arch, dest / "dist" / "archive" / arch.name)
         try:  # the session link stays beside the original, never in the source
-            sess = json.loads((cap / "META.json").read_text())["lineage"].get("session")
+            sess = json.loads((cap / "META.json").read_text(encoding="utf-8"))["lineage"].get("session")
             if sess:
-                (dest / "dist" / "archive" / "lineage.json").write_text(json.dumps({"session": sess}, indent=1) + "\n")
+                (dest / "dist" / "archive" / "lineage.json").write_text(json.dumps({"session": sess}, indent=1) + "\n", encoding="utf-8")
         except (OSError, KeyError, json.JSONDecodeError):
             pass
     print(f"unpacked to {dest}")
@@ -117,7 +117,7 @@ def find(words: str) -> int:
         root = HERE.parent
         for p in sorted(root.rglob("*")):
             if p.is_file() and not {".git", "dist", "__pycache__", "refs"} & set(p.relative_to(root).parts) and p.suffix in TEXT:
-                t = p.read_text("utf-8", "replace")
+                t = p.read_text("utf-8", "replace", encoding="utf-8")
                 if low in p.name.lower() or low in t.lower():
                     hits += 1
                     print(f"repo      {p.relative_to(root)}")
@@ -144,7 +144,7 @@ def check() -> int:
     if cap is None:
         print("check works inside the workshop capsule")
         return 1
-    meta = json.loads((cap / "META.json").read_text())
+    meta = json.loads((cap / "META.json").read_text(encoding="utf-8"))
     bad = []
     if src is None or _sha(src) != meta["source_bundle"]["sha256"]:
         bad.append("build/source/pixelgoblin-src.zip does not match META.json")
@@ -172,4 +172,6 @@ def main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     sys.exit(main(sys.argv[1:]))

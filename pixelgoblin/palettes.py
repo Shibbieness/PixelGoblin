@@ -39,7 +39,7 @@ def load_file(path: str | Path) -> list[tuple[int, int, int, int]]:
     """Lospec-style .hex (one RRGGBB per line) or GIMP .gpl."""
     p = Path(path)
     out = []
-    for line in p.read_text().splitlines():
+    for line in p.read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line:
             continue

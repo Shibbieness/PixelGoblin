@@ -35,6 +35,8 @@ class Mutation:
 
 
 MUTATIONS = [
+    Mutation("pixelgoblin/typefile.py", "        return tomllib.loads(path.read_text(encoding=\"utf-8\"))", "        return tomllib.loads(path.read_text())",
+             "B00", "a type file read in the platform encoding garbles every non-ASCII label on Windows, and three goldens failed that way"),
     Mutation("pixelgoblin/rng.py", "result = (_rotl((s1 * 5) & M32, 7) * 9) & M32", "result = (_rotl((s1 * 5) & M32, 7) * 7) & M32",
              "B01", "a changed RNG output function must break the published reference vector"),
     Mutation("pixelgoblin/rng.py", 'return sha256(seed16 + b"/" + path.encode("utf-8"))[:16]', 'return sha256(seed16 + path.encode("utf-8"))[:16]',
@@ -78,6 +80,10 @@ MUTATIONS = [
              "B15", "a child that only ever inherits from one parent is not a brood"),
     Mutation("tools/leakguard.py", '    r"co-authored-by:\\s*claude",\n', "",
              "B12", "the leak guard must catch vendor co-author trailers"),
+    Mutation("tools/leakguard.py", "                    yield i.filename, z.read(i)\n", "",
+             "B12", "a guard that skims a zip instead of opening it passed a private session link inside a built capsule"),
+    Mutation("tools/leakguard.py", '        raise ValueError("unreadable zip: starts like one, but has no readable directory")', "        return None",
+             "B12", "an archive the guard cannot open must be reported, or a damaged capsule is waved through unread"),
     Mutation("pixelgoblin/gen/lsystem.py", "            d = (d + 1) % 8", "            d = (d + 2) % 8",
              "B03", "the turtle's turn angle is part of every flora golden"),
     Mutation("pixelgoblin/gen/parallax.py", "        s = (t * t * (3 * p - 2 * t) * 1024) // (p * p * p)", "        s = (t * 1024) // p",
@@ -164,7 +170,7 @@ def main() -> int:
     # A mutant "killed" by a gate that was already failing proves nothing: check the baseline first.
     gates = sorted({m.gate for m in MUTATIONS})
     base = subprocess.run([sys.executable, "tests/gate.py", *gates], cwd=ROOT, capture_output=True, text=True,
-                          env=dict(os.environ, PYTHONHASHSEED="0"), timeout=900)
+                          env=dict(os.environ, PYTHONHASHSEED="0"), timeout=900, encoding="utf-8")
     if base.returncode != 0:
         print(json.dumps({"total": len(MUTATIONS), "killed": 0,
                           "survivors": [f"baseline failing — fix these gates before falsifying: {base.stdout[-600:]}"]}))
@@ -172,7 +178,7 @@ def main() -> int:
     survivors, results = [], []
     for i, m in enumerate(MUTATIONS):
         path = ROOT / m.file
-        src = path.read_text()
+        src = path.read_text(encoding="utf-8")
         if src.count(m.old) != 1:
             survivors.append(f"#{i} {m.file}: pattern not found exactly once (mutation is stale)")
             continue
@@ -180,10 +186,10 @@ def main() -> int:
         bk.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(path, bk)
         try:
-            path.write_text(src.replace(m.old, m.new))
+            path.write_text(src.replace(m.old, m.new), encoding="utf-8")
             # PIXELGOBLIN_MUTANT tells gate.py this break is deliberate: do not repair it on start
             r = subprocess.run([sys.executable, "tests/gate.py", m.gate], cwd=ROOT, capture_output=True, text=True,
-                               env=dict(os.environ, PYTHONHASHSEED="0", PIXELGOBLIN_MUTANT="1"), timeout=900)
+                               env=dict(os.environ, PYTHONHASHSEED="0", PIXELGOBLIN_MUTANT="1"), timeout=900, encoding="utf-8")
             killed = r.returncode != 0
         finally:
             shutil.copy2(bk, path)
@@ -199,4 +205,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     sys.exit(main())

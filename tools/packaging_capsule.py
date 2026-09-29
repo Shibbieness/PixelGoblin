@@ -232,7 +232,7 @@ SCENARIOS = [
 
 def _write(p: Path, text: str) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(text.rstrip() + "\n")
+    p.write_text(text.rstrip() + "\n", encoding="utf-8")
 
 
 def _tags(it: dict) -> list[str]:
@@ -487,7 +487,7 @@ def dependency_map(g: dict) -> str:
 def internal_deps(root: Path) -> str:
     rows = []
     for p in sorted((root / "pixelgoblin").rglob("*.py")):
-        tree = ast.parse(p.read_text())
+        tree = ast.parse(p.read_text(encoding="utf-8"))
         mods = set()
         for n in ast.walk(tree):
             if isinstance(n, ast.ImportFrom) and n.level:
@@ -498,7 +498,7 @@ def internal_deps(root: Path) -> str:
                     mods.update(a.name for a in n.names)
             elif isinstance(n, ast.ImportFrom) and (n.module or "").startswith("pixelgoblin"):
                 mods.add(n.module.replace("pixelgoblin.", ""))
-        rows.append((str(p.relative_to(root)), sorted(mods)))
+        rows.append((p.relative_to(root).as_posix(), sorted(mods)))
     L = ["# Internal dependencies", "", "Generated from the import statements of `build/source/pixelgoblin/` (relative imports shown by module name).", "",
          "| Module | Imports from the package |", "|---|---|"] + [f"| `{m}` | {', '.join(f'`{x}`' for x in d) or '-'} |" for m, d in rows]
     L += ["", "Cross-language: `editor/pg-rig.gen.js` is generated from `gen/rig.py`, `gen/rig3d.py` and `gen/beast.py` by `tools/transpile_rig.py`.",
@@ -556,7 +556,7 @@ def pretune(root: Path, cap: Path) -> None:
         if argv[0] not in ("city", "sandbox"):
             full += ["--scale", "1"]
         out.parent.mkdir(parents=True, exist_ok=True)
-        r = subprocess.run([sys.executable] + full[1:], cwd=root, capture_output=True, text=True, env=env)
+        r = subprocess.run([sys.executable] + full[1:], cwd=root, capture_output=True, text=True, env=env, encoding="utf-8")
         files = sorted(out.rglob("*.png")) if out.is_dir() else [out]
         hashes = {f.relative_to(pt / "expected_outputs").as_posix(): hashlib.sha256(f.read_bytes()).hexdigest() for f in files if f.exists()}
         _write(pt / "scenarios" / f"{sid}.json", json.dumps({"id": sid, "asks": desc, "command": ["python3", "-m", "pixelgoblin"] + argv + ["--out", out.relative_to(pt / "expected_outputs").as_posix()] + (["--scale", "1"] if argv[0] not in ("city", "sandbox") else []),
@@ -631,17 +631,17 @@ def validate(cap: Path) -> list[str]:
         if not init.exists():
             P.append(f"updates/{s}/INIT.md missing")
             continue
-        t = init.read_text()
+        t = init.read_text(encoding="utf-8")
         P += [f"updates/{s}/INIT.md lacks '{h}'" for h in ("## Purpose", "## What Belongs Here", "## What Does Not Belong Here", "## Naming Convention") if h not in t]
         if len([p for p in (cap / "updates" / s).iterdir()]) == 1:
             P.append(f"updates/{s}/ has INIT.md but no EMPTY.md or content")
     if not (cap / "updates" / "UPDATE_INDEX.md").exists():
         P.append("updates/UPDATE_INDEX.md missing")
     for e in cap.rglob("EMPTY.md"):
-        if "What would populate it" not in e.read_text() and "would populate" not in e.read_text():
+        if "What would populate it" not in e.read_text(encoding="utf-8") and "would populate" not in e.read_text(encoding="utf-8"):
             P.append(f"{e.relative_to(cap)} does not say what would populate it")
     try:
-        meta = json.loads((cap / "META.json").read_text())
+        meta = json.loads((cap / "META.json").read_text(encoding="utf-8"))
         for k in ("project_name", "codex_version", "forged_date", "author", "organization", "compiler_mode", "cals_namespace", "build_layer_present",
                   "pretune_layer_present", "immutable_core", "update_structure_version", "tags", "companion_builder_sessions"):
             if k not in meta:
@@ -649,7 +649,7 @@ def validate(cap: Path) -> list[str]:
     except (OSError, json.JSONDecodeError) as e:
         P.append(f"META.json does not parse: {e}")
     # SKILL.md
-    sk = (cap / "SKILL.md").read_text() if (cap / "SKILL.md").exists() else ""
+    sk = (cap / "SKILL.md").read_text(encoding="utf-8") if (cap / "SKILL.md").exists() else ""
     m = re.match(r"---\n(.*?)\n---\n", sk, re.S)
     if not m:
         P.append("SKILL.md has no frontmatter")
@@ -697,13 +697,13 @@ def validate(cap: Path) -> list[str]:
     if not (cap / "build" / "source" / "packaging" / "RENAMED_SKILLS.md").exists():
         P.append("build/source/packaging/RENAMED_SKILLS.md is missing")
     # index completeness
-    mi = (cap / "codex" / "MASTER_INDEX.md").read_text() if (cap / "codex" / "MASTER_INDEX.md").exists() else ""
+    mi = (cap / "codex" / "MASTER_INDEX.md").read_text(encoding="utf-8") if (cap / "codex" / "MASTER_INDEX.md").exists() else ""
     for it in ITEMS:
         f = cap / "codex" / "mini-indexes" / f"{it['id']}.INDEX.md"
         if not f.exists():
             P.append(f"no mini-index for {it['id']}")
             continue
-        t = f.read_text()
+        t = f.read_text(encoding="utf-8")
         P += [f"{f.name} lacks '{h}'" for h in ("## What This Is", "## Status", "## Tags", "## Key Contents", "## Dependencies", "## Navigation Notes", "## What This Is Not") if h not in t]
         if f"{it['id']}.INDEX.md" not in mi:
             P.append(f"MASTER_INDEX does not reference {it['id']}")
@@ -715,7 +715,7 @@ def validate(cap: Path) -> list[str]:
         if not (cap / path).exists():
             P.append(f"indexed file {path} does not exist")
     # tags
-    reg = (cap / "codex" / "TAG_REGISTRY.md").read_text() if (cap / "codex" / "TAG_REGISTRY.md").exists() else ""
+    reg = (cap / "codex" / "TAG_REGISTRY.md").read_text(encoding="utf-8") if (cap / "codex" / "TAG_REGISTRY.md").exists() else ""
     registered = set(re.findall(r"\| (#[a-z0-9:,.-]+) \|", reg))
     every = [(it["id"], _tags(it) + _rel(it)) for it in ITEMS] + [(p, [st, ss] + nt) for p, _, st, ss, nt in CODEX_FILES]
     for who, ts in every:
@@ -729,12 +729,12 @@ def validate(cap: Path) -> list[str]:
             if t not in registered:
                 P.append(f"tag {t} on {who} is not in TAG_REGISTRY.md")
     for f in cap.joinpath("codex").rglob("*.md"):
-        for t in set(re.findall(r"(?<![\w/`&])#[a-z][a-z0-9-]*(?::[a-z0-9.-]+(?:,[a-z0-9.-]+)*)?", f.read_text())):
+        for t in set(re.findall(r"(?<![\w/`&])#[a-z][a-z0-9-]*(?::[a-z0-9.-]+(?:,[a-z0-9.-]+)*)?", f.read_text(encoding="utf-8"))):
             if t not in registered and t not in ("#not",):
                 P.append(f"phantom tag {t} in {f.relative_to(cap)}")
     # dependencies
     try:
-        g = json.loads((cap / "dependencies" / "dependency_graph.json").read_text())
+        g = json.loads((cap / "dependencies" / "dependency_graph.json").read_text(encoding="utf-8"))
         ids = {n["id"] for n in g["nodes"]}
         for n in g["nodes"]:
             if not (cap / n["path"]).exists():
@@ -745,7 +745,7 @@ def validate(cap: Path) -> list[str]:
         for e in g["edges"]:
             if e["from"] not in ids or e["to"] not in ids:
                 P.append(f"graph edge {e} names an unknown node")
-        dm = (cap / "dependencies" / "DEPENDENCY_MAP.md").read_text()
+        dm = (cap / "dependencies" / "DEPENDENCY_MAP.md").read_text(encoding="utf-8")
         for i in ids:
             if f"\n{i}\n└─ depends on" not in dm:
                 P.append(f"DEPENDENCY_MAP.md lacks {i}")
@@ -755,7 +755,7 @@ def validate(cap: Path) -> list[str]:
     except (OSError, json.JSONDecodeError, KeyError) as e:
         P.append(f"dependency_graph.json does not parse: {e}")
     # changelog
-    cl = (cap / "codex" / "CHANGELOG.md").read_text() if (cap / "codex" / "CHANGELOG.md").exists() else ""
+    cl = (cap / "codex" / "CHANGELOG.md").read_text(encoding="utf-8") if (cap / "codex" / "CHANGELOG.md").exists() else ""
     first = re.search(r"^## (\S+) — (\S+) — (\w+)", cl, re.M)
     if not first or first.group(3) != "FORGE" or first.group(1) not in ("1.0.0", "v1u0p0"):
         P.append("the first CHANGELOG entry must be FORGE at 1.0.0 (v1u0p0)")
@@ -772,7 +772,7 @@ def validate(cap: Path) -> list[str]:
         if "refs" in p.relative_to(cap).parts or p.name.endswith(".pyc") or "__pycache__" in p.parts:
             P.append(f"must not be packaged: {p.relative_to(cap)}")
     for s in (cap / "pretune" / "scenarios").glob("*.json"):
-        for rel, h in json.loads(s.read_text())["expected_sha256"].items():
+        for rel, h in json.loads(s.read_text(encoding="utf-8"))["expected_sha256"].items():
             f = cap / "pretune" / "expected_outputs" / rel
             if not f.exists() or hashlib.sha256(f.read_bytes()).hexdigest() != h:
                 P.append(f"pretune expected output {rel} does not match its hash")
@@ -780,6 +780,8 @@ def validate(cap: Path) -> list[str]:
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     here = Path(__file__).resolve().parent.parent
     if len(sys.argv) > 2 and sys.argv[1] == "validate":
         probs = validate(Path(sys.argv[2]))

@@ -71,7 +71,7 @@ def roster_md() -> str:
     lines += ["", "## Views", "", "| view | turn | tilt |", "|---|---|---|"] + [f"| `{k}` | {v[0]}° | {v[1]}° |" for k, v in rig3d.VIEWS.items()]
     lines += ["", "## Sizes and eras", "", "| size | default era | colours |", "|---|---|---|"]
     lines += [f"| {t} px | {rig.DEFAULT_CHAIN[t]} | {rig.ERAS[rig.DEFAULT_CHAIN[t]]['max_colors']} |" for t in (8, 16, 32, 64, 128, 256)]
-    lines += ["", "## Cities", ""] + [f"- `boc.city.{p.name.replace('.city.toml', '')}` (names file `{p.with_name(p.name.replace('.city.toml', '.names.txt')).relative_to(ROOT)}`)" for p in sorted((ROOT / "flavors").rglob("*.city.toml"))]
+    lines += ["", "## Cities", ""] + [f"- `boc.city.{p.name.replace('.city.toml', '')}` (names file `{p.with_name(p.name.replace('.city.toml', '.names.txt')).relative_to(ROOT).as_posix()}`)" for p in sorted((ROOT / "flavors").rglob("*.city.toml"))]
     lines += ["", f"## Other type files ({len(other)})", "", "| id | generator | label |", "|---|---|---|"] + [f"| `{i}` | {g} | {l} |" for i, g, l in sorted(other)]
     return "\n".join(lines) + "\n"
 
@@ -98,7 +98,7 @@ def build_plugin(dist: Path = DIST) -> Path:
     for skill, docs in refs.items():
         for d in docs:
             copy(ROOT / "docs" / d, out / "skills" / skill / "references" / Path(d).name)
-    (sk / "references" / "roster.md").write_text(roster_md())
+    (sk / "references" / "roster.md").write_text(roster_md(), encoding="utf-8")
     return out
 
 
@@ -138,5 +138,7 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     sys.exit(main())

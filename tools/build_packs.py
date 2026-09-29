@@ -234,7 +234,7 @@ IRIS_EXTRA = {"brown": ["#2a160a", "#5a3418", "#8a5a2e"], "blue": ["#14284a", "#
 
 # ---------------------------------------------------------------- packs
 def load(name: str):
-    return json.loads((SRC / name).read_text())
+    return json.loads((SRC / name).read_text(encoding="utf-8"))
 
 
 def race_overlay(r: dict, by_id: dict) -> tuple[str, dict]:
@@ -629,7 +629,7 @@ def build() -> dict[Path, str]:
 def main() -> int:
     files = build()
     if "--check" in sys.argv:
-        stale = [str(p.relative_to(ROOT)) for p, t in files.items() if not p.exists() or p.read_text() != t]
+        stale = [str(p.relative_to(ROOT)) for p, t in files.items() if not p.exists() or p.read_text(encoding="utf-8") != t]
         extra = [str(p.relative_to(ROOT)) for p in PACKS.rglob("*") if p.is_file() and "sources" not in p.parts and p not in files]
         for s in stale + extra:
             print("stale:", s)
@@ -639,10 +639,12 @@ def main() -> int:
             p.unlink()
     for p, t in files.items():
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(t)
+        p.write_text(t, encoding="utf-8")
     print(f"{len(files)} pack files in {PACKS.relative_to(ROOT)}")
     return 0
 
 
 if __name__ == "__main__":
+    for _s in (sys.stdout, sys.stderr):  # a pipe on Windows defaults to cp1252; write UTF-8 everywhere
+        _s.reconfigure(encoding="utf-8")
     sys.exit(main())
