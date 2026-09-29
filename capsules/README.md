@@ -6,7 +6,7 @@ The built files, ready to install in Claude. Each is made from this repository b
 
 | File | What it is | Install it as |
 |---|---|---|
-| `pixelgoblin-workshop-v1u0p0.skill` | **The one to upload.** The whole project as a skill: 129 files (the upload limit is 200). The repository rides inside as one bundle, and the original capsule rides inside unchanged. | a skill |
+| `pixelgoblin-workshop-v1u0p1.skill` | **The one to upload.** The whole project as a skill: 129 files (the upload limit is 200). The repository rides inside as one bundle, and the original capsule rides inside unchanged. | a skill |
 | `pixelgoblin-pseudoskill-v1u0p1.skill` | The original capsule, frozen. 1,058 files, so it cannot be uploaded as a skill; kept as the reference the workshop carries. | not installable as is |
 | `pixelgoblin.plugin` | The plugin: three skills and nine drawing tools. | a plugin |
 
@@ -15,8 +15,9 @@ The built files, ready to install in Claude. Each is made from this repository b
 | File | SHA-256 |
 |---|---|
 | `pixelgoblin-pseudoskill-v1u0p1.skill` | `38b1561d08b9d7c8f57470f92d663d0e16d2ef3b2f910d288d2098925ed4f66c` |
-| `pixelgoblin-workshop-v1u0p0.skill` | `80565e2007ab2743dabfc1cf32e7fe970a2388fc7b4ab6b0711fffd8d6a2ea17` |
-| `pixelgoblin.plugin` | `60b3c3c70a459dce48db0321a0724ec9a1bdaed94d8def0bc2e57492be6f74df` |
+| `pixelgoblin-workshop-v1u0p1.skill` | `f5b650460fae48700ce03ec755e809a3f88f22238241302a67a824694d0e3902` (forged from 256d615) |
+| `pixelgoblin-workshop-v1u0p0.skill` | `80565e2007ab2743dabfc1cf32e7fe970a2388fc7b4ab6b0711fffd8d6a2ea17` (superseded) |
+| `pixelgoblin.plugin` | `68876bffc565024954954018d673bbdde55525c0be49b9f631c929678a822a5e` (forged from 256d615; was `60b3c3c7…`) |
 
 The original's fingerprint is also pinned in `tools/packaging_workshop.py`; the workshop forge refuses to run if it changes.
 
